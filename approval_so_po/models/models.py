@@ -7,6 +7,68 @@ from odoo.tools.float_utils import float_compare
 from odoo.exceptions import UserError
 
 
+class StockScrapInh(models.Model):
+    _inherit = 'stock.scrap'
+
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('manager', 'Approval From Manager'),
+        ('done', 'Done')],
+        string='Status', default="draft", readonly=True, tracking=True)
+    x_css = fields.Html(string='CSS', sanitize=False, compute='_compute_css', store=False)
+
+    def action_reject(self):
+        self.state = 'draft'
+
+    def action_validate(self):
+        self.state = 'manager'
+
+    def action_manager_approve(self):
+        record = super(StockScrapInh, self).action_validate()
+
+    @api.depends('state')
+    def _compute_css(self):
+        for application in self:
+            # Modify below condition
+            if self.env.user.has_group('approval_so_po.group_sale_remove_edit_user') and application.state != 'draft':
+                application.x_css = '<style>.o_form_button_edit {display: none !important;}</style>'
+            else:
+                application.x_css = False
+
+
+class StockMoveLineInh(models.Model):
+    _inherit = 'stock.move.line'
+
+    @api.onchange('product_id')
+    def onchange_product_id(self):
+        if self.picking_id.origin:
+            raise UserError('You cannot add Product in this Stage')
+
+
+class StockMoveInh(models.Model):
+    _inherit = 'stock.move'
+
+    @api.onchange('product_id')
+    def onchange_product_id(self):
+        if self.picking_id.origin:
+            raise UserError('You cannot add Product in this Stage')
+
+
+class ResPartnerInh(models.Model):
+    _inherit = 'res.partner'
+
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        result = super(ResPartnerInh, self).fields_view_get(
+            view_id=view_id, view_type=view_type, toolbar=toolbar,
+            submenu=submenu)
+        if self.env.user.has_group('approval_so_po.group_remove_customer_create_user'):
+            temp = etree.fromstring(result['arch'])
+            temp.set('create', '0')
+            result['arch'] = etree.tostring(temp)
+        return result
+
+
 class SaleOrderInh(models.Model):
     _inherit = 'sale.order'
 
@@ -129,6 +191,16 @@ class AccountPaymentInh(models.Model):
             result['arch'] = etree.tostring(temp)
         return result
 
+
+class AccountMoveLineInh(models.Model):
+    _inherit = 'account.move.line'
+
+    @api.onchange('product_id')
+    def onchange_product_id(self):
+        if self.move_id.invoice_origin:
+            raise UserError('You cannot add Product in this Stage')
+
+
 class AccountMoveInh(models.Model):
     _inherit = 'account.move'
 
@@ -183,7 +255,8 @@ class AccountMoveInh(models.Model):
                 else:
                     raise UserError('Quantity Should be equal to Purchase Order Quantity')
         else:
-            record = super(AccountMoveInh, self).action_post()
+            self.state = 'manager'
+            # record = super(AccountMoveInh, self).action_post()
 
     def action_manager_approve(self):
         record = super(AccountMoveInh, self).action_post()
@@ -208,6 +281,15 @@ class AccountMoveInh(models.Model):
             temp.set('delete', '0')
             result['arch'] = etree.tostring(temp)
         return result
+
+
+class ProductTemplateInh(models.Model):
+    _inherit = 'product.template'
+
+    _sql_constraints = [
+        ('name_unique', 'unique(name)',
+         'Product with this name is already exist!'),
+    ]
 
 
 class StockPickingInh(models.Model):

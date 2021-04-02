@@ -1,23 +1,36 @@
 <odoo>
 
-     <record id="view_sales_order_form_inh" model="ir.ui.view">
-            <field name="name">sales.order.form.inh</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_order_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//header/button[@name='action_confirm']" position="after">
-                    <button string="Approve SO" groups="sales_team.group_sale_manager" class="oe_highlight" type="object" name="action_manager_approve" attrs="{'invisible': [('state','!=', 'manager')]}"/>
-                    <button string="Reject" groups="sales_team.group_sale_manager" type="object" name="action_reject" attrs="{'invisible': [('state','!=', 'manager')]}"/>
-                </xpath>
-                <xpath expr="//field[@name='date_order']" position="after">
-                    <field name="x_css" />
-                 </xpath>
-                <xpath expr="//header/button[@name='action_cancel']" position="attributes">
-                    <attribute name="groups">sales_team.group_sale_manager</attribute>
-                </xpath>
-                <xpath expr="//header/button[@name='action_draft']" position="attributes">
-                    <attribute name="groups">sales_team.group_sale_manager</attribute>
-                </xpath>
-            </field>
-        </record>
+    <record id="view_sales_order_form_inh" model="ir.ui.view">
+        <field name="name">sales.order.form.inh</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_confirm']" position="after">
+                <button string="Approve SO" groups="sales_team.group_sale_manager" class="oe_highlight" type="object" name="action_manager_approve" attrs="{'invisible': [('state','!=', 'manager')]}"/>
+                <button string="Reject" groups="sales_team.group_sale_manager" type="object" name="action_reject" attrs="{'invisible': [('state','!=', 'manager')]}"/>
+            </xpath>
+            <xpath expr="//field[@name='date_order']" position="after">
+                <field name="x_css" />
+            </xpath>
+            <xpath expr="//header/button[@name='action_cancel']" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='action_draft']" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_sales_order_group_form_inh" model="ir.ui.view">
+        <field name="name">sales.order.form.inh</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="groups_id" eval="[(4, ref('approval_so_po.group_remove_customer_create_user'))]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="options">{'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>
