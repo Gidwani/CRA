@@ -36,22 +36,22 @@ class StockScrapInh(models.Model):
                 application.x_css = False
 
 
-class StockMoveLineInh(models.Model):
-    _inherit = 'stock.move.line'
+# class StockMoveLineInh(models.Model):
+#     _inherit = 'stock.move.line'
 
-    @api.onchange('product_id')
-    def onchange_product_id(self):
-        if self.picking_id.origin:
-            raise UserError('You cannot add Product in this Stage')
+#     @api.onchange('product_id')
+#     def onchange_product_id(self):
+#         if self.picking_id.origin:
+#             raise UserError('You cannot add Product in this Stage')
 
 
-class StockMoveInh(models.Model):
-    _inherit = 'stock.move'
+# class StockMoveInh(models.Model):
+#     _inherit = 'stock.move'
 
-    @api.onchange('product_id')
-    def onchange_product_id(self):
-        if self.picking_id.origin:
-            raise UserError('You cannot add Product in this Stage')
+#     @api.onchange('product_id')
+#     def onchange_product_id(self):
+#         if self.picking_id.origin:
+#             raise UserError('You cannot add Product in this Stage')
 
 
 class ResPartnerInh(models.Model):
