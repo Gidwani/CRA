@@ -29,6 +29,6 @@
         'views/account_views.xml',
         'views/stock_views.xml',
         'views/sale_order_views.xml',
-
+        'views/partner_views.xml',
     ],
 }

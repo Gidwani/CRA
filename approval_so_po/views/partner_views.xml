@@ -1,0 +1,22 @@
+<odoo>
+    <data>
+
+        <record id="view_res_partner_form_inh" model="ir.ui.view">
+        <field name="name">res.partner.form.inh</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//form/sheet" position="before">
+                <header>
+                    <button string="Approve" groups="approval_so_po.group_contact_manager" class="oe_highlight" type="object" name="action_manager_approve" attrs="{'invisible': [('state','!=', 'manager')]}"/>
+                    <button string="Reject" type="object" groups="approval_so_po.group_contact_manager" name="action_reject" attrs="{'invisible': [('state','!=', 'manager')]}"/>
+                    <field name="state"  widget="statusbar"/>
+                </header>
+            </xpath>
+
+        </field>
+    </record>
+
+    </data>
+</odoo>

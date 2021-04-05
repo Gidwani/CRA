@@ -58,6 +58,11 @@ class StockMoveInh(models.Model):
 class ResPartnerInh(models.Model):
     _inherit = 'res.partner'
 
+    state = fields.Selection([
+        ('manager', 'Waiting for Approval'),
+        ('approved', 'Approved')],
+        string='Status', default="manager", readonly=True, tracking=True)
+
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
         result = super(ResPartnerInh, self).fields_view_get(
@@ -67,7 +72,25 @@ class ResPartnerInh(models.Model):
             temp = etree.fromstring(result['arch'])
             temp.set('create', '0')
             result['arch'] = etree.tostring(temp)
+        if self.env.user.has_group('approval_so_po.group_contact_user'):
+            temp = etree.fromstring(result['arch'])
+            temp.set('delete', '0')
+            result['arch'] = etree.tostring(temp)
         return result
+
+    @api.model
+    def create(self, vals):
+        record = super(ResPartnerInh, self).create(vals)
+        record.active = False
+        record.state = 'manager'
+        return record
+
+    def action_reject(self):
+        self.active = False
+
+    def action_manager_approve(self):
+        self.state = 'approved'
+        self.active = True
 
 
 class SaleOrderInh(models.Model):
@@ -201,6 +224,11 @@ class AccountMoveLineInh(models.Model):
         if self.move_id.invoice_origin:
             raise UserError('You cannot add Product in this Stage')
 
+    @api.onchange('price_unit')
+    def onchange_price_unit(self):
+        if self.move_id.invoice_origin:
+            raise UserError('You cannot change Product Price')
+
 
 class AccountMoveInh(models.Model):
     _inherit = 'account.move'
@@ -287,10 +315,12 @@ class AccountMoveInh(models.Model):
 class ProductTemplateInh(models.Model):
     _inherit = 'product.template'
 
-    _sql_constraints = [
-        ('name_unique', 'unique(name)',
-         'Product with this name is already exist!'),
-    ]
+    @api.constrains('name')
+    def remove_duplication(self):
+        if self.name:
+            record = self.env['product.template'].search([('name', '=', self.name)])
+            if len(record) > 1:
+                raise UserError('Product Already Exists')
 
 
 class StockPickingInh(models.Model):

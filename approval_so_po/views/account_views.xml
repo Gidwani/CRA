@@ -58,7 +58,7 @@
                     <attribute name="groups">account.group_account_manager,account.group_account_invoice</attribute>
                 </xpath>
                 <xpath expr="//header/button[@name='action_reverse']" position="attributes">
-                    <attribute name="groups">account.group_account_manager</attribute>
+                    <attribute name="groups">account.group_account_manager,account.group_account_invoice</attribute>
                 </xpath>
                 <xpath expr="//field[@name='invoice_user_id']" position="after">
                     <field name="x_css" />
