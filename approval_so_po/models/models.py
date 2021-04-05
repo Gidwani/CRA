@@ -10,11 +10,11 @@ from odoo.exceptions import UserError
 class StockScrapInh(models.Model):
     _inherit = 'stock.scrap'
 
-#     state = fields.Selection([
-#         ('draft', 'Draft'),
-#         ('manager', 'Approval From Manager'),
-#         ('done', 'Done')],
-#         string='Status', default="draft", readonly=True, tracking=True)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('manager', 'Approval From Manager'),
+        ('done', 'Done')],
+        string='Status', default="draft", readonly=True, tracking=True)
     x_css = fields.Html(string='CSS', sanitize=False, compute='_compute_css', store=False)
 
     def action_reject(self):
@@ -58,10 +58,10 @@ class StockMoveInh(models.Model):
 class ResPartnerInh(models.Model):
     _inherit = 'res.partner'
 
-    state = fields.Selection([
-        ('manager', 'Waiting for Approval'),
-        ('approved', 'Approved')],
-        string='Status', default="manager", readonly=True, tracking=True)
+#     state = fields.Selection([
+#         ('manager', 'Waiting for Approval'),
+#         ('approved', 'Approved')],
+#         string='Status', default="manager", readonly=True, tracking=True)
 
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
