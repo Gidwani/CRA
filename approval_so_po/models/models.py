@@ -263,6 +263,10 @@ class AccountMoveInh(models.Model):
             if sale_order:
                 total_qty = 0
                 total_invoice_qty = 0
+                sale_invoices = self.env['account.move'].search([('invoice_origin', '=', sale_order.name)])
+                if sale_invoices:
+                    for rec in sale_invoices.invoice_line_ids:
+                        total_invoice_qty = total_invoice_qty + rec.quantity
                 for line in sale_order.order_line:
                     total_qty = total_qty + line.product_uom_qty
                 for invoice_line in self.invoice_line_ids:
@@ -270,11 +274,15 @@ class AccountMoveInh(models.Model):
                 if total_invoice_qty <= total_qty:
                     self.state = 'manager'
                 else:
-                    raise UserError('Quantity Should be equal to Sale Order Quantity')
+                    raise UserError('Quantity Should be less or equal to Sale Order Quantity')
             if purchase_order:
                 print('Purchase')
                 total_qty = 0
                 total_invoice_qty = 0
+                purchase_invoices = self.env['account.move'].search([('invoice_origin', '=', purchase_order.name)])
+                if purchase_invoices:
+                    for rec in purchase_invoices.invoice_line_ids:
+                        total_invoice_qty = total_invoice_qty + rec.quantity
                 for line in purchase_order.order_line:
                     total_qty = total_qty + line.product_uom_qty
                 for invoice_line in self.invoice_line_ids:
@@ -282,7 +290,7 @@ class AccountMoveInh(models.Model):
                 if total_invoice_qty <= total_qty:
                     self.state = 'manager'
                 else:
-                    raise UserError('Quantity Should be equal to Purchase Order Quantity')
+                    raise UserError('Quantity Should be less or equal to Purchase Order Quantity')
         else:
             self.state = 'manager'
             # record = super(AccountMoveInh, self).action_post()
@@ -294,6 +302,10 @@ class AccountMoveInh(models.Model):
             if sale_order:
                 total_qty = 0
                 total_invoice_qty = 0
+                sale_invoices = self.env['account.move'].search([('invoice_origin', '=', sale_order.name)])
+                if sale_invoices:
+                    for rec in sale_invoices.invoice_line_ids:
+                        total_invoice_qty = total_invoice_qty + rec.quantity
                 for line in sale_order.order_line:
                     total_qty = total_qty + line.product_uom_qty
                 for invoice_line in self.invoice_line_ids:
@@ -301,11 +313,15 @@ class AccountMoveInh(models.Model):
                 if total_invoice_qty <= total_qty:
                     record = super(AccountMoveInh, self).action_post()
                 else:
-                    raise UserError('Quantity Should be equal to Sale Order Quantity')
+                    raise UserError('Quantity Should be less or equal to Sale Order Quantity')
             if purchase_order:
                 print('Purchase')
                 total_qty = 0
                 total_invoice_qty = 0
+                purchase_invoices = self.env['account.move'].search([('invoice_origin', '=', purchase_order.name)])
+                if purchase_invoices:
+                    for rec in purchase_invoices.invoice_line_ids:
+                        total_invoice_qty = total_invoice_qty + rec.quantity
                 for line in purchase_order.order_line:
                     total_qty = total_qty + line.product_uom_qty
                 for invoice_line in self.invoice_line_ids:
@@ -313,7 +329,7 @@ class AccountMoveInh(models.Model):
                 if total_invoice_qty <= total_qty:
                     record = super(AccountMoveInh, self).action_post()
                 else:
-                    raise UserError('Quantity Should be equal to Purchase Order Quantity')
+                    raise UserError('Quantity Should be less or equal to Purchase Order Quantity')
         else:
             record = super(AccountMoveInh, self).action_post()
 
