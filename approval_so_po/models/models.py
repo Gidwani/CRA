@@ -58,10 +58,10 @@ class StockMoveInh(models.Model):
 class ResPartnerInh(models.Model):
     _inherit = 'res.partner'
 
-#     state = fields.Selection([
-#         ('manager', 'Waiting for Approval'),
-#         ('approved', 'Approved')],
-#         string='Status', default="manager", readonly=True, tracking=True)
+    state = fields.Selection([
+        ('manager', 'Waiting for Approval'),
+        ('approved', 'Approved')],
+        string='Status', default="manager", readonly=True, tracking=True)
 
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
