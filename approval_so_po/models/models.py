@@ -10,11 +10,11 @@ from odoo.exceptions import UserError
 class StockScrapInh(models.Model):
     _inherit = 'stock.scrap'
 
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('manager', 'Approval From Manager'),
-        ('done', 'Done')],
-        string='Status', default="draft", readonly=True, tracking=True)
+#     state = fields.Selection([
+#         ('draft', 'Draft'),
+#         ('manager', 'Approval From Manager'),
+#         ('done', 'Done')],
+#         string='Status', default="draft", readonly=True, tracking=True)
     x_css = fields.Html(string='CSS', sanitize=False, compute='_compute_css', store=False)
 
     def action_reject(self):
