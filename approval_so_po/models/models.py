@@ -263,7 +263,8 @@ class AccountMoveInh(models.Model):
             if sale_order:
                 total_qty = 0
                 total_invoice_qty = 0
-                sale_invoices = self.env['account.move'].search([('invoice_origin', '=', sale_order.name)])
+                sale_invoices = self.env['account.move'].search([('invoice_origin', '=', sale_order.name),
+                                                                 ('state', '=', 'posted')])
                 if sale_invoices:
                     for rec in sale_invoices.invoice_line_ids:
                         total_invoice_qty = total_invoice_qty + rec.quantity
@@ -279,7 +280,8 @@ class AccountMoveInh(models.Model):
                 print('Purchase')
                 total_qty = 0
                 total_invoice_qty = 0
-                purchase_invoices = self.env['account.move'].search([('invoice_origin', '=', purchase_order.name)])
+                purchase_invoices = self.env['account.move'].search([('invoice_origin', '=', purchase_order.name),
+                                                                     ('state', '=', 'posted')])
                 if purchase_invoices:
                     for rec in purchase_invoices.invoice_line_ids:
                         total_invoice_qty = total_invoice_qty + rec.quantity
@@ -302,7 +304,8 @@ class AccountMoveInh(models.Model):
             if sale_order:
                 total_qty = 0
                 total_invoice_qty = 0
-                sale_invoices = self.env['account.move'].search([('invoice_origin', '=', sale_order.name)])
+                sale_invoices = self.env['account.move'].search([('invoice_origin', '=', sale_order.name),
+                                                                 ('state', '=', 'posted')])
                 if sale_invoices:
                     for rec in sale_invoices.invoice_line_ids:
                         total_invoice_qty = total_invoice_qty + rec.quantity
@@ -318,7 +321,8 @@ class AccountMoveInh(models.Model):
                 print('Purchase')
                 total_qty = 0
                 total_invoice_qty = 0
-                purchase_invoices = self.env['account.move'].search([('invoice_origin', '=', purchase_order.name)])
+                purchase_invoices = self.env['account.move'].search([('invoice_origin', '=', purchase_order.name),
+                                                                     ('state', '=', 'posted')])
                 if purchase_invoices:
                     for rec in purchase_invoices.invoice_line_ids:
                         total_invoice_qty = total_invoice_qty + rec.quantity
