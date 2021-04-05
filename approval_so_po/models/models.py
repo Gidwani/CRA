@@ -288,7 +288,34 @@ class AccountMoveInh(models.Model):
             # record = super(AccountMoveInh, self).action_post()
 
     def action_manager_approve(self):
-        record = super(AccountMoveInh, self).action_post()
+        if self.invoice_origin:
+            sale_order = self.env['sale.order'].search([('name', '=', self.invoice_origin)])
+            purchase_order = self.env['purchase.order'].search([('name', '=', self.invoice_origin)])
+            if sale_order:
+                total_qty = 0
+                total_invoice_qty = 0
+                for line in sale_order.order_line:
+                    total_qty = total_qty + line.product_uom_qty
+                for invoice_line in self.invoice_line_ids:
+                    total_invoice_qty = total_invoice_qty + invoice_line.quantity
+                if total_invoice_qty <= total_qty:
+                    record = super(AccountMoveInh, self).action_post()
+                else:
+                    raise UserError('Quantity Should be equal to Sale Order Quantity')
+            if purchase_order:
+                print('Purchase')
+                total_qty = 0
+                total_invoice_qty = 0
+                for line in purchase_order.order_line:
+                    total_qty = total_qty + line.product_uom_qty
+                for invoice_line in self.invoice_line_ids:
+                    total_invoice_qty = total_invoice_qty + invoice_line.quantity
+                if total_invoice_qty <= total_qty:
+                    record = super(AccountMoveInh, self).action_post()
+                else:
+                    raise UserError('Quantity Should be equal to Purchase Order Quantity')
+        else:
+            record = super(AccountMoveInh, self).action_post()
 
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
