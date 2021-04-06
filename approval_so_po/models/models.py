@@ -64,6 +64,7 @@ class ResPartnerInh(models.Model):
         string='Status', default="manager", readonly=True, tracking=True)
 
     x_css = fields.Html(string='CSS', sanitize=False, compute='_compute_css', store=False)
+    x_css_set = fields.Html(string='CSS', sanitize=False, compute='_compute_css_set', store=False)
 
     def _compute_css(self):
         for application in self:
@@ -71,6 +72,13 @@ class ResPartnerInh(models.Model):
                 application.x_css = '<style>.o_cp_action_menus {display: none !important;}</style>'
             else:
                 application.x_css = False
+
+    def _compute_css_set(self):
+        for application in self:
+            if self.env.user.has_group('base.group_system'):
+                application.x_css_set = False
+            else:
+                application.x_css_set = '<style>.o_cp_action_menus {display: none !important;}</style>'
 
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
