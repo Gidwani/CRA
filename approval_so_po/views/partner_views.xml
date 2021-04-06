@@ -8,7 +8,9 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='company_id']" position="after">
                     <field name="active" invisible="1"/>
+                    <field name="x_css"/>
                     <field name="state" widget="badge"/>
+
             </xpath>
         </field>
     </record>

@@ -84,6 +84,7 @@ class ResPartnerInh(models.Model):
         if self.env.user.has_group('approval_so_po.group_contact_user'):
             temp = etree.fromstring(result['arch'])
             temp.set('delete', '0')
+            temp.set('edit', '0')
             temp.set('duplicate', '0')
             result['arch'] = etree.tostring(temp)
         return result
