@@ -70,7 +70,7 @@
             </xpath>
 
             <xpath expr="//field[@name='category_id']" position="after">
-                <field name="x_css"/>
+                <field name="x_css_set"/>
             </xpath>
 
         </field>
