@@ -55,7 +55,7 @@
                     <attribute name="groups">account.group_account_manager</attribute>
                 </xpath>
                 <xpath expr="//header/button[@name='action_register_payment']" position="attributes">
-                    <attribute name="groups">account.group_account_manager,account.group_account_invoice</attribute>
+                    <attribute name="groups">approval_so_po.group_payment_manager,approval_so_po.group_payment_user</attribute>
                 </xpath>
                 <xpath expr="//header/button[@name='action_reverse']" position="attributes">
                     <attribute name="groups">account.group_account_manager,account.group_account_invoice</attribute>
