@@ -253,6 +253,7 @@ class AccountMoveInh(models.Model):
         default='draft')
 
     x_css = fields.Html(string='CSS', sanitize=False, compute='_compute_css', store=False)
+    # x_css_tree = fields.Html(string='CSS', sanitize=False, compute='_compute_css_tree', store=False)
 
     @api.depends('state')
     def _compute_css(self):
@@ -263,6 +264,16 @@ class AccountMoveInh(models.Model):
                 application.x_css = '<style>.o_form_button_edit {display: none !important;}</style>'
             else:
                 application.x_css = False
+
+    # def _compute_css_tree(self):
+    #     for application in self:
+    #         # Modify below condition
+    #         if self.env.user.has_group(
+    #                 'approval_so_po.group_payment_manager') or self.env.user.has_group(
+    #                 'approval_so_po.group_payment_user'):
+    #             application.x_css_tree = '<style>.btn btn-secondary {display: none !important;}</style>'
+    #         else:
+    #             application.x_css_tree = False
 
     def action_reject(self):
         self.state = 'draft'

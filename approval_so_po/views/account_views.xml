@@ -81,6 +81,17 @@
         </field>
     </record>
 
+    <record id="view_account_move_group_tree_inh" model="ir.ui.view">
+        <field name="name">account.move.tree.inh</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_out_invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_register_payment']" position="attributes">
+                <attribute name="groups">approval_so_po.group_payment_manager,approval_so_po.group_payment_user</attribute>
+            </xpath>
+        </field>
+    </record>
+
 <!--    <menuitem name="Accounting"-->
 <!--            id="account.menu_accounting"-->
 <!--            groups="account.group_account_readonly,account.group_account_invoice,approval_so_po.group_view_only_user,approval_so_po.group_account_remove_edit_user"-->
