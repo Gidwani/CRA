@@ -19,16 +19,17 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sale', 'sale_management', 'purchase', 'account', 'stock'],
+    'depends': ['base', 'sale', 'sale_management', 'purchase', 'account', 'stock', 'contacts'],
 
     # always loaded
     'data': [
+        'views/partner_views.xml',
         'security/security.xml',
         # 'security/ir.model.access.csv',
         'views/purchase_views.xml',
         'views/account_views.xml',
         'views/stock_views.xml',
         'views/sale_order_views.xml',
-        'views/partner_views.xml',
+
     ],
 }

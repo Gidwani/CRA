@@ -63,6 +63,15 @@ class ResPartnerInh(models.Model):
         ('approved', 'Approved')],
         string='Status', default="manager", readonly=True, tracking=True)
 
+    x_css = fields.Html(string='CSS', sanitize=False, compute='_compute_css', store=False)
+
+    def _compute_css(self):
+        for application in self:
+            if self.env.user.has_group('approval_so_po.group_contact_user'):
+                application.x_css = '<style>.o_cp_action_menus {display: none !important;}</style>'
+            else:
+                application.x_css = False
+
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
         result = super(ResPartnerInh, self).fields_view_get(
@@ -75,6 +84,7 @@ class ResPartnerInh(models.Model):
         if self.env.user.has_group('approval_so_po.group_contact_user'):
             temp = etree.fromstring(result['arch'])
             temp.set('delete', '0')
+            temp.set('duplicate', '0')
             result['arch'] = etree.tostring(temp)
         return result
 
@@ -261,38 +271,75 @@ class AccountMoveInh(models.Model):
             sale_order = self.env['sale.order'].search([('name', '=', self.invoice_origin)])
             purchase_order = self.env['purchase.order'].search([('name', '=', self.invoice_origin)])
             if sale_order:
-                total_qty = 0
-                total_invoice_qty = 0
-                sale_invoices = self.env['account.move'].search([('invoice_origin', '=', sale_order.name),
-                                                                 ('state', '=', 'posted')])
-                if sale_invoices:
-                    for rec in sale_invoices.invoice_line_ids:
-                        total_invoice_qty = total_invoice_qty + rec.quantity
-                for line in sale_order.order_line:
-                    total_qty = total_qty + line.product_uom_qty
-                for invoice_line in self.invoice_line_ids:
-                    total_invoice_qty = total_invoice_qty + invoice_line.quantity
-                if total_invoice_qty <= total_qty:
-                    self.state = 'manager'
-                else:
-                    raise UserError('Quantity Should be less or equal to Sale Order Quantity')
-            if purchase_order:
-                print('Purchase')
-                total_qty = 0
-                total_invoice_qty = 0
-                purchase_invoices = self.env['account.move'].search([('invoice_origin', '=', purchase_order.name),
+                if self.move_type == 'out_invoice':
+                    total_qty = 0
+                    total_invoice_qty = 0
+                    sale_invoices = self.env['account.move'].search([('invoice_origin', '=', sale_order.name),('move_type', '=', 'out_invoice'),
                                                                      ('state', '=', 'posted')])
-                if purchase_invoices:
-                    for rec in purchase_invoices.invoice_line_ids:
-                        total_invoice_qty = total_invoice_qty + rec.quantity
-                for line in purchase_order.order_line:
-                    total_qty = total_qty + line.product_uom_qty
-                for invoice_line in self.invoice_line_ids:
-                    total_invoice_qty = total_invoice_qty + invoice_line.quantity
-                if total_invoice_qty <= total_qty:
-                    self.state = 'manager'
-                else:
-                    raise UserError('Quantity Should be less or equal to Purchase Order Quantity')
+                    if sale_invoices:
+                        for rec in sale_invoices.invoice_line_ids:
+                            total_invoice_qty = total_invoice_qty + rec.quantity
+                    for line in sale_order.order_line:
+                        total_qty = total_qty + line.product_uom_qty
+                    for invoice_line in self.invoice_line_ids:
+                        total_invoice_qty = total_invoice_qty + invoice_line.quantity
+                    if total_invoice_qty <= total_qty:
+                        self.state = 'manager'
+                    else:
+                        raise UserError('Quantity Should be less or equal to Sale Order Quantity')
+                if self.move_type == 'out_refund':
+                    total_refund_qty = 0
+                    total_refund_invoice_qty = 0
+                    sale_refund_invoices = self.env['account.move'].search([('invoice_origin', '=', sale_order.name),
+                                                                     ('move_type', '=', 'out_refund'),
+                                                                     ('state', '=', 'posted')])
+                    if sale_refund_invoices:
+                        for rec in sale_refund_invoices.invoice_line_ids:
+                            total_refund_invoice_qty = total_refund_invoice_qty + rec.quantity
+                    for line in sale_order.order_line:
+                        total_refund_qty = total_refund_qty + line.product_uom_qty
+                    for invoice_line in self.invoice_line_ids:
+                        total_refund_invoice_qty = total_refund_invoice_qty + invoice_line.quantity
+                    if total_refund_invoice_qty <= total_refund_qty:
+                        self.state = 'manager'
+                    else:
+                        raise UserError('Return Quantity Should be less or equal to Sale Order Quantity')
+
+            if purchase_order:
+                if self.move_type == 'out_invoice':
+                    print('Purchase')
+                    total_qty = 0
+                    total_invoice_qty = 0
+                    purchase_invoices = self.env['account.move'].search([('invoice_origin', '=', purchase_order.name),
+                                                                         ('state', '=', 'posted')])
+                    if purchase_invoices:
+                        for rec in purchase_invoices.invoice_line_ids:
+                            total_invoice_qty = total_invoice_qty + rec.quantity
+                    for line in purchase_order.order_line:
+                        total_qty = total_qty + line.product_uom_qty
+                    for invoice_line in self.invoice_line_ids:
+                        total_invoice_qty = total_invoice_qty + invoice_line.quantity
+                    if total_invoice_qty <= total_qty:
+                        self.state = 'manager'
+                    else:
+                        raise UserError('Quantity Should be less or equal to Purchase Order Quantity')
+                if self.move_type == 'in_refund':
+                    total_refund_qty = 0
+                    total_refund_invoice_qty = 0
+                    purchase_refund_invoices = self.env['account.move'].search([('invoice_origin', '=', sale_order.name),
+                                                                     ('move_type', '=', 'in_refund'),
+                                                                     ('state', '=', 'posted')])
+                    if purchase_refund_invoices:
+                        for rec in purchase_refund_invoices.invoice_line_ids:
+                            total_refund_invoice_qty = total_refund_invoice_qty + rec.quantity
+                    for line in purchase_order.order_line:
+                        total_refund_qty = total_refund_qty + line.product_uom_qty
+                    for invoice_line in self.invoice_line_ids:
+                        total_refund_invoice_qty = total_refund_invoice_qty + invoice_line.quantity
+                    if total_refund_invoice_qty <= total_refund_qty:
+                        self.state = 'manager'
+                    else:
+                        raise UserError('Return Quantity Should be less or equal to Purchase Order Quantity')
         else:
             self.state = 'manager'
             # record = super(AccountMoveInh, self).action_post()
@@ -302,38 +349,77 @@ class AccountMoveInh(models.Model):
             sale_order = self.env['sale.order'].search([('name', '=', self.invoice_origin)])
             purchase_order = self.env['purchase.order'].search([('name', '=', self.invoice_origin)])
             if sale_order:
-                total_qty = 0
-                total_invoice_qty = 0
-                sale_invoices = self.env['account.move'].search([('invoice_origin', '=', sale_order.name),
-                                                                 ('state', '=', 'posted')])
-                if sale_invoices:
-                    for rec in sale_invoices.invoice_line_ids:
-                        total_invoice_qty = total_invoice_qty + rec.quantity
-                for line in sale_order.order_line:
-                    total_qty = total_qty + line.product_uom_qty
-                for invoice_line in self.invoice_line_ids:
-                    total_invoice_qty = total_invoice_qty + invoice_line.quantity
-                if total_invoice_qty <= total_qty:
-                    record = super(AccountMoveInh, self).action_post()
-                else:
-                    raise UserError('Quantity Should be less or equal to Sale Order Quantity')
+                if self.move_type == 'out_invoice':
+                    total_qty = 0
+                    total_invoice_qty = 0
+                    sale_invoices = self.env['account.move'].search(
+                        [('invoice_origin', '=', sale_order.name), ('move_type', '=', 'out_invoice'),
+                         ('state', '=', 'posted')])
+                    if sale_invoices:
+                        for rec in sale_invoices.invoice_line_ids:
+                            total_invoice_qty = total_invoice_qty + rec.quantity
+                    for line in sale_order.order_line:
+                        total_qty = total_qty + line.product_uom_qty
+                    for invoice_line in self.invoice_line_ids:
+                        total_invoice_qty = total_invoice_qty + invoice_line.quantity
+                    if total_invoice_qty <= total_qty:
+                        record = super(AccountMoveInh, self).action_post()
+                    else:
+                        raise UserError('Quantity Should be less or equal to Sale Order Quantity')
+                if self.move_type == 'out_refund':
+                    total_refund_qty = 0
+                    total_refund_invoice_qty = 0
+                    sale_refund_invoices = self.env['account.move'].search([('invoice_origin', '=', sale_order.name),
+                                                                            ('move_type', '=', 'out_refund'),
+                                                                            ('state', '=', 'posted')])
+                    if sale_refund_invoices:
+                        for rec in sale_refund_invoices.invoice_line_ids:
+                            total_refund_invoice_qty = total_refund_invoice_qty + rec.quantity
+                    for line in sale_order.order_line:
+                        total_refund_qty = total_refund_qty + line.product_uom_qty
+                    for invoice_line in self.invoice_line_ids:
+                        total_refund_invoice_qty = total_refund_invoice_qty + invoice_line.quantity
+                    if total_refund_invoice_qty <= total_refund_qty:
+                        record = super(AccountMoveInh, self).action_post()
+                    else:
+                        raise UserError('Return Quantity Should be less or equal to Sale Order Quantity')
+
             if purchase_order:
-                print('Purchase')
-                total_qty = 0
-                total_invoice_qty = 0
-                purchase_invoices = self.env['account.move'].search([('invoice_origin', '=', purchase_order.name),
-                                                                     ('state', '=', 'posted')])
-                if purchase_invoices:
-                    for rec in purchase_invoices.invoice_line_ids:
-                        total_invoice_qty = total_invoice_qty + rec.quantity
-                for line in purchase_order.order_line:
-                    total_qty = total_qty + line.product_uom_qty
-                for invoice_line in self.invoice_line_ids:
-                    total_invoice_qty = total_invoice_qty + invoice_line.quantity
-                if total_invoice_qty <= total_qty:
-                    record = super(AccountMoveInh, self).action_post()
-                else:
-                    raise UserError('Quantity Should be less or equal to Purchase Order Quantity')
+                if self.move_type == 'out_invoice':
+                    print('Purchase')
+                    total_qty = 0
+                    total_invoice_qty = 0
+                    purchase_invoices = self.env['account.move'].search([('invoice_origin', '=', purchase_order.name),
+                                                                         ('state', '=', 'posted')])
+                    if purchase_invoices:
+                        for rec in purchase_invoices.invoice_line_ids:
+                            total_invoice_qty = total_invoice_qty + rec.quantity
+                    for line in purchase_order.order_line:
+                        total_qty = total_qty + line.product_uom_qty
+                    for invoice_line in self.invoice_line_ids:
+                        total_invoice_qty = total_invoice_qty + invoice_line.quantity
+                    if total_invoice_qty <= total_qty:
+                        record = super(AccountMoveInh, self).action_post()
+                    else:
+                        raise UserError('Quantity Should be less or equal to Purchase Order Quantity')
+                if self.move_type == 'in_refund':
+                    total_refund_qty = 0
+                    total_refund_invoice_qty = 0
+                    purchase_refund_invoices = self.env['account.move'].search(
+                        [('invoice_origin', '=', sale_order.name),
+                         ('move_type', '=', 'in_refund'),
+                         ('state', '=', 'posted')])
+                    if purchase_refund_invoices:
+                        for rec in purchase_refund_invoices.invoice_line_ids:
+                            total_refund_invoice_qty = total_refund_invoice_qty + rec.quantity
+                    for line in purchase_order.order_line:
+                        total_refund_qty = total_refund_qty + line.product_uom_qty
+                    for invoice_line in self.invoice_line_ids:
+                        total_refund_invoice_qty = total_refund_invoice_qty + invoice_line.quantity
+                    if total_refund_invoice_qty <= total_refund_qty:
+                        record = super(AccountMoveInh, self).action_post()
+                    else:
+                        raise UserError('Return Quantity Should be less or equal to Purchase Order Quantity')
         else:
             record = super(AccountMoveInh, self).action_post()
 
