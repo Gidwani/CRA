@@ -13,6 +13,10 @@
         <field name="name">Remove Edit Button</field>
         <field name="category_id" ref="base.module_category_inventory_inventory"/>
     </record>
+    <record id="group_product_remove_edit_user" model="res.groups">
+        <field name="name">Remove Edit Button From Products</field>
+        <field name="category_id" ref="base.module_category_inventory_inventory"/>
+    </record>
     <record model="ir.module.category" id="accounting_approvals_groups_root">
         <field name="name">Accounting Approvals</field>
         <field name="description">Manage Account Approvals Security</field>
@@ -29,7 +33,10 @@
         <field name="name">Remove Customer Creation Button</field>
         <field name="category_id" ref="approval_so_po.accounting_approvals_groups_root"/>
     </record>
-
+    <record id="group_allow_full_refund" model="res.groups">
+        <field name="name">Allow Full Refund</field>
+        <field name="category_id" ref="approval_so_po.accounting_approvals_groups_root"/>
+    </record>
     <record model="ir.module.category" id="contacts_approvals_groups_root">
         <field name="name">Customer/Vendor Approvals</field>
         <field name="description">Manage Customer/Vendor Approvals Security</field>
@@ -42,7 +49,6 @@
         <field name="name">Customer/Vendor User</field>
         <field name="category_id" ref="approval_so_po.contacts_approvals_groups_root"/>
     </record>
-
     <record model="ir.module.category" id="payment_approvals_groups_root">
         <field name="name">Payment Approvals</field>
         <field name="description">Manage Payment Approvals Security</field>

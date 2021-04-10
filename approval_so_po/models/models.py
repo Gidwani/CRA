@@ -41,8 +41,10 @@ class StockMoveLineInh(models.Model):
 
     @api.onchange('product_id')
     def onchange_product_id(self):
+        outgoing = self.env['stock.picking.type'].search([('code', '=', 'outgoing')])
+        incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')])
         if self.picking_id.sale_id:
-            if self.picking_id.origin:
+            if self.picking_id.origin and self.picking_id.picking_type_id.id == outgoing.id:
                 raise UserError('You cannot add Product in this Stage')
 
 
@@ -188,6 +190,17 @@ class PurchaseOrderInh(models.Model):
                 order.message_subscribe([order.partner_id.id])
         return True
 
+    def _approval_allowed(self):
+        """Returns whether the order qualifies to be approved by the current user"""
+        self.ensure_one()
+        return (
+            self.company_id.po_double_validation == 'one_step'
+            or (self.company_id.po_double_validation == 'two_step'
+                and self.amount_total < self.env.company.currency_id._convert(
+                    self.company_id.po_double_validation_amount, self.currency_id, self.company_id,
+                    self.date_order or fields.Date.today()))
+            or self.user_has_groups('purchase.group_purchase_manager'))
+
 
 class AccountPaymentInh(models.Model):
     _inherit = 'account.payment'
@@ -245,8 +258,14 @@ class AccountMoveLineInh(models.Model):
 
     @api.onchange('price_unit')
     def onchange_price_unit(self):
+        print('Hello')
         if self.move_id.invoice_origin:
             raise UserError('You cannot change Product Price')
+
+    @api.onchange('discount')
+    def onchange_discount(self):
+        if self.move_id.invoice_origin:
+            raise UserError('You cannot change Discount')
 
 
 class AccountMoveInh(models.Model):
@@ -465,6 +484,72 @@ class AccountMoveInh(models.Model):
         return result
 
 
+class AccountMoveReversalInh(models.TransientModel):
+    _inherit = 'account.move.reversal'
+
+    def reverse_moves(self):
+        if self.env.user.has_group('approval_so_po.group_allow_full_refund'):
+            self.action_reverse_inh()
+        elif not self.env.user.has_group('approval_so_po.group_allow_full_refund') and self.refund_method == 'refund':
+            self.action_reverse_inh()
+        else:
+            raise UserError('You cannot Full Refund.')
+
+    def action_reverse_inh(self):
+        self.ensure_one()
+        moves = self.move_ids
+
+        # Create default values.
+        default_values_list = []
+        for move in moves:
+            default_values_list.append(self._prepare_default_reversal(move))
+
+        batches = [
+            [self.env['account.move'], [], True],  # Moves to be cancelled by the reverses.
+            [self.env['account.move'], [], False],  # Others.
+        ]
+        for move, default_vals in zip(moves, default_values_list):
+            is_auto_post = bool(default_vals.get('auto_post'))
+            is_cancel_needed = not is_auto_post and self.refund_method in ('cancel', 'modify')
+            batch_index = 0 if is_cancel_needed else 1
+            batches[batch_index][0] |= move
+            batches[batch_index][1].append(default_vals)
+
+        # Handle reverse method.
+        moves_to_redirect = self.env['account.move']
+        for moves, default_values_list, is_cancel_needed in batches:
+            new_moves = moves._reverse_moves(default_values_list, cancel=is_cancel_needed)
+
+            if self.refund_method == 'modify':
+                moves_vals_list = []
+                for move in moves.with_context(include_business_fields=True):
+                    moves_vals_list.append(
+                        move.copy_data({'date': self.date if self.date_mode == 'custom' else move.date})[0])
+                new_moves = self.env['account.move'].create(moves_vals_list)
+
+            moves_to_redirect |= new_moves
+
+        self.new_move_ids = moves_to_redirect
+
+        # Create action.
+        action = {
+            'name': _('Reverse Moves'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.move',
+        }
+        if len(moves_to_redirect) == 1:
+            action.update({
+                'view_mode': 'form',
+                'res_id': moves_to_redirect.id,
+            })
+        else:
+            action.update({
+                'view_mode': 'tree,form',
+                'domain': [('id', 'in', moves_to_redirect.ids)],
+            })
+        return action
+
+
 class ProductTemplateInh(models.Model):
     _inherit = 'product.template'
 
@@ -474,6 +559,17 @@ class ProductTemplateInh(models.Model):
             record = self.env['product.template'].search([('name', '=', self.name)])
             if len(record) > 1:
                 raise UserError('Product Already Exists')
+
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        result = super(ProductTemplateInh, self).fields_view_get(
+            view_id=view_id, view_type=view_type, toolbar=toolbar,
+            submenu=submenu)
+        if self.env.user.has_group('approval_so_po.group_product_remove_edit_user'):
+            temp = etree.fromstring(result['arch'])
+            temp.set('edit', '0')
+            result['arch'] = etree.tostring(temp)
+        return result
 
 
 class StockPickingInh(models.Model):
