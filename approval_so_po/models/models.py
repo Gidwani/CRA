@@ -42,10 +42,17 @@ class StockMoveLineInh(models.Model):
     @api.onchange('product_id')
     def onchange_product_id(self):
         outgoing = self.env['stock.picking.type'].search([('code', '=', 'outgoing')])
-        incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')])
+        # incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')])
         if self.picking_id.sale_id:
             if self.picking_id.origin and self.picking_id.picking_type_id.id == outgoing.id:
                 raise UserError('You cannot add Product in this Stage')
+
+    @api.onchange('qty_done')
+    def onchange_done_qty(self):
+        for do_line in self.picking_id.move_ids_without_package:
+            if self.product_id.id == do_line.product_id.id:
+                if not self.qty_done <= do_line.product_uom_qty:
+                    raise UserError('Quantity Should be Less or Equal to Reserved')
 
 
 class StockMoveInh(models.Model):
@@ -55,6 +62,55 @@ class StockMoveInh(models.Model):
     def onchange_product_id(self):
         if self.picking_id.origin:
             raise UserError('You cannot add Product in this Stage')
+
+
+class StockReturnPickingInh(models.TransientModel):
+    _inherit = 'stock.return.picking'
+
+    def create_returns(self):
+        model = self.env.context.get('active_model')
+        rec = self.env[model].browse(self.env.context.get('active_id'))
+        if rec.sale_id:
+            total_qty = 0
+            for line in rec.sale_id.order_line:
+                total_qty = total_qty + line.product_uom_qty
+
+            incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')])
+            returns_do = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('sale_id', '=', rec.sale_id.id), ('state', '=', 'done')])
+            total_return = 0
+            for do_line in returns_do:
+                for rec_line in do_line.move_ids_without_package:
+                    total_return = total_return + rec_line.quantity_done
+            for return_line in self.product_return_moves:
+                if not return_line.quantity <= (total_qty - total_return):
+                    raise UserError('Quantity Should be Less or Equal to Sale order Qty')
+                else:
+                    new_picking = super(StockReturnPickingInh, self).create_returns()
+                    return new_picking
+        elif rec.purchase_id:
+            print('Purchase')
+            total_qty = 0
+            for line in rec.purchase_id.order_line:
+                total_qty = total_qty + line.product_qty
+
+            outgoing = self.env['stock.picking.type'].search([('code', '=', 'outgoing')])
+            returns_do = self.env['stock.picking'].search(
+                [('picking_type_id', '=', outgoing.id), ('purchase_id', '=', rec.purchase_id.id), ('state', '=', 'done')])
+            print(returns_do)
+            total_return = 0
+            for do_line in returns_do:
+                for rec_line in do_line.move_ids_without_package:
+                    total_return = total_return + rec_line.quantity_done
+
+            for return_line in self.product_return_moves:
+                if not return_line.quantity <= (total_qty - total_return):
+                    raise UserError('Quantity Should be Less or Equal to Sale order Qty')
+                else:
+                    new_picking = super(StockReturnPickingInh, self).create_returns()
+                    return new_picking
+        else:
+            new_picking = super(StockReturnPickingInh, self).create_returns()
+            return new_picking
 
 
 class ResPartnerInh(models.Model):
