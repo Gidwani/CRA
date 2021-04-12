@@ -609,6 +609,15 @@ class AccountMoveReversalInh(models.TransientModel):
 class ProductTemplateInh(models.Model):
     _inherit = 'product.template'
 
+    x_css = fields.Html(string='CSS', sanitize=False, compute='_compute_css', store=False)
+
+    def _compute_css(self):
+        for application in self:
+            if self.env.user.has_group('approval_so_po.group_contact_user'):
+                application.x_css = '<style>.o_cp_action_menus {display: none !important;}.o_report_buttons {display: none !important;}</style>'
+            else:
+                application.x_css = False
+
     @api.constrains('name')
     def remove_duplication(self):
         if self.name:

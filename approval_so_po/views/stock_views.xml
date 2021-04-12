@@ -1,5 +1,30 @@
 <odoo>
 
+    <record id="view_product_tree__inherit" model="ir.ui.view">
+        <field name="name">product.template.inh</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='virtual_available']" position="after">
+                    <field name="x_css"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_product_form_inherit" model="ir.ui.view">
+        <field name="name">product.template.form.inh</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="groups_id" eval="[(4, ref('approval_so_po.group_product_remove_edit_user'))]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='default_code']" position="after">
+                    <field name="x_css"/>
+            </xpath>
+            <xpath expr="//button[@name='%(stock.action_product_replenish)d']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
     <record id="view_product_tree_edit_inh" model="ir.ui.view">
         <field name="name">product.template.inh</field>
         <field name="model">product.template</field>
@@ -8,6 +33,9 @@
         <field name="arch" type="xml">
             <xpath expr="//tree" position="attributes">
                     <attribute name="multi_edit">0</attribute>
+            </xpath>
+            <xpath expr="//tree/field[@name='virtual_available']" position="after">
+                    <field name="x_css"/>
             </xpath>
         </field>
     </record>
@@ -24,6 +52,7 @@
             <xpath expr="//tree/field[@name='inventory_quantity']" position="attributes">
                     <attribute name="readonly">1</attribute>
             </xpath>
+
         </field>
     </record>
 

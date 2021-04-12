@@ -15,6 +15,7 @@
     </record>
     <record id="group_product_remove_edit_user" model="res.groups">
         <field name="name">Remove Edit Button From Products</field>
+        <field name="comment">Edit Removal from form and tree level, qty onhand readable, action button remove, replenish hide from forcasted</field>
         <field name="category_id" ref="base.module_category_inventory_inventory"/>
     </record>
     <record model="ir.module.category" id="accounting_approvals_groups_root">
