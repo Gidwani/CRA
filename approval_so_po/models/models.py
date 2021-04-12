@@ -674,8 +674,15 @@ class StockPickingInh(models.Model):
             self.state = 'manager'
 
     def action_manager_approve(self):
-        record = super(StockPickingInh, self).button_validate()
-        return record
+        flag = False
+        for line in self.move_ids_without_package:
+            if line.quantity_done <= line.product_uom_qty:
+                flag = True
+            else:
+                raise UserError('Done Quantity Cannot be greater than Demand')
+        if flag:
+            record = super(StockPickingInh, self).button_validate()
+            return record
 
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
