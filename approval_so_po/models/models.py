@@ -614,7 +614,7 @@ class ProductTemplateInh(models.Model):
     def _compute_css(self):
         for application in self:
             if self.env.user.has_group('approval_so_po.group_contact_user'):
-                application.x_css = '<style>.o_cp_action_menus {display: none !important;}.o_report_replenish_buy {display: none !important;}</style>'
+                application.x_css = '<style>.o_cp_action_menus {display: none !important;}.o_report_buttons {display: none !important;}</style>'
             else:
                 application.x_css = False
 
@@ -633,7 +633,6 @@ class ProductTemplateInh(models.Model):
         if self.env.user.has_group('approval_so_po.group_product_remove_edit_user'):
             temp = etree.fromstring(result['arch'])
             temp.set('edit', '0')
-            temp.set('replenish', '0')
             result['arch'] = etree.tostring(temp)
         return result
 
