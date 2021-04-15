@@ -645,6 +645,7 @@ class ProductTemplateInh(models.Model):
         if self.env.user.has_group('approval_so_po.group_product_remove_edit_user'):
             temp = etree.fromstring(result['arch'])
             temp.set('edit', '0')
+            temp.set('create', '0')
             result['arch'] = etree.tostring(temp)
         return result
 
