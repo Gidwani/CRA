@@ -540,6 +540,18 @@ class AccountMoveInh(models.Model):
         return result
 
 
+class SaleAdvancePaymentInh(models.TransientModel):
+    _inherit = 'sale.advance.payment.inv'
+
+    def create_invoices(self):
+        if self.env.user.has_group('approval_so_po.group_allow_full_refund'):
+            rec = super(SaleAdvancePaymentInh, self).create_invoices()
+        elif not self.env.user.has_group('approval_so_po.group_allow_full_refund') and self.advance_payment_method == 'delivered':
+            rec = super(SaleAdvancePaymentInh, self).create_invoices()
+        else:
+            raise UserError('You cannot create Down Payment.')
+
+
 class AccountMoveReversalInh(models.TransientModel):
     _inherit = 'account.move.reversal'
 

@@ -35,7 +35,7 @@
         <field name="category_id" ref="approval_so_po.accounting_approvals_groups_root"/>
     </record>
     <record id="group_allow_full_refund" model="res.groups">
-        <field name="name">Allow Full Refund</field>
+        <field name="name">Allow Full Refund and Down Payment</field>
         <field name="category_id" ref="approval_so_po.accounting_approvals_groups_root"/>
     </record>
     <record model="ir.module.category" id="contacts_approvals_groups_root">
