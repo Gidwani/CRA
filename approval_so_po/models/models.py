@@ -401,7 +401,7 @@ class AccountMoveInh(models.Model):
                         raise UserError('Return Quantity Should be less or equal to Sale Order Quantity')
 
             if purchase_order:
-                if self.move_type == 'out_invoice':
+                if self.move_type == 'in_invoice':
                     print('Purchase')
                     total_qty = 0
                     total_invoice_qty = 0
