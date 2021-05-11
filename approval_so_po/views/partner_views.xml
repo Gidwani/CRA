@@ -1,0 +1,72 @@
+<odoo>
+    <data>
+
+        <record id="view_res_partner_tree_edit_inh" model="ir.ui.view">
+            <field name="name">res.partner.tree.inh</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="groups_id" eval="[(4, ref('approval_so_po.group_contact_user'))]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                        <attribute name="multi_edit">0</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_res_partner_tree_inh" model="ir.ui.view">
+            <field name="name">res.partner.tree.inh</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="active" invisible="1"/>
+                    <field name="x_css_set"/>
+                    <field name="state" widget="badge"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_archived" model="ir.actions.act_window">
+            <field name="name">Contacts</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="base.view_partner_tree"/>
+            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+            <field name="context">{'default_is_company': True}</field>
+            <field name="domain">[('active', '=', False)]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a contact in your address book
+                </p><p>
+                Odoo helps you to easily track all activities related to a customer.
+            </p>
+            </field>
+        </record>
+
+        <menuitem id="res_archive_menu_contacts"
+                  name="Waiting For Approval"
+                  action="action_archived"
+                  parent="contacts.menu_contacts"
+                  sequence="2"/>
+
+        <record id="view_res_partner_form_inh" model="ir.ui.view">
+            <field name="name">res.partner.form.inh</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet" position="before">
+                    <header>
+                        <button string="Approve" groups="approval_so_po.group_contact_manager" class="oe_highlight" type="object" name="action_manager_approve" attrs="{'invisible': [('state','!=', 'manager')]}"/>
+                        <button string="Reject" type="object" groups="approval_so_po.group_contact_manager" name="action_reject" attrs="{'invisible': [('state','!=', 'manager')]}"/>
+                        <field name="state"  widget="statusbar"/>
+                    </header>
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="x_css_set"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

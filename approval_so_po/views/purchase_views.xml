@@ -1,0 +1,55 @@
+<odoo>
+  <data>
+
+      <record id="view_purchase_order_group_form_inh" model="ir.ui.view">
+        <field name="name">purchase.order.form.inh</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="groups_id" eval="[(4, ref('approval_so_po.group_remove_customer_create_user'))]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="options">{'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_purchase_order_form_inh" model="ir.ui.view">
+            <field name="name">purchase.order.form.inh</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header/button[@name='button_confirm']" position="after">
+                    <button string="Approve PO" class="oe_highlight" type="object" groups="purchase.group_purchase_manager" name="action_manager_approve" attrs="{'invisible': [('state','!=', 'manager')]}"/>
+                    <button string="Reject" type="object" groups="purchase.group_purchase_manager" name="action_reject" attrs="{'invisible': [('state','!=', 'manager')]}"/>
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="x_css" />
+                 </xpath>
+                <xpath expr="//header/button[@name='button_cancel']" position="attributes">
+                    <attribute name="groups">purchase.group_purchase_manager</attribute>
+                </xpath>
+
+                <xpath expr="//header/button[@name='button_draft']" position="attributes">
+                    <attribute name="groups">purchase.group_purchase_manager</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+      <record id="view_purchase_order_form_price_inh" model="ir.ui.view">
+		<field name="name">purchase.order.form.inh</field>
+		<field name="model">purchase.order</field>
+		<field name="inherit_id" ref="purchase.purchase_order_form"/>
+		<field name="arch" type="xml">
+
+			<xpath expr="//field[@name='order_line']//tree//field[@name='product_id']" position="attributes">
+				<attribute name="options">{'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
+			</xpath>
+			<xpath expr="//field[@name='partner_id']" position="attributes">
+				<attribute name="options">{'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
+			</xpath>
+		</field>
+	</record>
+
+  </data>
+</odoo>

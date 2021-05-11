@@ -1,0 +1,114 @@
+<odoo>
+
+    <record id="view_product_tree__inherit" model="ir.ui.view">
+        <field name="name">product.template.inh</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='virtual_available']" position="after">
+                    <field name="x_css"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_product_form_inherit" model="ir.ui.view">
+        <field name="name">product.template.form.inh</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="groups_id" eval="[(4, ref('approval_so_po.group_product_remove_edit_user'))]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='default_code']" position="after">
+                    <field name="x_css"/>
+            </xpath>
+            <xpath expr="//button[@name='%(stock.action_product_replenish)d']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_product_tree_edit_inh" model="ir.ui.view">
+        <field name="name">product.template.inh</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="groups_id" eval="[(4, ref('approval_so_po.group_product_remove_edit_user'))]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                    <attribute name="multi_edit">0</attribute>
+            </xpath>
+            <xpath expr="//tree/field[@name='virtual_available']" position="after">
+                    <field name="x_css"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_stock_quant_tree_edit_inh" model="ir.ui.view">
+        <field name="name">stock.quant.inh</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree_editable"/>
+        <field name="groups_id" eval="[(4, ref('approval_so_po.group_product_remove_edit_user'))]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                    <attribute name="multi_edit">0</attribute>
+            </xpath>
+            <xpath expr="//tree/field[@name='inventory_quantity']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_stock_picking_form_inh" model="ir.ui.view">
+        <field name="name">stock.picking.form.inh</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='button_validate']" position="after">
+                <button string="Approve" groups="stock.group_stock_manager" class="oe_highlight" type="object" name="action_manager_approve" attrs="{'invisible': [('state','!=', 'manager')]}"/>
+                <button string="Reject" type="object" groups="stock.group_stock_manager" name="action_reject" attrs="{'invisible': [('state','!=', 'manager')]}"/>
+            </xpath>
+            <xpath expr="//header/button[@name='action_cancel']" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='button_scrap']" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="x_css" />
+            </xpath>
+            <xpath expr="//notebook/page/field[@name='move_ids_without_package']" position="inside">
+                <field name="x_css" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_stock_picking_form_price_inh" model="ir.ui.view">
+		<field name="name">stock.picking.form.inh</field>
+		<field name="model">stock.picking</field>
+		<field name="inherit_id" ref="stock.view_picking_form"/>
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='move_ids_without_package']//tree//field[@name='product_id']" position="attributes">
+				<attribute name="options">{'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
+			</xpath>
+			<xpath expr="//field[@name='partner_id']" position="attributes">
+				<attribute name="options">{'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
+			</xpath>
+		</field>
+    </record>
+
+    <record id="view_stock_scrap_form_inh" model="ir.ui.view">
+        <field name="name">stock.scrap.form.inh</field>
+        <field name="model">stock.scrap</field>
+        <field name="inherit_id" ref="stock.stock_scrap_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_validate']" position="after">
+                <button string="Approve" groups="stock.group_stock_manager" class="oe_highlight" type="object" name="action_manager_approve" attrs="{'invisible': [('state','!=', 'manager')]}"/>
+                <button string="Reject" type="object" groups="stock.group_stock_manager" name="action_reject" attrs="{'invisible': [('state','!=', 'manager')]}"/>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="x_css" />
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="stock.menu_warehouse_report" name="Reporting" sequence="99"
+              parent="stock.menu_stock_root" groups="stock.group_stock_manager,stock.group_stock_user"/>
+</odoo>
