@@ -1,7 +1,7 @@
 <odoo>
     <data>
 
-        <record id="view_res_partner_tree_edit_inh" model="ir.ui.view">
+<!--         <record id="view_res_partner_tree_edit_inh" model="ir.ui.view">
             <field name="name">res.partner.tree.inh</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_tree"/>
@@ -11,7 +11,7 @@
                         <attribute name="multi_edit">0</attribute>
                 </xpath>
             </field>
-        </record>
+        </record> -->
 
         <record id="view_res_partner_tree_inh" model="ir.ui.view">
             <field name="name">res.partner.tree.inh</field>
