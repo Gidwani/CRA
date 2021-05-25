@@ -19,11 +19,11 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sale', 'purchase'],
+    'depends': ['base', 'sale', 'purchase', 'stock'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/sale_views.xml',
         'views/purchase_views.xml',
         'views/account_views.xml',
@@ -31,6 +31,8 @@
         'reports/sale_report.xml',
         'reports/purchase_report.xml',
         'reports/account_report.xml',
+        'reports/stock_report.xml',
+        'wizard/sale_wizard.xml',
     ],
 
 }

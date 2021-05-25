@@ -7,11 +7,18 @@
 			<field name="inherit_id" ref="purchase.purchase_order_form"/>
 			<field name="arch" type="xml">
 
+				<xpath expr="//button[@name='button_confirm']" position="after">
+                    <button string="Pull Products" type="object" class="oe_highlight" name="action_show_sale_products"/>
+                </xpath>
+
 				<xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="after">
 					<field name="remarks"/>
 				</xpath>
+				<xpath expr="//field[@name='order_line']/tree//field[@name='sequence']" position="after">
+					<field name="number" string="Sr No"/>
+				</xpath>
 				<xpath expr="//div[@name='reminder']" position="after">
-					<field name="do_no"/>
+<!--					<field name="do_no"/>-->
 					<field name="payment_term_id"/>
 				</xpath>
 				<xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="attributes">

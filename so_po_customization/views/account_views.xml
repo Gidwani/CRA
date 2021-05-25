@@ -10,6 +10,12 @@
 				<xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='name']" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
+				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='sequence']" position="after">
+					<field name="number" string="Sr No"/>
+				</xpath>
+				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='name']" position="after">
+					<field name="remarks"/>
+				</xpath>
 
 			</field>
 		</record>

@@ -26,10 +26,10 @@
                         <strong>Order Date:</strong>
                         <p t-field="o.date_order" class="m-0"/>
                     </div>
-                    <div t-if="o.do_no" class="col-3 bm-2">
-                        <strong>Supplier DO #:</strong>
-                        <p t-field="o.do_no" class="m-0"/>
-                    </div>
+<!--                    <div t-if="o.do_no" class="col-3 bm-2">-->
+<!--                        <strong>Supplier DO #:</strong>-->
+<!--                        <p t-field="o.do_no" class="m-0"/>-->
+<!--                    </div>-->
                     <div t-if="o.payment_term_id" class="col-3 bm-2">
                         <strong>Payment Term:</strong>
                         <p t-field="o.payment_term_id" class="m-0"/>
@@ -39,7 +39,8 @@
                 <table class="table table-sm o_main_table">
                     <thead>
                         <tr>
-                            <th name="th_description"><strong>Description</strong></th>
+                            <th name="th_sr" class="text-center"><span>Sr #</span></th>
+                            <th name="th_description"><strong>Products</strong></th>
                             <th name="th_taxes"><strong>Taxes</strong></th>
                             <th name="th_date_req" class="text-center"><strong>Date Req.</strong></th>
                             <th name="th_quantity" class="text-right"><strong>Qty</strong></th>
@@ -55,6 +56,7 @@
 
                             <tr style="border:1px solid black;" t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
                                 <t t-if="not line.display_type">
+                                    <td><span t-field="line.number"/></td>
                                     <td id="product">
                                         <span t-field="line.product_id.name"/><br/><span t-field="line.remarks"/>
                                     </td>
@@ -136,8 +138,8 @@
                 <p t-field="o.notes"/>
                 <div class="container row" style="margin-top:4em;margin-left:1em;float:right; font-size:15px;">
                     <div class="col-12">
-                        <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">____________________________</span>
-                        <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">____________________________</span>
+                        <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">________________________</span>
+                        <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>
                         <strong>Signature: </strong><span style="color:black;">____________________________</span>
                     </div>
                 </div>

@@ -4,13 +4,32 @@ from odoo import models, fields, api
 class PurchaseOrderInh(models.Model):
     _inherit = 'purchase.order'
 
-    do_no = fields.Char("Supplier Do #")
+    # do_no = fields.Char("Supplier Do #")
+    def action_show_sale_products(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Sale Order Products',
+            'view_id': self.env.ref('so_po_customization.view_sale_order_wizard_form', False).id,
+            # 'context': {'default_ref': self.name, 'default_order_amount': self.amount_total, 'default_user_id': self.user_id.id},
+            'target': 'new',
+            'res_model': 'sale.order.wizard',
+            'view_mode': 'form',
+        }
 
 
 class PurchaseOrderLineInh(models.Model):
     _inherit = 'purchase.order.line'
 
     remarks = fields.Char("Remarks")
+    number = fields.Integer(compute='_compute_get_number', store=True)
+
+    @api.depends('sequence', 'order_id')
+    def _compute_get_number(self):
+        for order in self.mapped('order_id'):
+            number = 1
+            for line in order.order_line:
+                line.number = number
+                number += 1
 
     @api.onchange('product_id')
     def onchange_get_tax(self):
