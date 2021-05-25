@@ -11,18 +11,27 @@ class SaleOrderWizard(models.TransientModel):
 
     @api.onchange('sale_id')
     def onchange_sale_id(self):
-        # for rec in self.product_lines:
-        #     rec.unlink()
-        vals_list = []
-        for order in self.sale_id:
-            for line in order.order_line:
-                val = {
-                    'sale_id': self.id,
-                    'sale_order': order.name,
-                    'product_id': line.product_id.id,
-                }
-                vals_list.append(val)
-        move = self.env['sale.order.wizard.line'].create(vals_list)
+        for res in self:
+            vals_list = []
+            for order in res.sale_id:
+                for line in order.order_line:
+                    if res.product_lines:
+                        for ex in res.product_lines:
+                            if order.name != ex.sale_order:
+                                val = {
+                                    'sale_id': res.id,
+                                    'sale_order': order.name,
+                                    'product_id': line.product_id.id,
+                                }
+                                vals_list.append(val)
+                    else:
+                        val = {
+                            'sale_id': res.id,
+                            'sale_order': order.name,
+                            'product_id': line.product_id.id,
+                        }
+                        vals_list.append(val)
+            move = self.env['sale.order.wizard.line'].create(vals_list)
 
     def action_get_products(self):
         model = self.env.context.get('active_model')

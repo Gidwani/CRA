@@ -32,12 +32,12 @@ class StockPickingInh(models.Model):
 
     do_no = fields.Char("Supplier Do #")
 
-    @api.model
-    def create(self, vals):
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('stock.picking.sequence') or _('New')
-        result = super(StockPickingInh, self).create(vals)
-        return result
+    # @api.model
+    # def create(self, vals):
+    #     if vals.get('name', _('New')) == _('New'):
+    #         vals['name'] = self.env['ir.sequence'].next_by_code('stock.picking.sequence') or _('New')
+    #     result = super(StockPickingInh, self).create(vals)
+    #     return result
 
 
 class StockPickingLineInh(models.Model):
