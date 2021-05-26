@@ -5,6 +5,17 @@
         <function model="ir.config_parameter" name="set_param" eval="('account.group_order_global_discount', True)"/>
 
         <function model="ir.config_parameter" name="set_param" eval="('account.global_discount_tax', 'untax')"/>
+        
+         <record id="wk_product_product_1" model="product.product">
+            <field name="name">Discount On Order Product</field>
+            <field name="categ_id" ref="product.product_category_2"/>
+            <field name="standard_price">20.0</field>
+            <field name="list_price">50.0</field>
+            <field name="type">consu</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="default_code">Discount-Product</field>
+        </record>
 
         <record id="demo_global_invoice_discount_account" model="account.account">
             <field name="name">Global Invoice Discount</field>
@@ -33,16 +44,7 @@
             <field name="groups_id" eval="[(4, ref('product.group_discount_per_so_line')), (4, ref('product.group_product_pricelist'))]"/>
         </record>
 
-        <record id="wk_product_product_1" model="product.product">
-            <field name="name">Discount On Order Product</field>
-            <field name="categ_id" ref="product.product_category_2"/>
-            <field name="standard_price">20.0</field>
-            <field name="list_price">50.0</field>
-            <field name="type">consu</field>
-            <field name="uom_id" ref="uom.product_uom_unit"/>
-            <field name="uom_po_id" ref="uom.product_uom_unit"/>
-            <field name="default_code">Discount-Product</field>
-        </record>
+       
 
         <record id="wk_disc_sale_order_1" model="sale.order">
             <field name="partner_id" ref="base.res_partner_2"/>
