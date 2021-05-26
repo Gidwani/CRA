@@ -32,6 +32,7 @@
         <record id="base.user_admin" model="res.users">
             <field name="groups_id" eval="[(4, ref('product.group_discount_per_so_line')), (4, ref('product.group_product_pricelist'))]"/>
         </record>
+
         <record id="wk_product_product_1" model="product.product">
             <field name="name">Discount On Order Product</field>
             <field name="categ_id" ref="product.product_category_2"/>
@@ -42,6 +43,7 @@
             <field name="uom_po_id" ref="uom.product_uom_unit"/>
             <field name="default_code">Discount-Product</field>
         </record>
+
         <record id="wk_disc_sale_order_1" model="sale.order">
             <field name="partner_id" ref="base.res_partner_2"/>
             <field name="partner_invoice_id" ref="base.res_partner_2"/>
@@ -53,6 +55,7 @@
             <field name="team_id" ref="sales_team.team_sales_department"/>
             <field name="date_order" eval="(DateTime.today() - relativedelta(months=1)).strftime('%Y-%m-%d %H:%M')"/>
         </record>
+
         <record id="sale_order_line_1" model="sale.order.line">
             <field name="order_id" ref="wk_disc_sale_order_1"/>
             <field name="name">Discount On Order</field>
@@ -63,11 +66,13 @@
             <field name="product_uom" ref="uom.product_uom_unit"/>
             <field name="price_unit">50</field>
         </record>
+
         <record id="action_client_sale_order_menu" model="ir.actions.client">
             <field name="name">Open Sale Order Menu</field>
             <field name="tag">reload</field>
             <field name="params" eval="{'menu_id': ref('sale.menu_sale_quotations')}"/>
         </record>
+
         <record id="base.open_menu" model="ir.actions.todo">
             <field name="action_id" ref="action_client_sale_order_menu"/>
             <field name="state">open</field>

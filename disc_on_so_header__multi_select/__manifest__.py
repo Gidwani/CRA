@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Combined Modules",
+    'name': "Disc on SO Header Multi Select",
 
     'summary': """
-       Combined Modules""",
+       disc_on_so_header__multi_select""",
 
     'description': """
-        Long description of module's purpose
+        disc_on_so_header__multi_select
     """,
 
     'author': "Fazeel",
