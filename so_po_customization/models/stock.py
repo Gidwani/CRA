@@ -31,6 +31,14 @@ class StockPickingInh(models.Model):
     _inherit = 'stock.picking'
 
     do_no = fields.Char("Supplier Do #")
+    is_receipt = fields.Boolean(compute='compute_is_receipt')
+
+    def compute_is_receipt(self):
+        for rec in self:
+            if rec.picking_type_id.code == 'incoming':
+                rec.is_receipt = True
+            else:
+                rec.is_receipt = False
 
     # @api.model
     # def create(self, vals):
@@ -56,6 +64,8 @@ class StockPickingLineInh(models.Model):
                 for line in rec.picking_id.purchase_id.order_line:
                     if rec.product_id.id == line.product_id.id:
                         rec.remarks = line.remarks
+            else:
+                rec.remarks = ''
 
 
     @api.depends('picking_id')

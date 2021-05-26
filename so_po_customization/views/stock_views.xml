@@ -15,7 +15,8 @@
 					<field name="remarks"/>
 				</xpath>
                 <xpath expr="//field[@name='origin']" position="after">
-					<field name="do_no"/>
+					<field name="do_no" attrs="{'invisible': [('is_receipt' ,'=', False)]}"/>
+					<field name="is_receipt" invisible="1"/>
 				</xpath>
 
 			</field>
