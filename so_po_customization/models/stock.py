@@ -6,7 +6,7 @@ from odoo import models, fields, api, _
 class ProductTemplateInh(models.Model):
     _inherit = 'product.template'
 
-    available_qty = fields.Float('Availbale Quantity', compute="cal_available_qty")
+    available_qty = fields.Float('Available Quantity', compute="cal_available_qty")
 
     def cal_available_qty(self):
         for rec in self:
@@ -47,23 +47,55 @@ class StockPickingInh(models.Model):
     #     result = super(StockPickingInh, self).create(vals)
     #     return result
 
+
 class StockMoveLineInh(models.Model):
     _inherit = 'stock.move.line'
 
-    def get_product_qty(self, product):
-        product_qty = self.env['product.template'].search([('name', '=', product.name)])
-        return int(product_qty.available_qty)
+    def get_product_qty(self, ml):
+        product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
 
-    def get_onhand_qty(self, product):
-        product_qty = self.env['product.template'].search([('name', '=', product.name)])
-        return int(product_qty.qty_available)
+        for line in ml.picking_id.sale_id.order_line:
+            if line.product_uom.name == 'Lth':
+                qty = int(product_qty.available_qty)/6
+            else:
+                qty = int(product_qty.available_qty)
+        return int(qty)
 
+    def get_onhand_qty(self, ml):
+        product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
+        for line in ml.picking_id.sale_id.order_line:
+            if line.product_uom.name == 'Lth':
+                qty = int(product_qty.qty_available)/6
+            else:
+                qty = int(product_qty.qty_available)
+        return int(qty)
+
+    def get_product_uom_id(self, ml, picking):
+        print(picking.sale_id)
+        for line in picking.sale_id.order_line:
+            if line.product_id.id == ml.product_id.id:
+                uom = line.product_uom.name
+            else:
+                uom = line.product_uom.name
+        return uom
 
 class StockMoveInh(models.Model):
     _inherit = 'stock.move'
 
     remarks = fields.Char("Remarks", compute='_compute_remarks')
     number = fields.Integer(compute='_compute_get_number', store=True)
+    # product_uom = fields.Many2one('uom.uom', 'Unit of Measure', required=True,
+    #                               domain="[('category_id', '=', product_uom_category_id)]", compute="get_sale_uom")
+    #
+    # def get_sale_uom(self):
+    #     for rec in self:
+    #         for line in rec.picking_id.sale_id.order_line:
+    #             if line.product_id == rec.product_id.id:
+    #                 uom = line.product_uom
+    #             else:
+    #                 uom = rec.product_uom
+    #         rec.product_uom = uom
+
 
     def _compute_remarks(self):
         for rec in self:
@@ -78,9 +110,6 @@ class StockMoveInh(models.Model):
                         rec.remarks = line.remarks
             else:
                 rec.remarks = ''
-
-
-
 
     @api.depends('picking_id')
     def _compute_get_number(self):

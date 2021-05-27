@@ -55,8 +55,17 @@
             <field name="print_report_name">'PickList Report - %s - %s' % (object.partner_id.name or '', object.name)</field>
             <field name="binding_model_id" ref="model_stock_picking"/>
             <field name="binding_type">report</field>
-            <field name="paperformat_id" ref="so_po_customization.paper_format_picklist"/>
         </record>
+
+         <report
+            id="action_report_picking_land"
+            model="stock.picking"
+            string="Picklist Landscape"
+            report_type="qweb-pdf"
+            name="so_po_customization.report_picking_landscape"
+            file="so_po_customization.report_picking_landscape"
+            paperformat="paper_format_picklist"/>
+
 
         <record id="view_products_tree_inh" model="ir.ui.view">
             <field name="name">product.template.form.inh</field>
