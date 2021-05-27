@@ -57,27 +57,32 @@ class StockMoveLineInh(models.Model):
         for line in ml.picking_id.sale_id.order_line:
             if line.product_uom.name == 'Lth':
                 qty = int(product_qty.available_qty)/6
+                qty = str(round(qty, 2)) + " Lth"
             else:
                 qty = int(product_qty.available_qty)
-        return int(qty)
+                qty = str(qty) + product_qty.uom_id.name
+        return qty
 
     def get_onhand_qty(self, ml):
         product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
         for line in ml.picking_id.sale_id.order_line:
             if line.product_uom.name == 'Lth':
                 qty = int(product_qty.qty_available)/6
+                qty = str(round(qty, 2)) + " Lth"
+
             else:
                 qty = int(product_qty.qty_available)
-        return int(qty)
+                qty = str(qty) + product_qty.uom_id.name
+        return qty
 
     def get_product_uom_id(self, ml, picking):
-        print(picking.sale_id)
         for line in picking.sale_id.order_line:
             if line.product_id.id == ml.product_id.id:
                 uom = line.product_uom.name
             else:
                 uom = line.product_uom.name
         return uom
+
 
 class StockMoveInh(models.Model):
     _inherit = 'stock.move'
