@@ -47,8 +47,19 @@ class StockPickingInh(models.Model):
     #     result = super(StockPickingInh, self).create(vals)
     #     return result
 
+class StockMoveLineInh(models.Model):
+    _inherit = 'stock.move.line'
 
-class StockPickingLineInh(models.Model):
+    def get_product_qty(self, product):
+        product_qty = self.env['product.template'].search([('name', '=', product.name)])
+        return int(product_qty.available_qty)
+
+    def get_onhand_qty(self, product):
+        product_qty = self.env['product.template'].search([('name', '=', product.name)])
+        return int(product_qty.qty_available)
+
+
+class StockMoveInh(models.Model):
     _inherit = 'stock.move'
 
     remarks = fields.Char("Remarks", compute='_compute_remarks')
@@ -60,12 +71,15 @@ class StockPickingLineInh(models.Model):
                 for line in rec.picking_id.sale_id.order_line:
                     if rec.product_id.id == line.product_id.id:
                         rec.remarks = line.remarks
-            if rec.picking_id.purchase_id:
+
+            elif rec.picking_id.purchase_id:
                 for line in rec.picking_id.purchase_id.order_line:
                     if rec.product_id.id == line.product_id.id:
                         rec.remarks = line.remarks
             else:
                 rec.remarks = ''
+
+
 
 
     @api.depends('picking_id')

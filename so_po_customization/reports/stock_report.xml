@@ -25,7 +25,7 @@
                     <table class="table table-sm" t-if="o.state!='done'" name="stock_move_table">
                         <thead>
                             <tr>
-                                <th name="th_sm_sr"><strong>SR No</strong></th>
+                                <th name="th_sm_sr"><strong>SR #</strong></th>
                                 <th name="th_sm_product"><strong>Products</strong></th>
                                 <th name="th_sm_quantity"><strong>Quantity</strong></th>
                             </tr>
@@ -127,7 +127,7 @@
                         <table class="table table-sm" name="stock_backorder_table">
                             <thead>
                                 <tr>
-                                    <th name="th_sb_product"><strong>Product</strong></th>
+                                    <th name="th_sb_product"><strong>Productss</strong></th>
                                     <th name="th_sb_quantity" class="text-center"><strong>Quantity</strong></th>
                                 </tr>
                             </thead>
@@ -165,6 +165,7 @@
                 </div>
         </xpath>
      </template>
+
 
     <template id="stock_report_inherit" inherit_id="stock.report_picking">
 
@@ -235,6 +236,12 @@
                                             <strong>Products</strong>
                                         </th>
                                         <th>
+                                            <strong>Available Qty</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Onhand Qty</strong>
+                                        </th>
+                                        <th>
                                             <strong>Quantity</strong>
                                         </th>
                                         <th name="th_from" t-if="o.picking_type_id.code != 'incoming'" align="left" groups="stock.group_stock_multi_locations">
@@ -256,11 +263,17 @@
                                         <!-- In case you come across duplicated lines, ask NIM or LAP -->
                                         <t t-foreach="move.move_line_ids.sorted(key=lambda ml: ml.location_id.id)" t-as="ml">
                                             <tr style="border:1px solid black;">
-                                                <td><span t-field="move.number"/></td>
+                                                <td class="text-center"><span t-field="move.number"/></td>
                                                 <td>
                                                     <span t-field="ml.product_id.display_name"/><br/>
                                                     <span t-field="ml.product_id.description_picking"/>
                                                     <span t-field="move.remarks"/>
+                                                </td>
+                                                <td>
+                                                    <span t-esc="ml.get_product_qty(ml.product_id)"/>
+                                                </td>
+                                                <td>
+                                                    <span t-esc="ml.get_onhand_qty(ml.product_id)"/>
                                                 </td>
                                                 <td>
                                                     <span t-if="o.state != 'done'" t-field="ml.product_uom_qty"/>
