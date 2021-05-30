@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sale', 'purchase', 'stock'],
+    'depends': ['base', 'sale', 'purchase', 'stock', 'discount_sale_order', 'discount_account_invoice', 'sale_margin'],
 
     # always loaded
     'data': [
@@ -32,6 +32,7 @@
         'reports/purchase_report.xml',
         'reports/account_report.xml',
         'reports/stock_report.xml',
+        'reports/delivery_report.xml',
         'wizard/sale_wizard.xml',
     ],
 

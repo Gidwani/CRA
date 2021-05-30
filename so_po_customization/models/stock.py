@@ -60,7 +60,7 @@ class StockMoveLineInh(models.Model):
                 qty = str(round(qty, 2)) + " Lth"
             else:
                 qty = float(product_qty.available_qty)
-                qty = str(round(qty, 2))+ ' ' + product_qty.uom_id.name
+                qty = str(round(qty, 2)) + ' ' + product_qty.uom_id.name
         return qty
 
     def get_onhand_qty(self, ml):
@@ -72,7 +72,7 @@ class StockMoveLineInh(models.Model):
 
             else:
                 qty = float(product_qty.qty_available)
-                qty = str(round(qty, 2))+ ' '  + product_qty.uom_id.name
+                qty = str(round(qty, 2))+ ' ' + product_qty.uom_id.name
         return qty
 
     def get_product_uom_id(self, ml, picking):

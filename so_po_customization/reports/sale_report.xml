@@ -57,6 +57,9 @@
                             <th name="th_description" class="text-left">Product</th>
                             <th name="th_quantity" class="text-right">Quantity</th>
                             <th name="th_priceunit" class="text-right">Unit Price</th>
+                            <th name="th_priceunit" class="text-right">Cost</th>
+                            <th name="th_priceunit" class="text-right">Margin</th>
+                            <th name="th_priceunit" class="text-right">Margin(%)</th>
                             <th name="th_discount" t-if="display_discount" class="text-right" groups="product.group_discount_per_so_line">
                                 <span>Disc.%</span>
                             </th>
@@ -83,6 +86,15 @@
                                     </td>
                                     <td name="td_priceunit" class="text-right">
                                         <span t-field="line.price_unit"/>
+                                    </td>
+                                    <td name="td_priceunit" class="text-right">
+                                        <span t-field="line.purchase_price"/>
+                                    </td>
+                                    <td name="td_priceunit" class="text-right">
+                                        <span t-field="line.margin"/>
+                                    </td>
+                                    <td name="td_priceunit" class="text-right">
+                                        <span t-field="line.margin_percent"/>
                                     </td>
                                     <td t-if="display_discount" class="text-right" groups="product.group_discount_per_so_line">
                                         <span t-field="line.discount"/>
@@ -132,6 +144,18 @@
                                     <td name="td_amount_untaxed_label"><strong>Subtotal</strong></td>
                                     <td name="td_amount_untaxed" class="text-right">
                                         <span t-field="doc.amount_untaxed"/>
+                                    </td>
+                                </tr>
+                                <tr class="border-black o_subtotal" style="">
+                                    <td name="td_perc_discount_label"><strong>Discount</strong></td>
+                                    <td name="td_perc_discount" class="text-right">
+                                        <span t-field="doc.perc_discount"/>
+                                    </td>
+                                </tr>
+                                <tr class="border-black o_subtotal" style="">
+                                    <td name="td_net_total_label"><strong>Net Total</strong></td>
+                                    <td name="td_net_total" class="text-right">
+                                        <span t-field="doc.net_total"/>
                                     </td>
                                 </tr>
                                 <t t-foreach="doc.amount_by_group" t-as="amount_by_group">

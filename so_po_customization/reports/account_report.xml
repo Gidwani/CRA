@@ -128,6 +128,18 @@
                                             <span t-field="o.amount_untaxed"/>
                                         </td>
                                     </tr>
+                                    <tr class="border-black o_subtotal" style="">
+                                    <td name="td_perc_discount_label"><strong>Discount( <span t-esc="" />)</strong></td>
+                                    <td name="td_perc_discount" class="text-right">
+                                        <span t-field="o.perc_discount"/>
+                                    </td>
+                                </tr>
+                                <tr class="border-black o_subtotal" style="">
+                                    <td name="td_net_total_label"><strong>Net Total</strong></td>
+                                    <td name="td_net_total" class="text-right">
+                                        <span t-field="o.net_total"/>
+                                    </td>
+                                </tr>
                                     <t t-foreach="o.amount_by_group" t-as="amount_by_group">
                                         <tr style="">
                                             <t t-if="len(o.line_ids.filtered(lambda line: line.tax_line_id)) in [0, 1] and o.amount_untaxed == amount_by_group[2]">
