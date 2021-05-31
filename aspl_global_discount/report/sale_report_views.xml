@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="aces_report_saleorder_document" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//div[hasclass('clearfix')]" position="before">
+            <table class="table table-condensed" style="align:left;width:150px;">
+                <tr class="border-black" style="border-bottom:1px solid #dddddd;">
+                    <td class="text-left">
+                        <strong>Discount Type</strong>
+                    </td>
+                    <td class="text-left">
+                        <span t-field="doc.discount_type" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-left">
+                        <strong>Discount Rate</strong>
+                    </td>
+                    <td class="text-left">
+                        <span t-field="doc.discount_rate" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' />
+                    </td>
+                </tr>
+            </table>
+        </xpath>
+        <xpath expr="//div[hasclass('clearfix')]//table" position="inside">
+            <tr>
+                <td>
+                    <strong>Discount</strong>
+                </td>
+                <td class="text-right">
+                    <span t-field="doc.discount" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' />
+                </td>
+            </tr>
+            <tr class="border-black">
+                <td>
+                    <strong>Net Total</strong>
+                </td>
+                <td class="text-right">
+                    <span t-field="doc.net_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' />
+                </td>
+            </tr>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="aces_report_invoice_document" inherit_id="account.report_invoice_document">
+            <xpath expr="//div[hasclass('page')]//table" position="after">
+                <table class="table table-condensed" style="align:left;width:150px;">
+                    <tr class="border-black" style="border-bottom:1px solid #dddddd;">
+                        <td>
+                            <strong>Discount Type</strong>
+                        </td>
+                        <td class="text-left">
+                            <span t-field="o.discount_type" />
+                        </td>
+                    </tr>
+                    <tr class="border-black" style="border-bottom:1px solid #dddddd;">
+                        <td class="text-left">
+                            <strong>Discount Rate</strong>
+                        </td>
+                        <td>
+                            <span t-field="o.discount_rate" t-options='{"widget": "monetary", "display_currency": o.currency_id}' />
+                        </td>
+                    </tr>
+                </table>
+            </xpath>
+            <xpath expr="//div[hasclass('clearfix')]//table" position="inside">
+                <tr>
+                    <td>
+                        <strong>Discount</strong>
+                    </td>
+                    <td class="text-right">
+                        <span t-field="o.discount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' />
+                    </td>
+                </tr>
+                <tr class="border-black">
+                    <td>
+                        <strong>Net Total</strong>
+                    </td>
+                    <td class="text-right">
+                        <span t-field="o.net_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}' />
+                    </td>
+                </tr>
+            </xpath>
+        </template>
+    </data>
+</odoo>
