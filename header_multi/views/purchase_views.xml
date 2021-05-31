@@ -9,7 +9,7 @@
                 <group>
                     <button name="action_select_products" type="object" string="Select Products"
                         context="{'default_flag_order': 'po'}" attrs="{'invisible': [('state', '!=', 'draft')]}"
-                        class="oe_highlight" />
+                        class="oe_highlight" invisible="1"/>
                 </group>
             </xpath>
         </field>
