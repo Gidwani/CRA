@@ -32,6 +32,9 @@
 				<xpath expr="//field[@name='order_line']//tree//field[@name='discount']" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
+				<xpath expr="//field[@name='amount_tax']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
 
 			</field>
 		</record>
@@ -46,7 +49,7 @@
 					<field name="remarks"/>
 				</xpath>
 				<xpath expr="//field[@name='order_line']/tree//field[@name='sequence']" position="after">
-					<field name="number" string="Sr No"/>
+					<field name="number" string="Sr No" store="1"/>
 				</xpath>
 				<xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="attributes">
 					<attribute name="invisible">1</attribute>
@@ -80,6 +83,7 @@
 						</span>
 					</div>
 					<field name="net_total"/>
+					<field name="net_tax"/>
 				</xpath>
 
 			</field>

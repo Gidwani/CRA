@@ -9,6 +9,17 @@ class SaleOrderInh(models.Model):
     perc_discount = fields.Float('Discount', compute="_compute_discount")
     net_total = fields.Float('Net Total', compute="_compute_net_total")
     perc = fields.Float(compute='compute_percentage')
+    net_tax = fields.Float('Tax', compute='compute_taxes')
+
+    def compute_taxes(self):
+        flag = False
+        for rec in self.order_line:
+            if rec.tax_id:
+                flag = True
+        if flag:
+            self.net_tax = (5/100) * self.net_total
+        else:
+            self.net_tax = 0
 
     def compute_percentage(self):
         for rec in self:
@@ -16,7 +27,6 @@ class SaleOrderInh(models.Model):
                 rec.perc = rec.global_order_discount
             else:
                 rec.perc = (rec.global_order_discount/rec.amount_untaxed) * 100
-
 
     def _compute_discount(self):
         for rec in self:
@@ -28,11 +38,12 @@ class SaleOrderInh(models.Model):
     def _compute_net_total(self):
         for rec in self:
             rec.net_total = rec.amount_untaxed - rec.perc_discount
-            rec.amount_total = rec.net_total + rec.amount_tax
-
-    # @api.onchange('global_order_discount')
-    # def _onchange_total_discount(self):
-    #     self.perc = self.global_order_discount
+            rec.amount_total = rec.net_total + rec.net_tax
+    #
+    # @api.onchange('client_order_ref')
+    # def _onchange_client_order_ref(self):
+    #     for rec in self.order_line:
+    #         print(rec.number)
 
 
 class SaleOrderLineInh(models.Model):
@@ -41,7 +52,6 @@ class SaleOrderLineInh(models.Model):
     remarks = fields.Char('Remarks')
     number = fields.Integer(compute='_compute_get_number', store=True)
     vat_amount = fields.Float('VAT Amount', compute='_compute_vat_amount')
-
 
     def _compute_vat_amount(self):
         for rec in self:

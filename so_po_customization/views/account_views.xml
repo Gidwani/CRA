@@ -44,9 +44,9 @@
 				<xpath expr="//field[@name='total_discount']" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
-<!--								<xpath expr="//field[@name='amount_by_group']" position="attributes">-->
-<!--					<attribute name="invisible">1</attribute>-->
-<!--				</xpath>-->
+								<xpath expr="//field[@name='amount_by_group']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
 				<xpath expr="//field[@name='amount_untaxed']" position="after">
 <!--					<field name="perc_discount" readonly="1"/>-->
 					<label for="perc_discount" />
@@ -57,7 +57,7 @@
 						</span>
 					</div>
 					<field name="net_total"/>
-<!--					<field name="net_tax"/>-->
+					<field name="net_tax"/>
 				</xpath>
 
 			</field>

@@ -7,6 +7,7 @@ class ProductTemplateInh(models.Model):
     _inherit = 'product.template'
 
     available_qty = fields.Float('Available Quantity', compute="cal_available_qty")
+    hs_code = fields.Char('HS CODE')
 
     def cal_available_qty(self):
         for rec in self:
@@ -100,7 +101,6 @@ class StockMoveInh(models.Model):
     #             else:
     #                 uom = rec.product_uom
     #         rec.product_uom = uom
-
 
     def _compute_remarks(self):
         for rec in self:

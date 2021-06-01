@@ -4,13 +4,11 @@ from odoo import models, fields, api
 class PurchaseOrderInh(models.Model):
     _inherit = 'purchase.order'
 
-    # do_no = fields.Char("Supplier Do #")
     def action_show_sale_products(self):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Sale Order Products',
             'view_id': self.env.ref('so_po_customization.view_sale_order_wizard_form', False).id,
-            # 'context': {'default_ref': self.name, 'default_order_amount': self.amount_total, 'default_user_id': self.user_id.id},
             'target': 'new',
             'res_model': 'sale.order.wizard',
             'view_mode': 'form',

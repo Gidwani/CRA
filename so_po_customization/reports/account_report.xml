@@ -47,12 +47,15 @@
                             <tr>
                                 <th name="th_sr" class="text-center"><span>Sr #</span></th>
                                 <th name="th_description" class="text-left"><span>Products</span></th>
-                                <th name="th_quantity" class="text-right"><span>Quantity</span></th>
-                                <th name="th_priceunit" t-attf-class="text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}"><span>Unit Price</span></th>
-                                <th name="th_price_unit" t-if="display_discount" t-attf-class="text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
-                                    <span>Disc.%</span>
-                                </th>
-                                <th name="th_taxes" t-attf-class="text-left {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}"><span>Taxes</span></th>
+                                <th name="th_description" class="text-left"><span>Remarks</span></th>
+                                <th name="th_quantity" class="text-center"><span>Quantity</span></th>
+                                <th name="th_uom" class="text-center"><span>UOM</span></th>
+                                <th name="th_priceunit" t-attf-class="text-center {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}"><span>Unit Price</span></th>
+<!--                                <th name="th_price_unit" t-if="display_discount" t-attf-class="text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">-->
+<!--                                    <span>Disc.%</span>-->
+<!--                                </th>-->
+                                <th name="th_taxes" t-attf-class="text-center {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}"><span>VAT(%)</span></th>
+                                <th name="th_taxes" t-attf-class="text-center {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}"><span>VAT Amount</span></th>
                                 <th name="th_subtotal" class="text-right">
                                     <span groups="account.group_show_line_subtotals_tax_excluded">Amount</span>
                                     <span groups="account.group_show_line_subtotals_tax_included">Total Price</span>
@@ -71,18 +74,28 @@
                                     <t t-if="not line.display_type" name="account_invoice_line_accountable">
                                         <td><span t-field="line.number"/></td>
                                         <td name="account_invoice_line_name"><span t-field="line.product_id.name" t-options="{'widget': 'text'}"/><br/><span t-field="line.remarks"/></td>
-                                        <td class="text-right">
-                                            <span t-field="line.quantity"/>
-                                            <span t-field="line.product_uom_id"  groups="uom.group_uom"/>
+                                        <td>
+                                            <span t-field="line.remarks"/>
                                         </td>
-                                        <td t-attf-class="text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                        <td class="text-center">
+                                            <span t-field="line.quantity"/>
+<!--                                            <span t-field="line.product_uom_id"  groups="uom.group_uom"/>-->
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-field="line.product_uom_id" />
+                                        </td>
+
+                                        <td t-attf-class="text-center {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
                                             <span class="text-nowrap" t-field="line.price_unit"/>
                                         </td>
-                                        <td t-if="display_discount" t-attf-class="text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
-                                            <span class="text-nowrap" t-field="line.discount"/>
-                                        </td>
+<!--                                        <td t-if="display_discount" t-attf-class="text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">-->
+<!--                                            <span class="text-nowrap" t-field="line.discount"/>-->
+<!--                                        </td>-->
                                         <td t-attf-class="text-left {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
                                             <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_ids))" id="line_tax_ids"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-field="line.vat_amount" />
                                         </td>
                                         <td class="text-right o_price_total">
                                             <span class="text-nowrap" t-field="line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
@@ -129,9 +142,9 @@
                                         </td>
                                     </tr>
                                     <tr class="border-black o_subtotal" style="">
-                                    <td name="td_perc_discount_label"><strong>Discount( <span t-esc="" />)</strong></td>
+                                    <td name="td_perc_discount_label"><strong>Discount( <span t-esc="o.perc" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%)</strong></td>
                                     <td name="td_perc_discount" class="text-right">
-                                        <span t-field="o.perc_discount"/>
+                                        <span t-field="o.perc_discount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                     </td>
                                 </tr>
                                 <tr class="border-black o_subtotal" style="">

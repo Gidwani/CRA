@@ -7,6 +7,17 @@ class AccountMoveInh(models.Model):
     perc_discount = fields.Float('Discount', compute='_compute_discount')
     net_total = fields.Float('Net Total', compute="_compute_net_total")
     perc = fields.Float(compute='compute_percentage')
+    net_tax = fields.Float('Tax', compute='compute_taxes')
+
+    def compute_taxes(self):
+        flag = False
+        for rec in self.invoice_line_ids:
+            if rec.tax_ids:
+                flag = True
+        if flag:
+            self.net_tax = (5 / 100) * self.net_total
+        else:
+            self.net_tax = 0
 
     def compute_percentage(self):
         for rec in self:
@@ -25,7 +36,7 @@ class AccountMoveInh(models.Model):
     def _compute_net_total(self):
         for rec in self:
             rec.net_total = rec.amount_untaxed - rec.perc_discount
-            rec.amount_total = rec.net_total + rec.amount_tax
+            rec.amount_total = rec.net_total + rec.net_tax
 
 
 class AccountMoveLineInh(models.Model):
