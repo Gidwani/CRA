@@ -31,7 +31,7 @@ class PurchaseOrderLineInh(models.Model):
 
     @api.onchange('product_id')
     def onchange_get_tax(self):
-        tax = self.env['account.tax'].search([('type_tax_use', '=', 'purchase'), ('amount', '=', 5)])
+        tax = self.env['account.tax'].search([('type_tax_use', '=', 'purchase'), ('amount', '=', 5), ('name', '=', 'VAT 5%')])
         for rec in self:
             rec.taxes_id = tax
 
