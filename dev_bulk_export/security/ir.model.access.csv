@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bulk_export,bulk.export,model_bulk_export,,1,1,1,1
+access_bulk_export_excel,bulk.export.excel,model_bulk_export_excel,,1,1,1,1
+
+
