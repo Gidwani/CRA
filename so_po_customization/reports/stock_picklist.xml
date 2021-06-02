@@ -79,7 +79,7 @@
                                             <span t-esc="o.sale_id.get_onhand_qty(line)"/>
                                         </td>
                                         <td>
-                                            <span t-esc="line.product_id.name"/>
+                                            <span t-esc="line.product_id.name"/><br/><span t-esc="line.remarks"/>
                                         </td>
                                         <td class="text-center">
                                             <span t-esc="line.product_uom_qty"/><span t-esc="line.product_uom.name"/>
@@ -101,8 +101,8 @@
                             </div>
                             <div class="container row" style="margin-top:1em;margin-left:1em;float:right; font-size:15px;">
                                 <div class="col-12">
-                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">__________________________</span>
-                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">________________________________________</span>
+                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>
+                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">______________________________</span>
                                     <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>
 <!--                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>-->
                                     <strong>Time Given to store: </strong><span style="color:black;">_____________________________________</span>
@@ -110,7 +110,7 @@
                             </div>
                             <div class="container row" style="margin-top:2em;margin-left:1em;float:right; font-size:15px;">
                                 <div class="col-12">
-                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_______________________________________</span>
+                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">____________________________</span>
                                     <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">___________________________</span>
                                     <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>
 <!--                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>-->
@@ -119,7 +119,7 @@
                             </div>
                             <div class="container row" style="margin-top:2em;margin-left:1em;float:right; font-size:15px;">
                                 <div class="col-12">
-                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">__________________________________________</span>
+                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">______________________________</span>
                                     <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>
                                     <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>
 <!--                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>-->
