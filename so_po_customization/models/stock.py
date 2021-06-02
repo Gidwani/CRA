@@ -41,6 +41,16 @@ class StockPickingInh(models.Model):
             else:
                 rec.is_receipt = False
 
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        result = super(StockPickingInh, self).fields_view_get(
+            view_id=view_id, view_type=view_type, toolbar=toolbar,
+            submenu=submenu)
+        reports = self.env['ir.actions.report'].search([('report_name', 'in', ['stock.report_picking', 'stock.report_deliveryslip'])])
+        for report in reports:
+            report.unlink_action()
+        return result
+
     # @api.model
     # def create(self, vals):
     #     if vals.get('name', _('New')) == _('New'):

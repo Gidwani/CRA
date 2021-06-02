@@ -8,7 +8,7 @@
 			<field name="arch" type="xml">
 
 				<xpath expr="//button[@name='button_confirm']" position="after">
-                    <button string="Pull Products" type="object" class="oe_highlight" name="action_show_sale_products"/>
+                    <button string="Pull Products" type="object" class="oe_highlight" name="action_show_sale_products" attrs="{'invisible': [('state','not in', 'draft')]}"/>
                 </xpath>
 
 				<xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="after">

@@ -10,6 +10,40 @@ class SaleOrderInh(models.Model):
     net_total = fields.Float('Net Total', compute="_compute_net_total")
     perc = fields.Float(compute='compute_percentage')
     net_tax = fields.Float('Tax', compute='compute_taxes')
+    note_picklist = fields.Char('Note')
+
+    def get_lot_no(self, line):
+        picking = self.env['stock.picking'].search([('sale_id', '=', line.order_id.id)])
+        lot = None
+        if picking:
+            for rec in picking.move_line_ids_without_package:
+                if rec.product_id.id == line.product_id.id:
+                    lot = rec.lot_id.name
+        return lot
+
+    def get_product_qty(self, ml):
+        product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
+
+        # for line in ml.sale_id.order_line:
+        if ml.product_uom.name == 'Lth':
+            qty = int(product_qty.available_qty)/6
+            qty = str(round(qty, 2)) + " Lth"
+        else:
+            qty = float(product_qty.available_qty)
+            qty = str(round(qty, 2)) + ' ' + product_qty.uom_id.name
+        return qty
+
+    def get_onhand_qty(self, ml):
+        product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
+        # for line in ml.sale_id.order_line:
+        if ml.product_uom.name == 'Lth':
+            qty = int(product_qty.qty_available)/6
+            qty = str(round(qty, 2)) + " Lth"
+
+        else:
+            qty = float(product_qty.qty_available)
+            qty = str(round(qty, 2)) + ' ' + product_qty.uom_id.name
+        return qty
 
     def compute_taxes(self):
         flag = False

@@ -33,6 +33,7 @@
         'reports/account_report.xml',
         'reports/stock_report.xml',
         'reports/delivery_report.xml',
+        'reports/stock_picklist.xml',
         'wizard/sale_wizard.xml',
     ],
 
