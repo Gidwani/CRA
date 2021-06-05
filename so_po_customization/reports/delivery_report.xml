@@ -62,7 +62,8 @@
                                 </td>
                                 <td>
                                     <span t-field="move.product_uom_qty"/>
-                                    <span t-field="move.product_uom"/>
+<!--                                    <span t-field="move.product_uom"/>-->
+                                    <span t-esc="move.get_product_uom_id(move, move.picking_id)"/>
                                 </td>
                             </tr>
                         </tbody>

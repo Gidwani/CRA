@@ -45,6 +45,9 @@ class StockPickingInh(models.Model):
     do_no = fields.Char("Supplier Do #")
     is_receipt = fields.Boolean(compute='compute_is_receipt')
 
+    def get_seq(self, picking):
+        return 'Picklist/'+picking.name.split('/')[2]
+
     def compute_is_receipt(self):
         for rec in self:
             if rec.picking_type_id.code == 'incoming':
@@ -122,6 +125,14 @@ class StockMoveInh(models.Model):
     #             else:
     #                 uom = rec.product_uom
     #         rec.product_uom = uom
+
+    def get_product_uom_id(self, ml, picking):
+        for line in picking.sale_id.order_line:
+            if line.product_id.id == ml.product_id.id:
+                uom = line.product_uom.name
+            else:
+                uom = line.product_uom.name
+        return uom
 
     def _compute_remarks(self):
         for rec in self:

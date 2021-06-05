@@ -97,7 +97,7 @@
                                         <span t-field="line.price_unit"/>
                                     </td>
                                     <td name="td_taxes" class="text-center">
-                                        <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_id))"/>
+                                        <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_id))" />
                                     </td>
                                     <td name="td_priceunit" class="text-center">
                                         <span t-field="line.vat_amount"/>
@@ -158,13 +158,13 @@
                                 <tr class="border-black o_subtotal" style="">
                                     <td name="td_perc_discount_label"><strong>Discount(<span t-field="doc.perc" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%)</strong></td>
                                     <td name="td_perc_discount" class="text-right">
-                                        <span t-field="doc.perc_discount"/>
+                                        <span t-field="doc.perc_discount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
                                     </td>
                                 </tr>
                                 <tr class="border-black o_subtotal" style="">
                                     <td name="td_net_total_label"><strong>Net Total</strong></td>
                                     <td name="td_net_total" class="text-right">
-                                        <span t-field="doc.net_total"/>
+                                        <span t-field="doc.net_total" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
                                     </td>
                                 </tr>
                                 <t t-foreach="doc.amount_by_group" t-as="amount_by_group">
