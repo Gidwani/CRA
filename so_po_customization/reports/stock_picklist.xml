@@ -47,7 +47,7 @@
                                     <p t-field="o.sale_id.name"/>
                                 </div>
                                 <div t-if="o.sale_id.date_order" class="col-auto" name="div_origin">
-                                    <strong>Date Order:</strong>
+                                    <strong>Order Date:</strong>
                                     <p t-field="o.sale_id.date_order"/>
                                 </div>
                                 <div t-if="o.sale_id.client_order_ref" class="col-auto" name="div_origin">
@@ -73,11 +73,12 @@
                                             <span t-field="line.number"/>
                                         </td>
                                         <td class="text-center">
-                                            <span t-esc="o.sale_id.get_product_qty(line)"/>
-                                        </td>
-                                        <td class="text-center">
                                             <span t-esc="o.sale_id.get_onhand_qty(line)"/>
                                         </td>
+                                        <td class="text-center">
+                                            <span t-esc="o.sale_id.get_product_qty(line)"/>
+                                        </td>
+
                                         <td>
                                             <span t-esc="line.product_id.name"/><br/><span t-esc="line.remarks"/>
                                         </td>

@@ -31,7 +31,7 @@
 <!--                        <p t-field="o.do_no" class="m-0"/>-->
 <!--                    </div>-->
                     <div t-if="o.payment_term_id" class="col-3 bm-2">
-                        <strong>Payment Term:</strong>
+                        <strong>Payment Terms:</strong>
                         <p t-field="o.payment_term_id" class="m-0"/>
                     </div>
                 </div>

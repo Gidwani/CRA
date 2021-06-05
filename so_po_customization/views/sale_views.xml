@@ -81,14 +81,14 @@
 				<xpath expr="//field[@name='amount_untaxed']" position="after">
 <!--					<field name="perc_discount" readonly="1"/>-->
 					<label for="perc_discount" />
-					<div class="text-nowrap" >
-						<field name="perc_discount" class="oe_inline"/>
+					<div class="text-right" >
+						<field name="perc_discount" class="oe_inline" widget='monetary' options="{'currency_field': 'currency_id'}"/>
 						<span class="oe_inline" attrs="{'invisible': [('global_order_discount', '=', 0)]}">
 							(<field name="perc" nolabel="1" class="oe_inline" />%)
 						</span>
 					</div>
-					<field name="net_total"/>
-					<field name="net_tax"/>
+					<field name="net_total" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+					<field name="net_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
 				</xpath>
 
 			</field>

@@ -101,14 +101,15 @@
                     <field name="default_code"/>
                 </xpath>
                 <xpath expr="//field[@name='name']" position="after">
-                    <!--					<field name="default_code"/>-->
-                    <field name="uom_id"/>
+                    <field name="uom_id" string="UOM"/>
                     <field name="available_qty" string="Saleable Quantity"/>
                     <field name="qty_available"/>
-                    <!--                    <field name="responsible_id"/>-->
                 </xpath>
                 <xpath expr="//field[@name='virtual_available']" position="after">
                     <field name="responsible_id"/>
+                </xpath>
+                <xpath expr="//field[@name='standard_price']" position="after">
+                    <field name="incoming_qty"/>
                 </xpath>
 
             </field>

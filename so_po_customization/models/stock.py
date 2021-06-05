@@ -7,7 +7,18 @@ class ProductTemplateInh(models.Model):
     _inherit = 'product.template'
 
     available_qty = fields.Float('Available Quantity', compute="cal_available_qty")
+    incoming_qty = fields.Float('Incoming Quantity', compute="cal_incoming_qty")
     hs_code = fields.Char('HS CODE')
+
+    def cal_incoming_qty(self):
+        incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
+        pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', '!=', 'done')])
+        qty = 0
+        for picking in pickings:
+            for line in picking:
+                if line.product_id.id == self.id:
+                    qty = qty + line.quantity_done
+        self.incoming_qty = qty
 
     def cal_available_qty(self):
         for rec in self:
@@ -46,7 +57,7 @@ class StockPickingInh(models.Model):
         result = super(StockPickingInh, self).fields_view_get(
             view_id=view_id, view_type=view_type, toolbar=toolbar,
             submenu=submenu)
-        reports = self.env['ir.actions.report'].search([('report_name', 'in', ['stock.report_picking', 'stock.report_deliveryslip'])])
+        reports = self.env['ir.actions.report'].search([('report_name', 'in', ['stock.report_picking'])])
         for report in reports:
             report.unlink_action()
         return result

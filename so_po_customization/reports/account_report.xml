@@ -47,7 +47,7 @@
                             <tr>
                                 <th name="th_sr" class="text-center"><span>Sr #</span></th>
                                 <th name="th_description" class="text-left"><span>Products</span></th>
-                                <th name="th_description" class="text-left"><span>Remarks</span></th>
+<!--                                <th name="th_description" class="text-left"><span>Remarks</span></th>-->
                                 <th name="th_quantity" class="text-center"><span>Quantity</span></th>
                                 <th name="th_uom" class="text-center"><span>UOM</span></th>
                                 <th name="th_priceunit" t-attf-class="text-center {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}"><span>Unit Price</span></th>
@@ -74,9 +74,9 @@
                                     <t t-if="not line.display_type" name="account_invoice_line_accountable">
                                         <td><span t-field="line.number"/></td>
                                         <td name="account_invoice_line_name"><span t-field="line.product_id.name" t-options="{'widget': 'text'}"/><br/><span t-field="line.remarks"/></td>
-                                        <td>
-                                            <span t-field="line.remarks"/>
-                                        </td>
+<!--                                        <td>-->
+<!--                                            <span t-field="line.remarks"/>-->
+<!--                                        </td>-->
                                         <td class="text-center">
                                             <span t-field="line.quantity"/>
 <!--                                            <span t-field="line.product_uom_id"  groups="uom.group_uom"/>-->

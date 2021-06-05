@@ -55,7 +55,7 @@
                         <tr>
                             <th name="th_sr" class="text-center"><span>Sr #</span></th>
                             <th name="th_description" class="text-left">Product</th>
-                            <th name="th_description" class="text-center">Remarks</th>
+<!--                            <th name="th_description" class="text-center">Remarks</th>-->
                             <th name="th_quantity" class="text-center">Quantity</th>
                             <th name="th_quantity" class="text-center">UOM</th>
                             <th name="th_priceunit" class="text-center">Unit Price</th>
@@ -82,11 +82,11 @@
 
                             <tr style="border:1px solid black;"  t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
                                 <t t-if="not line.display_type">
-                                    <td><span t-field="line.number"/></td>
-                                    <td name="td_name" ><span t-field="line.product_id.name"/></td>
-                                    <td name="td_priceunit" class="text-left">
-                                        <span t-field="line.remarks"/>
-                                    </td>
+                                    <td class="text-center"><span t-field="line.number"/></td>
+                                    <td name="td_name" ><span t-field="line.product_id.name"/><br/><span t-field="line.remarks"/></td>
+<!--                                    <td name="td_priceunit" class="text-left">-->
+<!--                                        <span t-field="line.remarks"/>-->
+<!--                                    </td>-->
                                     <td name="td_quantity"  class="text-center">
                                         <span t-field="line.product_uom_qty"/>
                                     </td>
