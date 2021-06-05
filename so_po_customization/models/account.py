@@ -37,6 +37,7 @@ class AccountMoveInh(models.Model):
         for rec in self:
             rec.net_total = rec.amount_untaxed - rec.perc_discount
             rec.amount_total = rec.net_total + rec.net_tax
+            rec.amount_residual = rec.net_total + rec.net_tax
 
 
 class AccountMoveLineInh(models.Model):
