@@ -9,6 +9,7 @@ class AccountMoveInh(models.Model):
     net_total = fields.Float('Net Total', compute="_compute_net_total")
     perc = fields.Float(compute='compute_percentage')
     net_tax = fields.Float('Tax', compute='compute_taxes')
+    subtotal_amount = fields.Float('Subtotal Amount', compute='_compute_net_total')
 
     def compute_taxes(self):
         flag = False
@@ -25,22 +26,23 @@ class AccountMoveInh(models.Model):
             if rec.discount_type == 'percent':
                 rec.perc = rec.discount_rate
             else:
-                rec.perc = (rec.discount_rate / rec.amount_untaxed) * 100
+                rec.perc = (rec.discount_rate / rec.subtotal_amount) * 100
 
     def _compute_discount(self):
         for rec in self:
             if rec.discount_type == 'percent':
-                rec.perc_discount = (rec.discount_rate / 100) * rec.amount_untaxed
+                rec.perc_discount = (rec.discount_rate / 100) * rec.subtotal_amount
             else:
                 rec.perc_discount = rec.discount_rate
 
+    @api.depends('invoice_line_ids.subtotal')
     def _compute_net_total(self):
         for rec in self:
             subtotal = 0
             for line in rec.invoice_line_ids:
                 subtotal = subtotal + line.subtotal
-            rec.amount_untaxed = subtotal
-            rec.net_total = rec.amount_untaxed - rec.perc_discount
+            rec.subtotal_amount = subtotal
+            rec.net_total = rec.subtotal_amount - rec.perc_discount
             rec.amount_total = rec.net_total + rec.net_tax
             rec.amount_residual = rec.net_total + rec.net_tax
 
@@ -91,6 +93,7 @@ class AccountMoveLineInh(models.Model):
     vat_amount = fields.Float('VAT Amount', compute='_compute_vat_amount')
     subtotal = fields.Float('Subtotal', compute='_compute_subtotal')
 
+    @api.depends('price_unit', 'quantity')
     def _compute_subtotal(self):
         for rec in self:
             rec.subtotal = rec.quantity * rec.price_unit

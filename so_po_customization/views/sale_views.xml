@@ -91,8 +91,11 @@
 					<field name="subtotal"/>
 				</xpath>
 				<xpath expr="//field[@name='amount_untaxed']" position="attributes">
-					<attribute name="string">Subtotal Amount</attribute>
+					<attribute name="invisible">1</attribute>
 				</xpath>
+<!--				<xpath expr="//field[@name='amount_untaxed']" position="after">-->
+<!--					<field name="subtotal_amount"/>-->
+<!--				</xpath>-->
 <!--				<xpath expr="//field[@name='amount_by_group']" position="attributes">-->
 <!--					<attribute name="invisible">1</attribute>-->
 <!--				</xpath>-->
@@ -104,6 +107,7 @@
 								</xpath>
 				<xpath expr="//field[@name='amount_untaxed']" position="after">
 					<!--					<field name="perc_discount" readonly="1"/>-->
+					<field name="subtotal_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
 					<label for="perc_discount" />
 					<div class="text-nowrap" >
 						<field name="perc_discount" class="oe_inline" widget='monetary' options="{'currency_field': 'currency_id'}"/>

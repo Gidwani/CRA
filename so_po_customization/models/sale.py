@@ -11,6 +11,7 @@ class SaleOrderInh(models.Model):
     perc = fields.Float(compute='compute_percentage')
     net_tax = fields.Float('Tax', compute='compute_taxes')
     note_picklist = fields.Char('Note')
+    subtotal_amount = fields.Float('Subtotal Amount', compute='_compute_net_total')
 
     def action_select_products(self):
         return {
@@ -71,22 +72,23 @@ class SaleOrderInh(models.Model):
             if rec.discount_type == 'percent':
                 rec.perc = rec.discount_rate
             else:
-                rec.perc = (rec.discount_rate/rec.amount_untaxed) * 100
+                rec.perc = (rec.discount_rate/rec.subtotal_amount) * 100
 
     def _compute_discount(self):
         for rec in self:
             if rec.discount_type == 'percent':
-                rec.perc_discount = (rec.discount_rate / 100) * rec.amount_untaxed
+                rec.perc_discount = (rec.discount_rate / 100) * rec.subtotal_amount
             else:
                 rec.perc_discount = rec.discount_rate
 
+    @api.depends('order_line.subtotal')
     def _compute_net_total(self):
         for rec in self:
             subtotal = 0
             for line in rec.order_line:
                 subtotal = subtotal + line.subtotal
-            rec.amount_untaxed = subtotal
-            rec.net_total = rec.amount_untaxed - rec.perc_discount
+            rec.subtotal_amount = subtotal
+            rec.net_total = rec.subtotal_amount - rec.perc_discount
             rec.amount_total = rec.net_total + rec.amount_tax
     #
     # @api.onchange('client_order_ref')
@@ -103,6 +105,7 @@ class SaleOrderLineInh(models.Model):
     vat_amount = fields.Float('VAT Amount', compute='_compute_vat_amount')
     subtotal = fields.Float('Subtotal', compute='_compute_subtotal')
 
+    @api.depends('price_unit', 'product_uom_qty')
     def _compute_subtotal(self):
         for rec in self:
             rec.subtotal = rec.product_uom_qty * rec.price_unit
