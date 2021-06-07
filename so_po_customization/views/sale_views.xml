@@ -34,7 +34,7 @@
 			</field>
 		</record>
 
-		<record id="view_sale_order_discount_form_inh" model="ir.ui.view">
+<!-- 		<record id="view_sale_order_discount_form_inh" model="ir.ui.view">
 			<field name="name">sale.order.form.inh</field>
 			<field name="model">sale.order</field>
 			<field name="inherit_id" ref="discount_sale_order.inherit_sale_order_line_tree_view"/>
@@ -55,7 +55,7 @@
 
 			</field>
 		</record>
-
+ -->
 		<record id="view_sale_order_form_inh" model="ir.ui.view">
 			<field name="name">sale.order.form.inh</field>
 			<field name="model">sale.order</field>
