@@ -41,10 +41,19 @@
 				<xpath expr="//field[@name='amount_untaxed']" position="attributes">
 					<attribute name="string">Subtotal Amount</attribute>
 				</xpath>
+				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='price_subtotal']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='amount_discount']" position="attributes">
+									<attribute name="invisible">1</attribute>
+								</xpath>
+				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='price_subtotal']" position="after">
+					<field name="subtotal"/>
+				</xpath>
 <!--				<xpath expr="//field[@name='total_discount']" position="attributes">-->
 <!--					<attribute name="invisible">1</attribute>-->
 <!--				</xpath>-->
-								<xpath expr="//field[@name='amount_by_group']" position="attributes">
+				<xpath expr="//field[@name='amount_by_group']" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
 				<xpath expr="//field[@name='amount_untaxed']" position="after">

@@ -62,8 +62,6 @@
 			<field name="inherit_id" ref="sale.view_order_form"/>
 			<field name="arch" type="xml">
 
-
-
 				<xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="after">
 					<field name="remarks"/>
 				</xpath>
@@ -83,15 +81,27 @@
 				<xpath expr="//field[@name='order_line']/tree//field[@name='tax_id']" position="after">
 					<field name="vat_amount"/>
 				</xpath>
+				<xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='order_line']/tree//field[@name='discount']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']" position="after">
+					<field name="subtotal"/>
+				</xpath>
 				<xpath expr="//field[@name='amount_untaxed']" position="attributes">
 					<attribute name="string">Subtotal Amount</attribute>
 				</xpath>
-<!--				<xpath expr="//field[@name='total_discount']" position="attributes">-->
+<!--				<xpath expr="//field[@name='amount_by_group']" position="attributes">-->
 <!--					<attribute name="invisible">1</attribute>-->
 <!--				</xpath>-->
-				<!--				<xpath expr="//field[@name='amount_by_group']" position="attributes">-->
-				<!--					<attribute name="invisible">1</attribute>-->
-				<!--				</xpath>-->
+								<xpath expr="//field[@name='amount_discount']" position="attributes">
+									<attribute name="invisible">1</attribute>
+								</xpath>
+				<xpath expr="//field[@name='amount_tax']" position="attributes">
+									<attribute name="invisible">1</attribute>
+								</xpath>
 				<xpath expr="//field[@name='amount_untaxed']" position="after">
 					<!--					<field name="perc_discount" readonly="1"/>-->
 					<label for="perc_discount" />

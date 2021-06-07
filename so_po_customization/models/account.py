@@ -22,20 +22,24 @@ class AccountMoveInh(models.Model):
 
     def compute_percentage(self):
         for rec in self:
-            if rec.global_discount_type == 'percent':
-                rec.perc = rec.global_order_discount
+            if rec.discount_type == 'percent':
+                rec.perc = rec.discount_rate
             else:
-                rec.perc = (rec.global_order_discount / rec.amount_untaxed) * 100
+                rec.perc = (rec.discount_rate / rec.amount_untaxed) * 100
 
     def _compute_discount(self):
         for rec in self:
-            if rec.global_discount_type == 'percent':
-                rec.perc_discount = (rec.global_order_discount / 100) * rec.amount_untaxed
+            if rec.discount_type == 'percent':
+                rec.perc_discount = (rec.discount_rate / 100) * rec.amount_untaxed
             else:
-                rec.perc_discount = rec.global_order_discount
+                rec.perc_discount = rec.discount_rate
 
     def _compute_net_total(self):
         for rec in self:
+            subtotal = 0
+            for line in rec.invoice_line_ids:
+                subtotal = subtotal + line.subtotal
+            rec.amount_untaxed = subtotal
             rec.net_total = rec.amount_untaxed - rec.perc_discount
             rec.amount_total = rec.net_total + rec.net_tax
             rec.amount_residual = rec.net_total + rec.net_tax
@@ -85,6 +89,11 @@ class AccountMoveLineInh(models.Model):
     remarks = fields.Char("Remarks", compute='_compute_remarks')
     number = fields.Integer(compute='_compute_get_number', store=True)
     vat_amount = fields.Float('VAT Amount', compute='_compute_vat_amount')
+    subtotal = fields.Float('Subtotal', compute='_compute_subtotal')
+
+    def _compute_subtotal(self):
+        for rec in self:
+            rec.subtotal = rec.quantity * rec.price_unit
 
     def _compute_vat_amount(self):
         for rec in self:
