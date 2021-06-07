@@ -23,12 +23,9 @@ class ProductTemplateInh(models.Model):
     def cal_available_qty(self):
         for rec in self:
             total = 0
-            # quants = self.env['stock.quant'].search([('product_tmpl_id', '=', rec.id)])
             quants = self.get_quant_lines()
             quants = self.env['stock.quant'].browse(quants)
             for line in quants:
-                # print(line.on_hand)
-                # if line.on_hand:
                 if line.product_tmpl_id.id == rec.id:
                     total = total + line.available_quantity
             rec.available_qty = total
