@@ -62,9 +62,9 @@
                                         <th name="th_sm_product" class="text-center" width="4%"><strong>SR#</strong></th>
                                         <th name="th_sm_product" class="text-center" width="7%"><strong>QTY Onhand</strong></th>
                                         <th name="th_sm_product" class="text-center" width="7%"><strong>Available Qty</strong></th>
-                                        <th name="th_sm_product" width="30%"><strong>Products</strong></th>
+                                        <th name="th_sm_product" width="35%"><strong>Products</strong></th>
                                         <th name="th_sm_quantity" class="text-center" width="7%"><strong>Qty to Pick</strong></th>
-                                        <th name="th_sm_serial" class="text-center" width="20%"><strong>Serial #</strong></th>
+                                        <th name="th_sm_serial" class="text-center" width="15%"><strong>Serial #</strong></th>
                                         <th name="th_sm_note" class="text-center" width="20%"><strong>Note</strong></th>
                                     </tr>
                                 </thead>
