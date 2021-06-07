@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sale', 'purchase', 'stock', 'discount_sale_order', 'discount_account_invoice', 'sale_margin'],
+    'depends': ['base', 'sale', 'purchase', 'stock', 'sale_margin'],
 
     # always loaded
     'data': [
