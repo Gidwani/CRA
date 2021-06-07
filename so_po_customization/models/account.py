@@ -1,4 +1,5 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 
 class AccountMoveInh(models.Model):
@@ -39,6 +40,44 @@ class AccountMoveInh(models.Model):
             rec.amount_total = rec.net_total + rec.net_tax
             rec.amount_residual = rec.net_total + rec.net_tax
 
+    # def action_post(self):
+    #     rec = super(AccountMoveInh, self).action_post()
+    #     debit_sum = 0.0
+    #     credit_sum = 0.0
+    #     expense_account = self.env['account.account'].search([('name', '=', 'Global Invoice Discount')])[0]
+    #     pay_account = self.env['account.account'].search([('user_type_id', '=', 'Payable')])[0]
+    #     line_ids = []
+    #     for line in self.line_ids:
+    #         print(line)
+    #         if line.account_id.name == 'Global Invoice Discount':
+    #             debit_line = (0, 0, {
+    #                 'name': 'VAT 5.00%',
+    #                 'debit': 0.0,
+    #                 'credit': self.perc_discount - 0.75,
+    #                 'account_id': line.account_id.id,
+    #                 'exclude_from_invoice_tab': True,
+    #             })
+    #             line_ids.append(debit_line)
+    #             debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
+    #         if line.account_id.name == 'Tax Received':
+    #             credit_line = (0, 0, {
+    #                 'name': 'Global Discount',
+    #                 'debit': self.net_tax,
+    #                 'credit': 0.0,
+    #                 'account_id': line.account_id.id,
+    #                 'exclude_from_invoice_tab': True,
+    #             })
+    #             line_ids.append(credit_line)
+    #             credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
+    #     vals = {
+    #         # 'date': fields.Date.today(),
+    #         # 'move_type': 'entry',
+    #         'line_ids': line_ids,
+    #     }
+    #     # print(self.perc_discount - 0.75, self.net_tax)
+    #     move = super(AccountMoveInh, self).write(vals)
+    #
+    #     return rec
 
 class AccountMoveLineInh(models.Model):
     _inherit = 'account.move.line'

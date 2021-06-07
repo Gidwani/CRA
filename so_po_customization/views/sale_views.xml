@@ -34,28 +34,28 @@
 			</field>
 		</record>
 
-<!-- 		<record id="view_sale_order_discount_form_inh" model="ir.ui.view">
-			<field name="name">sale.order.form.inh</field>
-			<field name="model">sale.order</field>
-			<field name="inherit_id" ref="discount_sale_order.inherit_sale_order_line_tree_view"/>
-			<field name="arch" type="xml">
+<!--		<record id="view_sale_order_discount_form_inh" model="ir.ui.view">-->
+<!--			<field name="name">sale.order.form.inh</field>-->
+<!--			<field name="model">sale.order</field>-->
+<!--			<field name="inherit_id" ref="discount_sale_order.inherit_sale_order_line_tree_view"/>-->
+<!--			<field name="arch" type="xml">-->
 
-				<xpath expr="//field[@name='order_line']//tree//field[@name='discount_type']" position="attributes">
-					<attribute name="invisible">1</attribute>
-				</xpath>
-				<xpath expr="//field[@name='order_line']//tree//field[@name='discount']" position="attributes">
-					<attribute name="invisible">1</attribute>
-				</xpath>
-				<xpath expr="//field[@name='amount_tax']" position="attributes">
-					<attribute name="invisible">1</attribute>
-				</xpath>
-				<xpath expr="//field[@name='global_order_discount']" position="after">
-					<field name="note_picklist"/>
-				</xpath>
+<!--				<xpath expr="//field[@name='order_line']//tree//field[@name='discount_type']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//field[@name='order_line']//tree//field[@name='discount']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//field[@name='amount_tax']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//field[@name='global_order_discount']" position="after">-->
+<!--					<field name="note_picklist"/>-->
+<!--				</xpath>-->
 
-			</field>
-		</record>
- -->
+<!--			</field>-->
+<!--		</record>-->
+
 		<record id="view_sale_order_form_inh" model="ir.ui.view">
 			<field name="name">sale.order.form.inh</field>
 			<field name="model">sale.order</field>
@@ -86,9 +86,9 @@
 				<xpath expr="//field[@name='amount_untaxed']" position="attributes">
 					<attribute name="string">Subtotal Amount</attribute>
 				</xpath>
-<!-- 				<xpath expr="//field[@name='total_discount']" position="attributes">
-					<attribute name="invisible">1</attribute>
-				</xpath> -->
+<!--				<xpath expr="//field[@name='total_discount']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
 				<!--				<xpath expr="//field[@name='amount_by_group']" position="attributes">-->
 				<!--					<attribute name="invisible">1</attribute>-->
 				<!--				</xpath>-->
@@ -97,7 +97,7 @@
 					<label for="perc_discount" />
 					<div class="text-nowrap" >
 						<field name="perc_discount" class="oe_inline" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-						<span class="oe_inline" attrs="{'invisible': [('global_order_discount', '=', 0)]}">
+						<span class="oe_inline">
 							(<field name="perc" nolabel="1" class="oe_inline" />%)
 						</span>
 					</div>
