@@ -1,0 +1,149 @@
+<odoo>
+    <data>
+        <record id="paperformat_report_picklist" model="report.paperformat">
+            <field name="name">Picklist Paper Format</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">25</field>
+            <field name="margin_bottom">0</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">20</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report
+                id="report_stock_picklist"
+                model="stock.picking"
+                string="Picklist Landscape"
+                report_type="qweb-pdf"
+                name="so_po_customization.report_picklist_document"
+                file="so_po_customization.report_picklist_document"
+                paperformat="paperformat_report_picklist"/>
+
+        <template id="report_picklist_document">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <t t-foreach="docs" t-as="o">
+                        <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)" />
+                        <t t-set="partner" t-value="o.partner_id or (o.move_lines and o.move_lines[0].partner_id) or False"/>
+                        <t t-if="partner" name="partner_header">
+                            <t t-set="address">
+                                <div t-esc="partner"
+                                     t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True}'/>
+                            </t>
+                        </t>
+                        <div class="page">
+                            <h2>
+                                <span t-esc="o.get_seq(o)"/>
+<!--                                <span t-field="o.name"/>-->
+                            </h2>
+                            <div class="row mt32 mb32">
+                                <div t-if="o.sale_id.name" class="col-auto" name="div_origin">
+                                    <strong>Sale Order:</strong>
+                                    <p t-field="o.sale_id.name"/>
+                                </div>
+                                <div t-if="o.sale_id.date_order" class="col-auto" name="div_origin">
+                                    <strong>Order Date:</strong>
+                                    <p t-field="o.sale_id.date_order"/>
+                                </div>
+                                <div t-if="o.sale_id.client_order_ref" class="col-auto" name="div_origin">
+                                    <strong>Customer Reference:</strong>
+                                    <p t-field="o.sale_id.client_order_ref"/>
+                                </div>
+                            </div>
+                            <table class="table table-sm" name="stock_move_table">
+                                <thead>
+                                    <tr>
+                                        <th name="th_sm_product" class="text-center" width="4%"><strong>SR#</strong></th>
+                                        <th name="th_sm_product" class="text-center" width="7%"><strong>QTY Onhand</strong></th>
+                                        <th name="th_sm_product" class="text-center" width="7%"><strong>Available Qty</strong></th>
+                                        <th name="th_sm_product" width="35%"><strong>Products</strong></th>
+                                        <th name="th_sm_quantity" class="text-center" width="7%"><strong>Qty to Pick</strong></th>
+                                        <th name="th_sm_serial" class="text-center" width="15%"><strong>Serial #</strong></th>
+                                        <th name="th_sm_note" class="text-center" width="20%"><strong>Note</strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.sale_id.order_line" t-as="line" style="border:1px solid black;">
+                                        <td class="text-center">
+                                            <span t-field="line.number"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-esc="o.sale_id.get_onhand_qty(line)"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-esc="o.sale_id.get_product_qty(line)"/>
+                                        </td>
+
+                                        <td>
+                                            <span t-esc="line.product_id.name"/><br/><span t-esc="line.remarks"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-esc="line.product_uom_qty"/><span t-esc="line.product_uom.name"/>
+                                        </td>
+                                        <td class=" text-center h6" >
+                                            <img t-if="o.sale_id.get_lot_no(line) != None" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;humanreadable=1' % ('Code128', o.sale_id.get_lot_no(line), 400, 100)" style="width:100%;height:35px;" alt="Barcode"/>
+                                        </td>
+                                        <td>
+                                            <span>&#160;</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="container row" style="margin-top:2em;margin-left:1em;float:right; font-size:15px;">
+                                <div class="col-12" t-if="o.sale_id.note_picklist">
+                                    <strong><span>Note:</span> </strong><span t-esc="o.sale_id.note_picklist"/>
+
+                                </div>
+                            </div>
+                            <div class="container row" style="margin-top:1em;margin-left:1em;float:right; font-size:15px;">
+                                <div class="col-12">
+                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>
+                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">______________________________</span>
+                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>
+<!--                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>-->
+                                    <strong>Time Given to store: </strong><span style="color:black;">_____________________________________</span>
+                                </div>
+                            </div>
+                            <div class="container row" style="margin-top:2em;margin-left:1em;float:right; font-size:15px;">
+                                <div class="col-12">
+                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">____________________________</span>
+                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">___________________________</span>
+                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>
+<!--                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>-->
+                                    <strong>Time return from store: </strong><span style="color:black;">_________________________________</span>
+                                </div>
+                            </div>
+                            <div class="container row" style="margin-top:2em;margin-left:1em;float:right; font-size:15px;">
+                                <div class="col-12">
+                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">______________________________</span>
+                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>
+                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>
+<!--                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>-->
+                                    <strong>Picking Person Signature: </strong><span style="color:black;">_______________________________</span>
+                                </div>
+                            </div>
+
+                            <div t-if="o.signature" class="mt32 ml64 mr4" name="signature">
+                                <div class="offset-8">
+                                    <strong>Signature</strong>
+                                </div>
+                                <div class="offset-8">
+                                    <img t-att-src="image_data_uri(o.signature)" style="max-height: 4cm; max-width: 8cm;"/>
+                                </div>
+                                <div class="offset-8 text-center">
+                                    <p t-field="o.partner_id.name"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

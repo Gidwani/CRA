@@ -1,0 +1,31 @@
+<odoo>
+<record id="view_sale_order_wizard_form" model="ir.ui.view">
+		<field name="name">Select Products</field>
+		<field name="model">sale.order.wizard</field>
+		<field name="arch" type="xml">
+			<form >
+				<group >
+					<field name="sale_id" widget="many2many_tags" string="Sale Order #"/>
+				</group>
+				<field name="product_lines" widget="one2many_list">
+					<tree  create="0" editable="bottom">
+						<field name="is_selected" width="5%"/>
+						<field name="sale_order" readonly="1" width="18%"/>
+						<field name="onhand_qty" readonly="1" width="10%"/>
+						<field name="available_qty" readonly="1" width="10%"/>
+						<field name="sr_no" readonly="1" width="7%"/>
+						<field name="product_id" readonly="1" width="30%"/>
+						<field name="qty" readonly="1" width="10%"/>
+						<field name="price" readonly="1" width="10%"/>
+					</tree>
+				</field>
+				<footer>
+					<button name="action_get_products" string="Pull" type="object" class="btn-primary"/>
+					<button  string="Cancel" type="object" class="btn-secondary" special="cancel"/>
+				</footer>
+			</form>
+		</field>
+
+	</record>
+
+</odoo>

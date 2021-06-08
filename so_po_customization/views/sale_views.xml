@@ -1,0 +1,144 @@
+<odoo>
+	<data>
+
+		<record model="ir.ui.view" id="sale_order_view_multi_product_selection_inherit">
+			<field name="name">sale.order.view.multi.product.selection.inherit</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='order_line']" position="before">
+					<group>
+						<button name="action_select_products" type="object" string="Select Products" context="{'default_flag_order': 'so'}" attrs="{'invisible': [('state', '!=', 'draft')]}" class="oe_highlight"/>
+					</group>
+				</xpath>
+			</field>
+		</record>
+
+
+		<record id="view_sale_order_margin_form_inh" model="ir.ui.view">
+			<field name="name">sale.order.form.inh</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale_margin.sale_margin_sale_order_line_form"/>
+			<field name="arch" type="xml">
+
+				<xpath expr="//field[@name='order_line']//tree//field[@name='purchase_price']" position="attributes">
+					<attribute name="optional">show</attribute>
+				</xpath>
+				<xpath expr="//field[@name='order_line']//tree//field[@name='margin']" position="attributes">
+					<attribute name="optional">show</attribute>
+				</xpath>
+				<xpath expr="//field[@name='order_line']//tree//field[@name='margin_percent']" position="attributes">
+					<attribute name="optional">show</attribute>
+				</xpath>
+
+			</field>
+		</record>
+
+<!--		<record id="view_sale_order_discount_form_inh" model="ir.ui.view">-->
+<!--			<field name="name">sale.order.form.inh</field>-->
+<!--			<field name="model">sale.order</field>-->
+<!--			<field name="inherit_id" ref="discount_sale_order.inherit_sale_order_line_tree_view"/>-->
+<!--			<field name="arch" type="xml">-->
+
+<!--				<xpath expr="//field[@name='order_line']//tree//field[@name='discount_type']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//field[@name='order_line']//tree//field[@name='discount']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//field[@name='amount_tax']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//field[@name='global_order_discount']" position="after">-->
+<!--					<field name="note_picklist"/>-->
+<!--				</xpath>-->
+
+<!--			</field>-->
+<!--		</record>-->
+
+		<record id="view_sale_order_form_inh" model="ir.ui.view">
+			<field name="name">sale.order.form.inh</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_form"/>
+			<field name="arch" type="xml">
+
+				<xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="after">
+					<field name="remarks"/>
+				</xpath>
+				<xpath expr="//field[@name='order_line']/tree//field[@name='sequence']" position="after">
+					<field name="number" string="Sr No" store="1"/>
+				</xpath>
+				<xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='partner_id']" position="after">
+					<field name="client_order_ref"/>
+					<field name="incoterm"/>
+				</xpath>
+				<xpath expr="//field[@name='order_line']//tree//field[@name='tax_id']" position="attributes">
+					<attribute name="string">VAT(%)</attribute>
+				</xpath>
+				<xpath expr="//field[@name='order_line']/tree//field[@name='tax_id']" position="after">
+					<field name="vat_amount"/>
+				</xpath>
+				<xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='order_line']/tree//field[@name='discount']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']" position="after">
+					<field name="subtotal"/>
+				</xpath>
+				<xpath expr="//field[@name='amount_untaxed']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+<!--				<xpath expr="//field[@name='amount_untaxed']" position="after">-->
+<!--					<field name="subtotal_amount"/>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//field[@name='amount_by_group']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+								<xpath expr="//field[@name='amount_discount']" position="attributes">
+									<attribute name="invisible">1</attribute>
+								</xpath>
+				<xpath expr="//field[@name='amount_tax']" position="attributes">
+									<attribute name="invisible">1</attribute>
+								</xpath>
+				<xpath expr="//field[@name='amount_untaxed']" position="after">
+					<!--					<field name="perc_discount" readonly="1"/>-->
+					<field name="subtotal_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+					<label for="perc_discount" />
+					<div class="text-nowrap" >
+						<field name="perc_discount" class="oe_inline" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+						<span class="oe_inline">
+							(<field name="perc" nolabel="1" class="oe_inline" />%)
+						</span>
+					</div>
+					<field name="net_total" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+					<field name="net_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+				</xpath>
+
+			</field>
+		</record>
+
+		<record id="sale.product_template_action" model="ir.actions.act_window">
+			<field name="name">Products</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">product.template</field>
+			<field name="view_mode">tree,kanban,form,activity</field>
+			<field name="view_id" ref="product.product_template_tree_view"/>
+			<field name="search_view_id" ref="product.product_template_search_view"/>
+			<field name="context">{"search_default_filter_to_sell":1, "sale_multi_pricelist_product_template": 1}</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Create a new product
+				</p><p>
+				You must define a product for everything you sell or purchase,
+				whether it's a storable product, a consumable or a service.
+			</p>
+			</field>
+		</record>
+
+	</data>
+</odoo>

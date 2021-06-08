@@ -1,0 +1,63 @@
+<odoo>
+	<data>
+
+		<record model="ir.ui.view" id="purchase_order_view_inherit">
+			<field name="name">purchase.order.view.inherit</field>
+			<field name="model">purchase.order</field>
+			<field name="inherit_id" ref="purchase.purchase_order_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='order_line']" position="before">
+					<group>
+						<button name="action_select_products" type="object" string="Select Products" context="{'default_flag_order': 'po'}" attrs="{'invisible': [('state', '!=', 'draft')]}" class="oe_highlight" invisible="1"/>
+					</group>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="view_purchase_order_form_inh" model="ir.ui.view">
+			<field name="name">purchase.order.form.inh</field>
+			<field name="model">purchase.order</field>
+			<field name="inherit_id" ref="purchase.purchase_order_form"/>
+			<field name="arch" type="xml">
+
+				<xpath expr="//button[@name='button_confirm']" position="after">
+					<button string="Pull Products" type="object" class="oe_highlight" name="action_show_sale_products" attrs="{'invisible': [('state','not in', 'draft')]}"/>
+				</xpath>
+
+				<xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="after">
+					<field name="remarks"/>
+				</xpath>
+				<xpath expr="//field[@name='order_line']/tree//field[@name='sequence']" position="after">
+					<field name="number" string="Sr No"/>
+				</xpath>
+				<xpath expr="//div[@name='reminder']" position="after">
+					<!--					<field name="do_no"/>-->
+					<field name="payment_term_id"/>
+				</xpath>
+				<xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+			</field>
+		</record>
+
+		<record id="purchase.product_normal_action_puchased" model="ir.actions.act_window">
+			<field name="name">Products</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">product.template</field>
+			<field name="view_mode">tree,kanban,form,activity</field>
+			<field name="context">{"search_default_filter_to_purchase":1, "purchase_product_template": 1}</field>
+			<field name="search_view_id" ref="product.product_template_search_view"/>
+			<field name="view_id" eval="False"/> <!-- Force empty -->
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					No product found. Let's create one!
+				</p><p>
+				You must define a product for everything you sell or purchase,
+				whether it's a storable product, a consumable or a service.
+			</p>
+			</field>
+		</record>
+
+	</data>
+</odoo>

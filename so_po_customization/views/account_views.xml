@@ -1,0 +1,77 @@
+<odoo>
+	<data>
+
+<!--		<record id="view_account_move_discount_form_inh" model="ir.ui.view">-->
+<!--			<field name="name">account.move.form.inh</field>-->
+<!--			<field name="model">account.move</field>-->
+<!--			<field name="inherit_id" ref="discount_account_invoice.inherit_account_move_form_view"/>-->
+<!--			<field name="arch" type="xml">-->
+
+<!--				<xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='discount_type']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='discount']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+
+<!--			</field>-->
+<!--		</record>-->
+
+		<record id="view_account_move_form_inh" model="ir.ui.view">
+			<field name="name">account.move.form.inh</field>
+			<field name="model">account.move</field>
+			<field name="inherit_id" ref="account.view_move_form"/>
+			<field name="arch" type="xml">
+
+				<xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='name']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='sequence']" position="after">
+					<field name="number" string="Sr No"/>
+				</xpath>
+				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='name']" position="after">
+					<field name="remarks"/>
+				</xpath>
+				<xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='tax_ids']" position="attributes">
+					<attribute name="string">VAT(%)</attribute>
+				</xpath>
+				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='tax_ids']" position="after">
+					<field name="vat_amount"/>
+				</xpath>
+				<xpath expr="//field[@name='amount_untaxed']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='price_subtotal']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='amount_discount']" position="attributes">
+									<attribute name="invisible">1</attribute>
+								</xpath>
+				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='price_subtotal']" position="after">
+					<field name="subtotal"/>
+				</xpath>
+<!--				<xpath expr="//field[@name='total_discount']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+				<xpath expr="//field[@name='amount_by_group']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='amount_untaxed']" position="after">
+<!--					<field name="perc_discount" readonly="1"/>-->
+					<field name="subtotal_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+					<label for="perc_discount" />
+					<div class="text-nowrap" >
+						<field name="perc_discount" class="oe_inline" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+						<span class="oe_inline">
+							(<field name="perc" nolabel="1" class="oe_inline" />%)
+						</span>
+					</div>
+					<field name="net_total" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+					<field name="net_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+				</xpath>
+
+			</field>
+		</record>
+
+	</data>
+</odoo>
