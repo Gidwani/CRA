@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2015 DevIntelle Consulting Service Pvt.Ltd (<http://www.devintellecs.com>).
+
+For Module Support : devintelle@gmail.com  or Skype : devintelle 
+ -->
+<odoo>
+    <record id="view_bulk_export_sale_form" model="ir.ui.view">
+        <field name="name">view.bulk.export.sale.form</field>
+        <field name="model">bulk.export</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+        <form string="Export Sale Order" version="7.0">
+            <h4>Do you want to Export Sale Order in XLS ?</h4>
+            <footer>
+				<button string="Excel" name="export_excel" type="object" class="oe_highlight"/>
+				   or
+		        <button string="Cancel" class="oe_link" special="cancel" />
+            </footer>
+        </form>
+        </field>
+    </record>
+    
+    
+     <act_window id="act_sale_menu"
+                name="Export Sale Order"
+                res_model="bulk.export" 
+                binding_model="sale.order"
+                view_mode="form" 
+                target="new"	
+        />
+    
+
+    <record id="view_bulk_export_purchase_form" model="ir.ui.view">
+        <field name="name">view.bulk.export.purchase.form</field>
+        <field name="model">bulk.export</field>
+        <field name="arch" type="xml">
+        <form string="Export Purchase Order" version="7.0">
+            <h4>Do you want to Export Purchase Order in XLS ?</h4>
+            <footer>
+	    		<button  string="Excel" name="export_excel" type="object" class="oe_highlight"/>
+	    	   	or
+                <button string="Cancel" class="oe_link" special="cancel" />
+            </footer>
+        </form>
+        </field>
+    </record>
+    
+    <act_window id="act_purchase_menu"
+                name="Export Purchase Order"
+                res_model="bulk.export" 
+                binding_model="purchase.order"
+                view_mode="form" 
+                target="new"	
+        />
+
+
+    <record id="view_bulk_export_invoice_form" model="ir.ui.view">
+        <field name="name">view.bulk.export.invoice.form</field>
+        <field name="model">bulk.export</field>
+        <field name="arch" type="xml">
+        <form string="Export Account Invoice" version="7.0">
+            <h4>Do you want to Export Account Invoice in XLS ?</h4>
+            <footer>
+	    		<button string="Excel" name="export_excel" type="object" class="oe_highlight"/>
+	    	   	or
+                <button string="Cancel" class="oe_link" special="cancel" />
+            </footer>
+        </form>
+        </field>
+    </record>
+    
+    <act_window id="act_account_invoice_menu"
+                name="Export Account Invoice"
+                res_model="bulk.export" 
+                binding_model="account.move"
+                view_mode="form" 
+                target="new"	
+        />
+
+
+        
+		
+    <record id="view_bulk_export_excel_form" model="ir.ui.view">
+        <field name="name">bulk.export.excel.form</field>
+        <field name="model">bulk.export.excel</field>
+        <field name="arch" type="xml">
+            <form string="Excel Report file" version="7.0">
+                <group>
+                    <field name="excel_file" readonly="1" filename="file_name"/>
+                    <field name="file_name" invisible="1"/>
+                </group>
+                <footer>
+				    <button string="Cancel" class="oe_link" special="cancel" />
+		        </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="action_bulk_export_excel_form" model="ir.actions.act_window">
+        <field name="name">Export Sale Order Excel </field>
+        <field name="res_model">bulk.export.excel</field>
+        <field name="view_id" ref="view_bulk_export_excel_form"/>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>
