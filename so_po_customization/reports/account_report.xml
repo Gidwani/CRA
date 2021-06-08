@@ -183,7 +183,7 @@
                                     <tr class="border-black o_total">
                                         <td><strong>Total</strong></td>
                                         <td class="text-right">
-                                            <span class="text-nowrap" t-field="o.amount_total"/>
+                                            <span class="text-nowrap" t-field="o.total_amount_net"/>
                                         </td>
                                     </tr>
                                     <t t-if="print_with_payments">
