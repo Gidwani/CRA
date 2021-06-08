@@ -10,6 +10,8 @@ class AccountMoveInh(models.Model):
     perc = fields.Float(compute='compute_percentage')
     net_tax = fields.Float('Tax', compute='compute_taxes')
     subtotal_amount = fields.Float('Subtotal Amount', compute='_compute_net_total')
+    total_amount_net = fields.Float('Total')
+    total_amount_due = fields.Float('Amount Due')
 
     def compute_taxes(self):
         flag = False
@@ -43,8 +45,9 @@ class AccountMoveInh(models.Model):
                 subtotal = subtotal + line.subtotal
             rec.subtotal_amount = subtotal
             rec.net_total = rec.subtotal_amount - rec.perc_discount
-            rec.amount_total = rec.net_total + rec.net_tax
-            rec.amount_residual = rec.net_total + rec.net_tax
+            rec.total_amount_net = rec.net_total + rec.net_tax
+            # rec.amount_total = rec.net_total + rec.net_tax
+            rec.total_amount_due = rec.net_total + rec.net_tax
 
     # def action_post(self):
     #     rec = super(AccountMoveInh, self).action_post()
@@ -84,6 +87,7 @@ class AccountMoveInh(models.Model):
     #     move = super(AccountMoveInh, self).write(vals)
     #
     #     return rec
+
 
 class AccountMoveLineInh(models.Model):
     _inherit = 'account.move.line'
