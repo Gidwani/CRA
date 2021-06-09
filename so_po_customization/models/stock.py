@@ -7,18 +7,19 @@ class ProductTemplateInh(models.Model):
     _inherit = 'product.template'
 
     available_qty = fields.Float('Available Quantity', compute="cal_available_qty")
-    incoming_qty = fields.Float('Incoming Quantity', compute="cal_incoming_qty")
+    incoming_quantity = fields.Float('Incoming Quantity', compute='cal_incoming_quantity')
     hs_code = fields.Char('HS CODE')
 
-    def cal_incoming_qty(self):
-        incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
-        pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', '!=', 'done')])
-        qty = 0
-        for picking in pickings:
-            for line in picking:
-                if line.product_id.id == self.id:
-                    qty = qty + line.quantity_done
-        self.incoming_qty = qty
+    def cal_incoming_quantity(self):
+        for rec in self:
+            incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
+            pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', '!=', 'done')])
+            qty = 0
+            for picking in pickings:
+                for line in picking.move_line_ids_without_package:
+                    if line.product_id.id == rec.id:
+                        qty = qty + line.quantity_done
+            rec.incoming_quantity = qty
 
     def cal_available_qty(self):
         for rec in self:
@@ -29,6 +30,8 @@ class ProductTemplateInh(models.Model):
                 if line.product_tmpl_id.id == rec.id:
                     total = total + line.available_quantity
             rec.available_qty = total
+
+
 
     def get_quant_lines(self):
         domain_loc = self.env['product.product']._get_domain_locations()[0]

@@ -1,22 +1,6 @@
 <odoo>
 	<data>
 
-<!--		<record id="view_account_move_discount_form_inh" model="ir.ui.view">-->
-<!--			<field name="name">account.move.form.inh</field>-->
-<!--			<field name="model">account.move</field>-->
-<!--			<field name="inherit_id" ref="discount_account_invoice.inherit_account_move_form_view"/>-->
-<!--			<field name="arch" type="xml">-->
-
-<!--				<xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='discount_type']" position="attributes">-->
-<!--					<attribute name="invisible">1</attribute>-->
-<!--				</xpath>-->
-<!--				<xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='discount']" position="attributes">-->
-<!--					<attribute name="invisible">1</attribute>-->
-<!--				</xpath>-->
-
-<!--			</field>-->
-<!--		</record>-->
-
 		<record id="view_account_move_form_inh" model="ir.ui.view">
 			<field name="name">account.move.form.inh</field>
 			<field name="model">account.move</field>
@@ -45,8 +29,8 @@
 					<attribute name="invisible">1</attribute>
 				</xpath>
 				<xpath expr="//field[@name='amount_discount']" position="attributes">
-									<attribute name="invisible">1</attribute>
-								</xpath>
+					<attribute name="invisible">1</attribute>
+				</xpath>
 				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='price_subtotal']" position="after">
 					<field name="subtotal"/>
 				</xpath>
@@ -59,23 +43,20 @@
 				<xpath expr="//field[@class='oe_subtotal_footer_separator']" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
-<!--				<xpath expr="//group[@name='oe_subtotal_footer']//field[5]" position="attributes">-->
-<!--					<attribute name="invisible">1</attribute>-->
-<!--				</xpath>-->
-<!--				<xpath expr="//field[@name='total_discount']" position="attributes">-->
-<!--					<attribute name="invisible">1</attribute>-->
-<!--				</xpath>-->
+				<!--				<xpath expr="//field[@name='total_discount']" position="attributes">-->
+				<!--					<attribute name="invisible">1</attribute>-->
+				<!--				</xpath>-->
 				<xpath expr="//field[@name='amount_total']" position="after">
 					<label for="total_amount_net" string="Total"/>
 					<div>
-					<strong><field name="total_amount_net" widget='monetary' options="{'currency_field': 'currency_id'}"/></strong>
+						<strong><field name="total_amount_net" widget='monetary' options="{'currency_field': 'currency_id'}"/></strong>
 					</div>
 				</xpath>
 
 				<xpath expr="//field[@name='amount_residual']" position="after">
 					<label for="total_amount_due" string="Amount Due"/>
 					<div>
-					<strong><field name="total_amount_due" widget='monetary' options="{'currency_field': 'currency_id'}"/></strong>
+						<strong><field name="total_amount_due" widget='monetary' options="{'currency_field': 'currency_id'}"/></strong>
 					</div>
 				</xpath>
 
@@ -83,7 +64,6 @@
 					<attribute name="invisible">1</attribute>
 				</xpath>
 				<xpath expr="//field[@name='amount_untaxed']" position="after">
-<!--					<field name="perc_discount" readonly="1"/>-->
 					<field name="subtotal_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
 					<label for="perc_discount" />
 					<div class="text-nowrap" >
