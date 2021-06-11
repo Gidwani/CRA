@@ -109,7 +109,7 @@ class StockMoveLineInh(models.Model):
         return uom
 
     def get_sr_no(self, picking, product):
-        for line in picking.move_line_ids_without_package:
+        for line in picking.move_ids_without_package:
             if line.product_id.id == product.id:
                 sr = line.number
         return sr
