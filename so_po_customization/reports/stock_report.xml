@@ -184,7 +184,7 @@
                 <span t-esc="move_line.get_sr_no(move_line.picking_id, move_line.product_id)"/>
             </td>
         <td>
-            <span t-field="move_line.product_id"/>
+            <span t-field="move_line.product_id"/><br/><span t-esc="move_line.get_remarks(move_line.picking_id, move_line.product_id)"/>
             <!-- this is an annoying workaround for the multiple types of descriptions (often auto-filled) that we do not want to print -->
             <!-- this makes it so we can pre-filter the descriptions in inherited templates since we cannot extend the standard "if" condition -->
             <!-- let's agree that pre-filtered descriptions will be set to "" -->
