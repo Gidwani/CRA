@@ -108,6 +108,14 @@ class StockMoveLineInh(models.Model):
                 uom = line.product_uom.name
         return uom
 
+    def get_sr_no(self, picking, product):
+        for line in picking.move_line_ids_without_package:
+            if line.product_id.id == product.id:
+                sr = line.number
+        return sr
+
+
+
 
 class StockMoveInh(models.Model):
     _inherit = 'stock.move'
