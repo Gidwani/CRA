@@ -7,18 +7,19 @@ class ProductTemplateInh(models.Model):
     _inherit = 'product.template'
 
     available_qty = fields.Float('Available Quantity', compute="cal_available_qty")
-    incoming_qty = fields.Float('Incoming Quantity', compute="cal_incoming_qty")
+    incoming_quantity = fields.Float('Incoming Quantity', compute='cal_incoming_quantity')
     hs_code = fields.Char('HS CODE')
 
-    def cal_incoming_qty(self):
-        incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
-        pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', '!=', 'done')])
-        qty = 0
-        for picking in pickings:
-            for line in picking:
-                if line.product_id.id == self.id:
-                    qty = qty + line.quantity_done
-        self.incoming_qty = qty
+    def cal_incoming_quantity(self):
+        for rec in self:
+            incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
+            pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', '!=', 'done')])
+            qty = 0
+            for picking in pickings:
+                for line in picking.move_line_ids_without_package:
+                    if line.product_id.id == rec.id:
+                        qty = qty + line.quantity_done
+            rec.incoming_quantity = qty
 
     def cal_available_qty(self):
         for rec in self:
@@ -29,6 +30,7 @@ class ProductTemplateInh(models.Model):
                 if line.product_tmpl_id.id == rec.id:
                     total = total + line.available_quantity
             rec.available_qty = total
+
 
     def get_quant_lines(self):
         domain_loc = self.env['product.product']._get_domain_locations()[0]
@@ -57,7 +59,7 @@ class StockPickingInh(models.Model):
         result = super(StockPickingInh, self).fields_view_get(
             view_id=view_id, view_type=view_type, toolbar=toolbar,
             submenu=submenu)
-        reports = self.env['ir.actions.report'].sudo().search([('report_name', 'in', ['stock.report_picking', 'stock.report_deliveryslip'])])
+        reports = self.env['ir.actions.report'].sudo().search([('report_name', 'in', ['stock.report_picking'])])
         for report in reports:
             report.unlink_action()
         return result
@@ -72,6 +74,19 @@ class StockPickingInh(models.Model):
 
 class StockMoveLineInh(models.Model):
     _inherit = 'stock.move.line'
+
+    def get_product_qty_lot(self, ml):
+        product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
+        print(ml.picking_id.sale_id.name)
+        for line in ml.picking_id.sale_id.order_line:
+            if line.product_id.id == ml.product_id.id:
+                if line.product_uom.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
+                    qty = int(line.product_uom_qty)
+                    qty = str(round(qty, 2)) + " Lth"
+                else:
+                    qty = float(line.product_uom_qty)
+                    qty = str(round(qty, 2)) + ' ' + product_qty.uom_id.name
+        return qty
 
     def get_product_qty(self, ml):
         product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
@@ -105,6 +120,20 @@ class StockMoveLineInh(models.Model):
                 uom = line.product_uom.name
         return uom
 
+    def get_sr_no(self, picking, product):
+        for line in picking.move_ids_without_package:
+            if line.product_id.id == product.id:
+                sr = line.number
+        return sr
+
+    def get_remarks(self, picking, product):
+        for line in picking.move_ids_without_package:
+            if line.product_id.id == product.id:
+                sr = line.remarks
+        return sr
+
+
+
 
 class StockMoveInh(models.Model):
     _inherit = 'stock.move'
@@ -122,6 +151,19 @@ class StockMoveInh(models.Model):
     #             else:
     #                 uom = rec.product_uom
     #         rec.product_uom = uom
+
+    def get_product_qty_lot(self, ml):
+        product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
+        print(ml.picking_id.sale_id.name)
+        for line in ml.picking_id.sale_id.order_line:
+            if line.product_id.id == ml.product_id.id:
+                if line.product_uom.name == 'Lth' and ml.product_uom.name == 'Mtr':
+                    qty = int(line.product_uom_qty)
+                    qty = str(round(qty, 2)) + " Lth"
+                else:
+                    qty = float(line.product_uom_qty)
+                    qty = str(round(qty, 2)) + ' ' + product_qty.uom_id.name
+        return qty
 
     def get_product_uom_id(self, ml, picking):
         for line in picking.sale_id.order_line:
