@@ -80,8 +80,8 @@ class StockMoveLineInh(models.Model):
         print(ml.picking_id.sale_id.name)
         for line in ml.picking_id.sale_id.order_line:
             if line.product_id.id == ml.product_id.id:
-                if line.product_uom.name == 'Lth':
-                    qty = int(line.product_uom_qty)/6
+                if line.product_uom.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
+                    qty = int(line.product_uom_qty)
                     qty = str(round(qty, 2)) + " Lth"
                 else:
                     qty = float(line.product_uom_qty)
@@ -151,6 +151,19 @@ class StockMoveInh(models.Model):
     #             else:
     #                 uom = rec.product_uom
     #         rec.product_uom = uom
+
+    def get_product_qty_lot(self, ml):
+        product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
+        print(ml.picking_id.sale_id.name)
+        for line in ml.picking_id.sale_id.order_line:
+            if line.product_id.id == ml.product_id.id:
+                if line.product_uom.name == 'Lth' and ml.product_uom.name == 'Mtr':
+                    qty = int(line.product_uom_qty)
+                    qty = str(round(qty, 2)) + " Lth"
+                else:
+                    qty = float(line.product_uom_qty)
+                    qty = str(round(qty, 2)) + ' ' + product_qty.uom_id.name
+        return qty
 
     def get_product_uom_id(self, ml, picking):
         for line in picking.sale_id.order_line:
