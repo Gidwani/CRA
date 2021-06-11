@@ -114,6 +114,12 @@ class StockMoveLineInh(models.Model):
                 sr = line.number
         return sr
 
+    def get_remarks(self, picking, product):
+        for line in picking.move_ids_without_package:
+            if line.product_id.id == product.id:
+                sr = line.remarks
+        return sr
+
 
 
 
