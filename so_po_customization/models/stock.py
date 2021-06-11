@@ -60,7 +60,7 @@ class StockPickingInh(models.Model):
         result = super(StockPickingInh, self).fields_view_get(
             view_id=view_id, view_type=view_type, toolbar=toolbar,
             submenu=submenu)
-        reports = self.env['ir.actions.report'].sudo().search([('report_name', 'in', ['stock.report_picking', 'stock.report_deliveryslip'])])
+        reports = self.env['ir.actions.report'].sudo().search([('report_name', 'in', ['stock.report_picking'])])
         for report in reports:
             report.unlink_action()
         return result
