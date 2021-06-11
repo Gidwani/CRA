@@ -32,7 +32,6 @@ class ProductTemplateInh(models.Model):
             rec.available_qty = total
 
 
-
     def get_quant_lines(self):
         domain_loc = self.env['product.product']._get_domain_locations()[0]
         quant_ids = [l['id'] for l in self.env['stock.quant'].search_read(domain_loc, ['id'])]
@@ -75,6 +74,18 @@ class StockPickingInh(models.Model):
 
 class StockMoveLineInh(models.Model):
     _inherit = 'stock.move.line'
+
+    def get_product_qty_lot(self, ml):
+        product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
+
+        for line in ml.picking_id.sale_id.order_line:
+            if line.product_uom.name == 'Lth':
+                qty = int(line.product_uom_qty)/6
+                qty = str(round(qty, 2)) + " Lth"
+            else:
+                qty = float(line.product_uom_qty)
+                qty = str(round(qty, 2)) + ' ' + product_qty.uom_id.name
+        return qty
 
     def get_product_qty(self, ml):
         product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
