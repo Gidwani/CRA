@@ -77,14 +77,15 @@ class StockMoveLineInh(models.Model):
 
     def get_product_qty_lot(self, ml):
         product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
-
+        print(ml.picking_id.sale_id.name)
         for line in ml.picking_id.sale_id.order_line:
-            if line.product_uom.name == 'Lth':
-                qty = int(line.product_uom_qty)/6
-                qty = str(round(qty, 2)) + " Lth"
-            else:
-                qty = float(line.product_uom_qty)
-                qty = str(round(qty, 2)) + ' ' + product_qty.uom_id.name
+            if line.product_id.id == ml.product_id.id:
+                if line.product_uom.name == 'Lth':
+                    qty = int(line.product_uom_qty)/6
+                    qty = str(round(qty, 2)) + " Lth"
+                else:
+                    qty = float(line.product_uom_qty)
+                    qty = str(round(qty, 2)) + ' ' + product_qty.uom_id.name
         return qty
 
     def get_product_qty(self, ml):
