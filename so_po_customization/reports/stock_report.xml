@@ -78,7 +78,7 @@
                                     <!-- If printing lots/serial numbers => keep products in original lines -->
                                     <t t-if="has_serial_number">
                                         <tr t-foreach="package_move_lines" t-as="move_line">
-                                            <t t-call="stock.stock_report_delivery_has_serial_move_line"/>
+                                            <t t-call="stock.stock_report_delivery_has_serial_move_line_inh"/>
                                         </tr>
                                     </t>
                                     <!-- If not printing lots/serial numbers => merge lines with same product+description+uom -->
@@ -93,7 +93,7 @@
                                     <t t-call="stock.stock_report_delivery_no_package_section_line" name="no_package_section"/>
                                     <t t-if="has_serial_number">
                                         <tr t-foreach="move_lines" t-as="move_line">
-                                            <t t-call="stock.stock_report_delivery_has_serial_move_line"/>
+                                            <t t-call="stock.stock_report_delivery_has_serial_move_line_inh"/>
                                         </tr>
                                     </t>
                                     <t t-else="">
@@ -109,7 +109,7 @@
                                 <!-- If printing lots/serial numbers => keep products in original lines -->
                                 <t t-if="has_serial_number">
                                     <tr t-foreach="o.move_line_ids" t-as="move_line">
-                                        <t t-call="stock.stock_report_delivery_has_serial_move_line"/>
+                                        <t t-call="stock.stock_report_delivery_has_serial_move_line_inh"/>
                                     </tr>
                                 </t>
                                 <!-- If not printing lots/serial numbers => merge lines with same product -->
@@ -156,6 +156,14 @@
                         </table>
                     </t>
 
+                <div class="container row" style="margin-top:4em;margin-left:1em;float:right; font-size:15px;">
+                    <div class="col-12">
+                        <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">________________________</span>
+                        <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>
+                        <strong>Signature: </strong><span style="color:black;">____________________________</span>
+                    </div>
+                </div>
+
                     <div t-if="o.signature" class="mt32 ml64 mr4" name="signature">
                         <div class="offset-8">
                             <strong>Signature</strong>
@@ -170,6 +178,31 @@
                 </div>
         </xpath>
      </template>
+
+        <template id="stock_report_delivery_has_serial_move_line_inh">
+            <td class="text-center">
+                                            <span t-field="move_line.number"/>
+                                        </td>
+        <td>
+            <span t-field="move_line.product_id"/>
+            <!-- this is an annoying workaround for the multiple types of descriptions (often auto-filled) that we do not want to print -->
+            <!-- this makes it so we can pre-filter the descriptions in inherited templates since we cannot extend the standard "if" condition -->
+            <!-- let's agree that pre-filtered descriptions will be set to "" -->
+            <t t-if="not description and description != ''">
+                <t t-set="description" t-value="move_line.move_id.description_picking"/>
+            </t>
+            <p t-if="description !='' and description != move_line.product_id.name">
+                <span t-esc="description"/>
+            </p>
+        </td>
+        <t t-if="has_serial_number" name="move_line_lot">
+            <td><span t-field="move_line.lot_id.name"/></td>
+        </t>
+        <td class="text-center" name="move_line_lot_qty_done">
+            <span t-field="move_line.qty_done"/>
+            <span t-field="move_line.product_uom_id"/>
+        </td>
+    </template>
 
 
     <template id="stock_report_inherit" inherit_id="stock.report_picking">
