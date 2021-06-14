@@ -404,9 +404,9 @@
 								<xpath expr="//field[@name='amount_discount']" position="attributes">
 									<attribute name="invisible">1</attribute>
 								</xpath>
-				<xpath expr="//field[@name='amount_tax']" position="attributes">
-									<attribute name="invisible">1</attribute>
-								</xpath>
+<!--				<xpath expr="//field[@name='amount_tax']" position="attributes">-->
+<!--									<attribute name="invisible">1</attribute>-->
+<!--								</xpath>-->
 				<xpath expr="//field[@name='amount_untaxed']" position="after">
 					<!--					<field name="perc_discount" readonly="1"/>-->
 					<field name="subtotal_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
@@ -418,7 +418,7 @@
 						</span>
 					</div>
 					<field name="net_total" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-					<field name="net_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+					<field name="net_tax" widget='monetary' invisible="1" options="{'currency_field': 'currency_id'}"/>
 				</xpath>
 
 			</field>
