@@ -1,6 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError
+
+
+class ProductProductInh(models.Model):
+    _inherit = 'product.product'
+
+    def name_get(self):
+        res = []
+        for rec in self:
+            res.append((rec.id, '%s ' % (rec.name)))
+        return res
 
 
 class ProductTemplateInh(models.Model):
@@ -16,9 +27,9 @@ class ProductTemplateInh(models.Model):
             pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', '!=', 'done')])
             qty = 0
             for picking in pickings:
-                for line in picking.move_line_ids_without_package:
-                    if line.product_id.id == rec.id:
-                        qty = qty + line.quantity_done
+                for line in picking.move_ids_without_package:
+                    if line.product_id.product_tmpl_id.id == rec.id:
+                        qty = qty + line.product_uom_qty
             rec.incoming_quantity = qty
 
     def cal_available_qty(self):
@@ -31,7 +42,6 @@ class ProductTemplateInh(models.Model):
                     total = total + line.available_quantity
             rec.available_qty = total
 
-
     def get_quant_lines(self):
         domain_loc = self.env['product.product']._get_domain_locations()[0]
         quant_ids = [l['id'] for l in self.env['stock.quant'].search_read(domain_loc, ['id'])]
@@ -43,6 +53,12 @@ class StockPickingInh(models.Model):
 
     do_no = fields.Char("Supplier Do #")
     is_receipt = fields.Boolean(compute='compute_is_receipt')
+
+    # def check_state(self):
+    #     if self.state != 'done':
+    #         raise UserWarning(('You cannot print report in this state'))
+    #     else:
+    #         return "True"
 
     def get_seq(self, picking):
         return 'Picklist/'+picking.name.split('/')[1]+"/"+picking.name.split('/')[2] + "/"+picking.name.split('/')[3]
@@ -74,6 +90,31 @@ class StockPickingInh(models.Model):
 
 class StockMoveLineInh(models.Model):
     _inherit = 'stock.move.line'
+
+    remarks = fields.Char("Remarks", compute='_compute_remarks')
+    number = fields.Integer(compute='_compute_get_number', store=True)
+
+    def _compute_remarks(self):
+        for rec in self:
+            if rec.picking_id.sale_id:
+                for line in rec.picking_id.sale_id.order_line:
+                    if rec.product_id.id == line.product_id.id:
+                        rec.remarks = line.remarks
+
+            elif rec.picking_id.purchase_id:
+                for line in rec.picking_id.purchase_id.order_line:
+                    if rec.product_id.id == line.product_id.id:
+                        rec.remarks = line.remarks
+            else:
+                rec.remarks = ''
+
+    @api.depends('picking_id')
+    def _compute_get_number(self):
+        for order in self.mapped('picking_id'):
+            number = 1
+            for line in order.move_line_ids_without_package:
+                line.number = number
+                number += 1
 
     def get_product_qty_lot(self, ml):
         product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
@@ -131,8 +172,6 @@ class StockMoveLineInh(models.Model):
             if line.product_id.id == product.id:
                 sr = line.remarks
         return sr
-
-
 
 
 class StockMoveInh(models.Model):

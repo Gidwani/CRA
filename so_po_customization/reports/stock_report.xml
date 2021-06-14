@@ -3,7 +3,9 @@
      <template id="stock_delivery_report_inherit" inherit_id="stock.report_delivery_document">
 
         <xpath expr="//div[@class='page']" position="replace">
+            <t t-if="o.state == 'done'">
             <div class="page">
+
                     <h2>
                         <span t-field="o.name"/>
                     </h2>
@@ -191,7 +193,13 @@
                             <p t-field="o.partner_id.name"/>
                         </div>
                     </div>
+
                 </div>
+            </t>
+                <t t-else="">
+<!--                    <span t-esc="o.check_state()"/>-->
+                   <div class="text-center"> <h2>Waiting for Approval</h2></div>
+                </t>
         </xpath>
      </template>
 

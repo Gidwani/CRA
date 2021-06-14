@@ -34,27 +34,18 @@
 			</field>
 		</record>
 
-<!--		<record id="view_sale_order_discount_form_inh" model="ir.ui.view">-->
-<!--			<field name="name">sale.order.form.inh</field>-->
-<!--			<field name="model">sale.order</field>-->
-<!--			<field name="inherit_id" ref="discount_sale_order.inherit_sale_order_line_tree_view"/>-->
-<!--			<field name="arch" type="xml">-->
+		<record id="view_sale_order_discount_form_inh" model="ir.ui.view">
+			<field name="name">sale.order.form.inh</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale_discount_total.discount_sale_view_form"/>
+			<field name="arch" type="xml">
 
-<!--				<xpath expr="//field[@name='order_line']//tree//field[@name='discount_type']" position="attributes">-->
-<!--					<attribute name="invisible">1</attribute>-->
-<!--				</xpath>-->
-<!--				<xpath expr="//field[@name='order_line']//tree//field[@name='discount']" position="attributes">-->
-<!--					<attribute name="invisible">1</attribute>-->
-<!--				</xpath>-->
-<!--				<xpath expr="//field[@name='amount_tax']" position="attributes">-->
-<!--					<attribute name="invisible">1</attribute>-->
-<!--				</xpath>-->
-<!--				<xpath expr="//field[@name='global_order_discount']" position="after">-->
-<!--					<field name="note_picklist"/>-->
-<!--				</xpath>-->
+				<xpath expr="//field[@name='discount_rate']" position="after">
+					<field name="note_picklist"/>
+				</xpath>
 
-<!--			</field>-->
-<!--		</record>-->
+			</field>
+		</record>
 
 		<record id="view_sale_order_form_inh" model="ir.ui.view">
 			<field name="name">sale.order.form.inh</field>
@@ -62,43 +53,61 @@
 			<field name="inherit_id" ref="sale.view_order_form"/>
 			<field name="arch" type="xml">
 
-				<xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="after">
-					<field name="remarks"/>
+				<xpath expr="//field[@name='order_line']" position="replace">
+					<field name="order_line" attrs="{'readonly': [('state', '!=', 'draft')]}" >
+						<tree editable="bottom">
+							<field name="number" width="3%" string="Sr No"/>
+							<field name="product_id" width="35%"/>
+							<field name="remarks" width="15%"/>
+							<field name="product_uom_qty" width="5%"/>
+							<field name="product_uom" width="5%" string="UOM"/>
+							<field name="price_unit" width="5%" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+							<field name="purchase_price" width="5%"/>
+							<field name="margin" width="5%"/>
+							<field name="margin_percent" width="5%"/>
+							<field name="tax_id" string="VAT(%)" width="7%" widget="many2many_tags"/>
+							<field name="vat_amount" width="5%" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+							<field name="subtotal" width="5%" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+							<field name="company_id" invisible="1"/>
+							<field name="product_uom_category_id" invisible="1"/>
+						</tree>
+					</field>
 				</xpath>
-				<xpath expr="//field[@name='order_line']/tree//field[@name='sequence']" position="after">
-					<field name="number" string="Sr No" store="1"/>
-				</xpath>
-				<xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="attributes">
-					<attribute name="invisible">1</attribute>
-				</xpath>
+
+<!--				<xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="after">-->
+<!--					<field name="remarks"/>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//field[@name='order_line']/tree//field[@name='sequence']" position="after">-->
+<!--					<field name="number" string="Sr No" store="1"/>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
 				<xpath expr="//field[@name='partner_id']" position="after">
 					<field name="client_order_ref"/>
 					<field name="incoterm"/>
 				</xpath>
-				<xpath expr="//field[@name='order_line']//tree//field[@name='tax_id']" position="attributes">
-					<attribute name="string">VAT(%)</attribute>
-				</xpath>
-				<xpath expr="//field[@name='order_line']/tree//field[@name='tax_id']" position="after">
-					<field name="vat_amount"/>
-				</xpath>
-				<xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']" position="attributes">
-					<attribute name="invisible">1</attribute>
-				</xpath>
-				<xpath expr="//field[@name='order_line']/tree//field[@name='discount']" position="attributes">
-					<attribute name="invisible">1</attribute>
-				</xpath>
-				<xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']" position="after">
-					<field name="subtotal"/>
-				</xpath>
+<!--				<xpath expr="//field[@name='order_line']//tree//field[@name='tax_id']" position="attributes">-->
+<!--					<attribute name="string">VAT(%)</attribute>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//field[@name='order_line']/tree//field[@name='tax_id']" position="after">-->
+<!--					<field name="vat_amount" />-->
+<!--				</xpath>-->
+<!--				<xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//field[@name='order_line']/tree//field[@name='discount']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+
+<!--				<xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']" position="after">-->
+<!--					<field name="subtotal" />-->
+<!--				</xpath>-->
+
 				<xpath expr="//field[@name='amount_untaxed']" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
-<!--				<xpath expr="//field[@name='amount_untaxed']" position="after">-->
-<!--					<field name="subtotal_amount"/>-->
-<!--				</xpath>-->
-<!--				<xpath expr="//field[@name='amount_by_group']" position="attributes">-->
-<!--					<attribute name="invisible">1</attribute>-->
-<!--				</xpath>-->
+
 								<xpath expr="//field[@name='amount_discount']" position="attributes">
 									<attribute name="invisible">1</attribute>
 								</xpath>
