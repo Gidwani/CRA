@@ -152,7 +152,7 @@
                                 <tr class="border-black o_subtotal" style="">
                                     <td name="td_amount_untaxed_label"><strong>Subtotal</strong></td>
                                     <td name="td_amount_untaxed" class="text-right">
-                                        <span t-field="doc.subtotal_amount"/>
+                                        <span t-field="doc.subtotal_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
                                     </td>
                                 </tr>
                                 <tr class="border-black o_subtotal" style="">

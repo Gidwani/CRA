@@ -57,6 +57,7 @@ class SaleOrderInh(models.Model):
             qty = str(round(qty, 2)) + ' ' + product_qty.uom_id.name
         return qty
 
+    @api.depends('order_line')
     def compute_taxes(self):
         flag = False
         for rec in self.order_line:
