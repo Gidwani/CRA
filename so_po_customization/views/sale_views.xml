@@ -132,10 +132,10 @@
                                             <field name="analytic_tag_ids" widget="many2many_tags" groups="analytic.group_analytic_tags" options="{'color_field': 'color'}" domain="['|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"/>
                                         </group>
                                     </group>
-                                    <label for="name" string="Description" attrs="{'invisible': [('display_type', '!=', False)]}"/>
-                                    <label for="name" string="Section Name (eg. Products, Services)" attrs="{'invisible': [('display_type', '!=', 'line_section')]}"/>
-                                    <label for="name" string="Note" attrs="{'invisible': [('display_type', '!=', 'line_note')]}"/>
-                                    <field name="name"/>
+<!--                                    <label for="name" string="Description" attrs="{'invisible': [('display_type', '!=', False)]}"/>-->
+<!--                                    <label for="name" string="Section Name (eg. Products, Services)" attrs="{'invisible': [('display_type', '!=', 'line_section')]}"/>-->
+<!--                                    <label for="name" string="Note" attrs="{'invisible': [('display_type', '!=', 'line_note')]}"/>-->
+<!--                                    <field name="name"/>-->
                                     <div name="invoice_lines" groups="base.group_no_one" attrs="{'invisible': [('display_type', '!=', False)]}">
                                         <label for="invoice_lines"/>
                                         <field name="invoice_lines"/>
@@ -154,7 +154,7 @@
 							<field name="product_id"
                                         attrs="{
                                             'readonly': [('product_updatable', '=', False)],
-                                            'required': [('display_type', '=', False)],
+
                                         }"
                                         options="{'no_open': True}"
                                         force_save="1"
@@ -173,7 +173,7 @@
                                       invisible="1"
                                       attrs="{
                                           'readonly': [('product_updatable', '=', False)],
-                                          'required': [('display_type', '=', False)],
+
                                       }"
                                       options="{'no_open': True}"
                                       context="{
