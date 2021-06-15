@@ -13,6 +13,8 @@ class SaleOrderInh(models.Model):
     note_picklist = fields.Char('Note')
     subtotal_amount = fields.Float('Subtotal Amount', compute='_compute_net_total')
 
+
+
     def action_select_products(self):
         return {
             'type': 'ir.actions.act_window',

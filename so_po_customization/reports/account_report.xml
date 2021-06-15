@@ -138,7 +138,7 @@
                                     <tr class="border-black o_subtotal" style="">
                                         <td><strong>Subtotal</strong></td>
                                         <td class="text-right">
-                                            <span t-field="o.subtotal_amount"/>
+                                            <span t-field="o.subtotal_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                         </td>
                                     </tr>
                                     <tr class="border-black o_subtotal" style="">
@@ -183,7 +183,7 @@
                                     <tr class="border-black o_total">
                                         <td><strong>Total</strong></td>
                                         <td class="text-right">
-                                            <span class="text-nowrap" t-field="o.total_amount_net"/>
+                                            <span class="text-nowrap" t-field="o.total_amount_net" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                         </td>
                                     </tr>
                                     <t t-if="print_with_payments">
