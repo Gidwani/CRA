@@ -185,6 +185,7 @@
                                         }"
                                         domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
                                         widget="product_configurator"
+                                        class="text-wrap"
                                         width="20%"
                                     />
                                     <field name="remarks" width="10%"/>
