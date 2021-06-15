@@ -4,6 +4,11 @@ from odoo import models, fields, api
 class PurchaseOrderInh(models.Model):
     _inherit = 'purchase.order'
 
+    @api.onchange('partner_ref')
+    def onchange_ref(self):
+        print(self.partner_id.name)
+        print("hello")
+
     def action_show_sale_products(self):
         return {
             'type': 'ir.actions.act_window',
