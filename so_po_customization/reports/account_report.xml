@@ -8,7 +8,7 @@
 
             <div class="page">
                     <h2>
-                        <span t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Tax Invoice</span>
+<!--                         <span t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Tax Invoice</span> -->
                         <span t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
                         <span t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
                         <span t-if="o.move_type == 'out_refund'">Credit Note</span>
