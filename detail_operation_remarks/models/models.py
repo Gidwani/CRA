@@ -21,9 +21,9 @@ class StockMoveLineInh(models.Model):
 
     @api.depends('picking_id')
     def _compute_get_number(self):
-        for order in self.mapped('order_id'):
+        for order in self.mapped('picking_id'):
             number = 1
-            for line in order.order_line:
+            for line in order.move_line_ids_without_package:
                 line.number = number
                 number += 1
 
