@@ -47,6 +47,10 @@
                                     <strong>Sale Order:</strong>
                                     <p t-field="o.sale_id.name"/>
                                 </div>
+                                <div t-if="o.sale_id.partner_id" class="col-auto" name="div_origin">
+                                    <strong>Customer Name:</strong>
+                                    <p t-field="o.sale_id.partner_id.name"/>
+                                </div>
                                 <div t-if="o.sale_id.date_order" class="col-auto" name="div_origin">
                                     <strong>Order Date:</strong>
                                     <p t-field="o.sale_id.date_order"/>

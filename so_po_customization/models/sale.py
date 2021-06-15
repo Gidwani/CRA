@@ -13,6 +13,8 @@ class SaleOrderInh(models.Model):
     note_picklist = fields.Char('Note')
     subtotal_amount = fields.Float('Subtotal Amount', compute='_compute_net_total')
 
+
+
     def action_select_products(self):
         return {
             'type': 'ir.actions.act_window',
@@ -57,6 +59,7 @@ class SaleOrderInh(models.Model):
             qty = str(round(qty, 2)) + ' ' + product_qty.uom_id.name
         return qty
 
+    @api.depends('order_line', 'discount_rate')
     def compute_taxes(self):
         flag = False
         for rec in self.order_line:
@@ -67,6 +70,7 @@ class SaleOrderInh(models.Model):
         else:
             self.net_tax = 0
 
+    @api.depends('discount_rate')
     def compute_percentage(self):
         for rec in self:
             if rec.discount_type == 'percent':
@@ -74,6 +78,7 @@ class SaleOrderInh(models.Model):
             else:
                 rec.perc = (rec.discount_rate/rec.subtotal_amount) * 100
 
+    @api.depends('discount_rate')
     def _compute_discount(self):
         for rec in self:
             if rec.discount_type == 'percent':
@@ -90,11 +95,6 @@ class SaleOrderInh(models.Model):
             rec.subtotal_amount = subtotal
             rec.net_total = rec.subtotal_amount - rec.perc_discount
             rec.amount_total = rec.net_total + rec.amount_tax
-    #
-    # @api.onchange('client_order_ref')
-    # def _onchange_client_order_ref(self):
-    #     for rec in self.order_line:
-    #         print(rec.number)
 
 
 class SaleOrderLineInh(models.Model):
@@ -104,6 +104,16 @@ class SaleOrderLineInh(models.Model):
     number = fields.Integer(compute='_compute_get_number', store=True)
     vat_amount = fields.Float('VAT Amount', compute='_compute_vat_amount')
     subtotal = fields.Float('Subtotal', compute='_compute_subtotal')
+
+    def unlink(self):
+        i = 1
+        for rec in self.order_id.order_line:
+            if rec.id != self.id:
+                rec.update({
+                    'number': i
+                })
+                i = i + 1
+        record = super(SaleOrderLineInh, self).unlink()
 
     @api.depends('price_unit', 'product_uom_qty')
     def _compute_subtotal(self):

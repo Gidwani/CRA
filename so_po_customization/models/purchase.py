@@ -4,6 +4,11 @@ from odoo import models, fields, api
 class PurchaseOrderInh(models.Model):
     _inherit = 'purchase.order'
 
+    @api.onchange('partner_ref')
+    def onchange_ref(self):
+        print(self.partner_id.name)
+        print("hello")
+
     def action_show_sale_products(self):
         return {
             'type': 'ir.actions.act_window',
@@ -53,3 +58,13 @@ class PurchaseOrderLineInh(models.Model):
             # filter taxes by company
             # taxes = line.product_id.supplier_taxes_id.filtered(lambda r: r.company_id == line.env.company)
             # line.taxes_id = fpos.map_tax(taxes, line.product_id, line.order_id.partner_id)
+
+    def unlink(self):
+        i = 1
+        for rec in self.order_id.order_line:
+            if rec.id != self.id:
+                rec.update({
+                    'number': i
+                })
+                i = i + 1
+        record = super(PurchaseOrderLineInh, self).unlink()

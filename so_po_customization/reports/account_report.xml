@@ -8,7 +8,7 @@
 
             <div class="page">
                     <h2>
-                        <span t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Invoice</span>
+<!--                         <span t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Tax Invoice</span> -->
                         <span t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
                         <span t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
                         <span t-if="o.move_type == 'out_refund'">Credit Note</span>
@@ -138,12 +138,13 @@
                                     <tr class="border-black o_subtotal" style="">
                                         <td><strong>Subtotal</strong></td>
                                         <td class="text-right">
-                                            <span t-field="o.subtotal_amount"/>
+                                            <span t-field="o.subtotal_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                         </td>
                                     </tr>
                                     <tr class="border-black o_subtotal" style="">
-                                    <td name="td_perc_discount_label"><strong>Discount( <span t-esc="o.perc" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%)</strong></td>
-                                    <td name="td_perc_discount" class="text-right">
+<!--                                    <td name="td_perc_discount_label"><strong>Discount( <span t-esc="o.perc" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%)</strong></td>-->
+                                    <td name="td_perc_discount"><strong>Discount</strong></td>
+                                        <td name="td_perc_discount" class="text-right">
                                         <span t-field="o.perc_discount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                     </td>
                                 </tr>
@@ -183,7 +184,7 @@
                                     <tr class="border-black o_total">
                                         <td><strong>Total</strong></td>
                                         <td class="text-right">
-                                            <span class="text-nowrap" t-field="o.total_amount_net"/>
+                                            <span class="text-nowrap" t-field="o.total_amount_net" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                         </td>
                                     </tr>
                                     <t t-if="print_with_payments">
