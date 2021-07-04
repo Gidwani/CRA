@@ -131,7 +131,7 @@ class StockMoveLineInh(models.Model):
         qty = 0
         if ml.picking_id.sale_id:
             for line in ml.picking_id.sale_id.order_line:
-                if line.product_id.id == ml.product_id.id:
+                if line.product_id.id == ml.product_id.id and line.number == ml.number:
                     if line.product_uom.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
                         qty = int(line.product_uom_qty)
                         qty = str(round(qty, 2)) + " Lth"
@@ -140,7 +140,7 @@ class StockMoveLineInh(models.Model):
                         qty = str(round(qty, 2)) + ' ' + product_qty.uom_id.name
         if ml.picking_id.purchase_id:
             for line in ml.picking_id.purchase_id.order_line:
-                if line.product_id.id == ml.product_id.id:
+                if line.product_id.id == ml.product_id.id and line.number == ml.number:
                     if line.product_uom.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
                         qty = int(line.product_qty)
                         qty = str(round(qty, 2)) + " Lth"
@@ -213,10 +213,9 @@ class StockMoveInh(models.Model):
 
     def get_product_qty_lot(self, ml):
         product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
-        print(ml.picking_id.sale_id.name)
         qty = 0
         for line in ml.picking_id.sale_id.order_line:
-            if line.product_id.id == ml.product_id.id:
+            if line.product_id.id == ml.product_id.id and line.number == ml.number:
                 if line.product_uom.name == 'Lth' and ml.product_uom.name == 'Mtr':
                     qty = int(line.product_uom_qty)
                     qty = str(round(qty, 2)) + " Lth"
