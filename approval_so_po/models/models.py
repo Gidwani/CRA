@@ -49,10 +49,16 @@ class StockMoveLineInh(models.Model):
 
     @api.onchange('qty_done')
     def onchange_done_qty(self):
-        for do_line in self.picking_id.move_ids_without_package:
-            if self.product_id.id == do_line.product_id.id:
-                if not self.qty_done <= do_line.product_uom_qty:
-                    raise UserError('Quantity Should be Less or Equal to Reserved')
+        for rec in self:
+            # print(rec.move_id)
+            # print(rec.move_id.product_uom_qty)
+            # for do_line in rec.picking_id.move_ids_without_package:
+            # print(do_line)
+            #     if rec.product_id.id == do_line.product_id.id:
+            # print(do_line.product_uom_qty, rec.qty_done)
+            # if rec.move_id.product_uom_qty == rec.qty_done:
+            if not rec.qty_done <= rec.move_id.product_uom_qty:
+                raise UserError('Quantity Should be Less or Equal to Reserved')
 
 
 class StockMoveInh(models.Model):
