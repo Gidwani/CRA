@@ -27,11 +27,11 @@
                     </h2>
                     <div class="row mt32 mb32">
                         <div t-if="o.origin" class="col-auto" name="div_origin">
-                            <strong>Order:</strong>
+                            <strong>SO #:</strong>
                             <p t-field="o.origin"/>
                         </div>
-                        <div t-if="o.state" class="col-auto" name="div_sched_date">
-                            <strong>Shipping Date:</strong>
+                        <div t-if="o.date_done" class="col-auto" name="div_sched_date">
+                            <strong>DO Date:</strong>
                             <t t-if="o.state == 'done'">
                                 <p t-field="o.date_done"/>
                             </t>
@@ -39,6 +39,21 @@
                                 <p t-field="o.scheduled_date"/>
                            </t>
                         </div>
+                        <div t-if="o.sale_id.client_order_ref" class="col-auto" name="div_sched_date">
+                            <strong>PO #:</strong>
+                            <t t-if="o.state == 'done'">
+                                <p t-field="o.sale_id.client_order_ref"/>
+                            </t>
+                            <t t-if="o.state != 'done'">
+                                <p t-field="o.sale_id.client_order_ref"/>
+                           </t>
+                        </div>
+
+                        <div t-if="doc.incoterm" class="col-auto col-3 mw-100 mb-2">
+                        <strong>Incoterm:</strong>
+                        <p class="m-0" t-field="o.sale_id.incoterm"/>
+                    </div>
+
                     </div>
                     <table class="table table-sm" t-if="o.state!='done'" name="stock_move_table">
                         <thead>

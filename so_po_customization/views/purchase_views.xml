@@ -33,6 +33,7 @@
 				</xpath>
 				<xpath expr="//field[@name='order_line']/tree//field[@name='sequence']" position="after">
 					<field name="number" string="Sr No"/>
+					<field name="so_ref"/>
 				</xpath>
 				<xpath expr="//div[@name='reminder']" position="after">
 					<!--					<field name="do_no"/>-->

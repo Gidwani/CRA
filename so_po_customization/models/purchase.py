@@ -36,6 +36,7 @@ class PurchaseOrderLineInh(models.Model):
 
     remarks = fields.Char("Remarks")
     number = fields.Integer(compute='_compute_get_number', store=True)
+    so_ref = fields.Integer('Ref')
 
     @api.depends('sequence', 'order_id')
     def _compute_get_number(self):
