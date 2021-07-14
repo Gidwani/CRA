@@ -185,7 +185,7 @@
         </div>
 
         <div t-attf-class="footer o_boxed_footer o_company_#{company.id}_layout">
-            <div class="text-center">--This is a system generated document--</div>
+            <div class="text-center">--This is a system generated document. No Signature required--</div>
 
             <div class="text-center">
                 <ul class="list-inline">

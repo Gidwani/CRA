@@ -58,7 +58,7 @@ class StockPickingInh(models.Model):
         total = 0
         for rec in self.move_line_ids_without_package:
             total = total + rec.qty_done
-        return total
+        return round(total, 2)
 
     def get_delivery(self):
         delivery = self.env['stock.picking.type'].search([('code', '=', 'outgoing')], limit=1)
@@ -94,13 +94,6 @@ class StockPickingInh(models.Model):
         for report in reports:
             report.unlink_action()
         return result
-
-    # @api.model
-    # def create(self, vals):
-    #     if vals.get('name', _('New')) == _('New'):
-    #         vals['name'] = self.env['ir.sequence'].next_by_code('stock.picking.sequence') or _('New')
-    #     result = super(StockPickingInh, self).create(vals)
-    #     return result
 
 
 class StockMoveLineInh(models.Model):
@@ -192,9 +185,10 @@ class StockMoveLineInh(models.Model):
                 sr = line.number
         return sr
 
-    def get_remarks(self, picking, product):
+    def get_remarks(self, picking, rec):
+        sr = ''
         for line in picking.move_ids_without_package:
-            if line.product_id.id == product.id:
+            if line.product_id.id == rec.product_id.id and rec.number == line.number:
                 sr = line.remarks
         return sr
 
@@ -238,18 +232,18 @@ class StockMoveInh(models.Model):
         return uom
 
     def _compute_remarks(self):
+        rem = ''
         for rec in self:
             if rec.picking_id.sale_id:
                 for line in rec.picking_id.sale_id.order_line:
-                    if rec.product_id.id == line.product_id.id:
-                        rec.remarks = line.remarks
+                    if rec.product_id.id == line.product_id.id and line.number == rec.number:
+                        rem = line.remarks
 
             elif rec.picking_id.purchase_id:
                 for line in rec.picking_id.purchase_id.order_line:
                     if rec.product_id.id == line.product_id.id:
-                        rec.remarks = line.remarks
-            else:
-                rec.remarks = ''
+                        rem= line.remarks
+            rec.remarks = rem
 
     @api.depends('picking_id')
     def _compute_get_number(self):
