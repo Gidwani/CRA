@@ -12,12 +12,14 @@ class StockMoveLineInh(models.Model):
 
     def compute_so_sr_no(self):
         for rec in self:
-            if rec.picking_id.sale_id:
-                for line in rec.picking_id.sale_id.order_line:
-                    if line.product_id.id == rec.product_id.id:
-                        rec.so_no = line.number
-            else:
-                rec.so_no = 0
+            rec.so_no = rec.move_id.number
+            # if rec.picking_id.sale_id:
+            #     for line in rec.picking_id.sale_id.order_line:
+            #         if line.product_id.id == rec.product_id.id and line.number == rec.number:
+            #             rec.so_no = line.number
+            #
+            # else:
+            #     rec.so_no = 0
 
     @api.depends('picking_id')
     def _compute_get_number(self):
@@ -31,7 +33,7 @@ class StockMoveLineInh(models.Model):
         for rec in self:
             if rec.picking_id.sale_id:
                 for line in rec.picking_id.sale_id.order_line:
-                    if rec.product_id.id == line.product_id.id:
+                    if rec.product_id.id == line.product_id.id and line.number == rec.number:
                         rec.remarks = line.remarks
             elif rec.picking_id.purchase_id:
                 for line in rec.picking_id.purchase_id.order_line:
