@@ -9,6 +9,7 @@ class StockMoveLineInh(models.Model):
     remarks = fields.Char("Remarks", compute='_compute_remarks')
     number = fields.Integer(compute='_compute_get_number', store=True)
     so_no = fields.Integer(compute='compute_so_sr_no')
+    is_backorder = fields.Boolean()
 
     def compute_so_sr_no(self):
         for rec in self:

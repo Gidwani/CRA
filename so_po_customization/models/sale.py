@@ -164,14 +164,15 @@ class SaleOrderInh(models.Model):
 
     def get_product_qty(self, ml):
         product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
-
         # for line in ml.sale_id.order_line:
         if ml.product_uom.name == 'Lth':
             qty = int(product_qty.available_qty)/6
-            qty = str(round(qty, 2)) + " Lth"
+            formatted_float = "{:.2f}".format(float(qty))
+            qty = str(formatted_float) + " Lth"
         else:
             qty = float(product_qty.available_qty)
-            qty = str(round(qty, 2)) + ' ' + product_qty.uom_id.name
+            formatted_float = "{:.2f}".format(qty)
+            qty = str(formatted_float) + ' ' + product_qty.uom_id.name
         return qty
 
     def get_onhand_qty(self, ml):
@@ -179,11 +180,12 @@ class SaleOrderInh(models.Model):
         # for line in ml.sale_id.order_line:
         if ml.product_uom.name == 'Lth':
             qty = int(product_qty.qty_available)/6
-            qty = str(round(qty, 2)) + " Lth"
-
+            formatted_float = "{:.2f}".format(float(qty))
+            qty = str(formatted_float) + " Lth"
         else:
             qty = float(product_qty.qty_available)
-            qty = str(round(qty, 2)) + ' ' + product_qty.uom_id.name
+            formatted_float = "{:.2f}".format(qty)
+            qty = str(formatted_float) + ' ' + product_qty.uom_id.name
         return qty
 
     @api.depends('order_line', 'discount_rate')

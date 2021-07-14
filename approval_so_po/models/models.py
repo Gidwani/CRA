@@ -703,7 +703,7 @@ class StockPickingInh(models.Model):
             if self.state == 'assigned':
                 check = False
                 for rec in self.move_line_ids_without_package:
-                    if rec.qty_done == 0:
+                    if rec.qty_done == 0 and not rec.is_backorder:
                         check = True
                 if check:
                     raise UserError('Kindly Add Done Quantities Before Validate')
