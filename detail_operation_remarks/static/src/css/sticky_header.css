@@ -1,6 +1,9 @@
 .o_list_view .o_list_table tbody > tr[data-id*="product.template"] > td:nth-child(8){
 background-color:#22bb33;
+color:white;
 }
+
 .o_list_view .o_list_table tbody > tr[data-id*="product.template"] > td:nth-child(6){
 background-color:#22bb33;
+color:white;
 }
