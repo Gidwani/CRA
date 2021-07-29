@@ -134,7 +134,13 @@ class StockMoveLineInh(models.Model):
 
     def compute_so_sr_no(self):
         for rec in self:
-            rec.so_no = rec.move_id.number
+            if not rec.picking_id.backorder_id:
+                rec.so_no = rec.move_id.number
+            else:
+                for line in rec.picking_id.backorder_id.move_line_ids_without_package:
+                    print(line)
+                    if line.product_id.id == rec.product_id.id:
+                        rec.so_no = line.so_no
             # if rec.picking_id.sale_id:
             #     for line in rec.picking_id.sale_id.order_line:
             #         if line.product_id.id == rec.product_id.id and line.number == rec.number:
