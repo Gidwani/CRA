@@ -46,6 +46,7 @@ class SaleOrderWizard(models.TransientModel):
                     'product_qty': line.qty,
                     'price_unit': line.product_id.list_price,
                     'so_ref': line.sr_no,
+                    'sale_order': line.sale_order,
                     'taxes_id': [tax_id.id],
                 }
                 val_list.append(val)

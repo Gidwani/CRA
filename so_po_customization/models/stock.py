@@ -280,6 +280,7 @@ class StockMoveInh(models.Model):
     def _compute_remarks(self):
         rem = ''
         for rec in self:
+
             if rec.picking_id.sale_id:
                 for line in rec.picking_id.sale_id.order_line:
                     if rec.product_id.id == line.product_id.id and line.number == rec.number:
@@ -289,6 +290,11 @@ class StockMoveInh(models.Model):
                 for line in rec.picking_id.purchase_id.order_line:
                     if rec.product_id.id == line.product_id.id:
                         rem= line.remarks
+
+            if rec.backorder_id.sale_id:
+                for line in rec.backorder_id.sale_id.order_line:
+                    if rec.product_id.id == line.product_id.id:
+                        rem = line.remarks
             rec.remarks = rem
 
     @api.depends('picking_id')
