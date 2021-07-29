@@ -152,14 +152,26 @@ class StockMoveLineInh(models.Model):
                 number += 1
 
     def _compute_remarks(self):
+        rem = ''
         for rec in self:
             if rec.picking_id.sale_id:
                 for line in rec.picking_id.sale_id.order_line:
                     if rec.product_id.id == line.product_id.id and line.number == rec.number:
-                        rec.remarks = line.remarks
-            elif rec.picking_id.purchase_id:
+                        rem = line.remarks
+            if rec.picking_id.purchase_id:
                 for line in rec.picking_id.purchase_id.order_line:
                     if rec.product_id.id == line.product_id.id:
-                        rec.remarks = line.remarks
-            else:
-                rec.remarks = ''
+                        rem = line.remarks
+            if rec.picking_id.backorder_id.sale_id:
+                for line in rec.picking_id.backorder_id.sale_id.order_line:
+                    if rec.product_id.id == line.product_id.id:
+                        rem = line.remarks
+            rec.remarks = rem
+
+
+class StockPickingInh(models.Model):
+    _inherit = 'stock.picking'
+
+    def action_add_done_qty(self):
+        for line in self.move_ids_without_package:
+            line.quantity_done = line.forecast_availability
