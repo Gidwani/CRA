@@ -124,6 +124,7 @@ class AccountFollowupInh(models.AbstractModel):
         print(len(new_lines))
         return new_lines
 
+
 class StockMoveLineInh(models.Model):
     _inherit = 'stock.move.line'
 
@@ -137,10 +138,9 @@ class StockMoveLineInh(models.Model):
             if not rec.picking_id.backorder_id:
                 rec.so_no = rec.move_id.number
             else:
-                for line in rec.picking_id.backorder_id.move_line_ids_without_package:
-                    print(line)
+                for line in rec.picking_id.backorder_id.sale_id.order_line:
                     if line.product_id.id == rec.product_id.id:
-                        rec.so_no = line.so_no
+                        rec.so_no = line.number
             # if rec.picking_id.sale_id:
             #     for line in rec.picking_id.sale_id.order_line:
             #         if line.product_id.id == rec.product_id.id and line.number == rec.number:
@@ -178,6 +178,14 @@ class StockMoveLineInh(models.Model):
 class StockPickingInh(models.Model):
     _inherit = 'stock.picking'
 
+    is_done_added = fields.Boolean()
+
     def action_add_done_qty(self):
         for line in self.move_ids_without_package:
             line.quantity_done = line.forecast_availability
+        self.is_done_added = True
+
+    def action_remove_done_qty(self):
+        for line in self.move_ids_without_package:
+            line.quantity_done = 0
+        self.is_done_added = False
