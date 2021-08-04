@@ -132,7 +132,7 @@ class StockMoveLineInh(models.Model):
                 if line.product_id.id == ml.product_id.id and line.number == ml.so_no:
                     if line.product_uom.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
                         # uom = int(line.product_uom_qty)
-                        uom =  " Lth"
+                        uom = " Mtr"
                     else:
                         # qty = float(line.product_uom_qty)
                         uom = product_qty.uom_id.name

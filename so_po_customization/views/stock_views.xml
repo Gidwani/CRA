@@ -120,12 +120,15 @@
                 <xpath expr="//field[@name='x_css']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
+<!--                <xpath expr="//field[@name='list_price']" position="replace">-->
+<!--                    <field name="list_price" string="Sale Price" class="sale-class"/>-->
+<!--                </xpath>-->
                 <xpath expr="//field[@name='name']" position="before">
                     <field name="default_code"/>
                 </xpath>
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="uom_id" string="UOM"/>
-                    <field name="available_qty" string="Saleable Quantity" />
+                    <field name="available_qty" string="Saleable Quantity"/>
                     <field name="qty_available"/>
                 </xpath>
                 <xpath expr="//field[@name='virtual_available']" position="after">
