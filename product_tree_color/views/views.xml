@@ -1,0 +1,21 @@
+<odoo>
+  <data>
+
+    <record id="view_products_tree_inh" model="ir.ui.view">
+            <field name="name">product.template.tree.inh</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_tree_view"/>
+            <field name="arch" type="xml">
+
+               <xpath expr="//field[@name='available_qty']" position="attributes">
+                    <attribute name="class">available-class</attribute>
+                </xpath>
+              <xpath expr="//field[@name='list_price']" position="replace">
+                    <field name="list_price" string="Sale Price" class="sale-class"/>
+                </xpath>
+
+            </field>
+        </record>
+
+  </data>
+</odoo>

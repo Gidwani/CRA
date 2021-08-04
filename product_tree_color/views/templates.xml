@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <template id="assets_backend" name="product_tree_color assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/product_tree_color/static/src/css/sticky_header.css"/>
+            </xpath>
+        </template>
+    </data>
+</openerp>
