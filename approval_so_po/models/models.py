@@ -701,14 +701,25 @@ class StockPickingInh(models.Model):
         if flag:
             # return super(StockPickingInh, self).button_validate()
             if self.state == 'assigned':
-                check = False
-                for rec in self.move_line_ids_without_package:
-                    if rec.qty_done == 0 and not rec.is_backorder:
-                        check = True
-                if check:
-                    raise UserError('Kindly Add Done Quantities Before Validate')
+                if self.picking_type_id.code == 'outgoing':
+                    check = False
+                    for rec in self.move_line_ids_without_package:
+                        if rec.qty_done == 0 and not rec.is_backorder:
+                            check = True
+                    if check:
+                        raise UserError('Kindly Add Done Quantities Before Validate')
+                    else:
+                        self.state = 'manager'
                 else:
-                    self.state = 'manager'
+                    check = False
+                    for rec in self.move_ids_without_package:
+                        if rec.quantity_done == 0:
+                            check = True
+                    if check:
+                        raise UserError('Kindly Add Done Quantities Before Validate')
+                    else:
+                        self.state = 'manager'
+                    # raise UserError('Purchase')
 
     def action_manager_approve(self):
         flag = False
