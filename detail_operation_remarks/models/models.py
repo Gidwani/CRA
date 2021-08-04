@@ -179,6 +179,13 @@ class StockPickingInh(models.Model):
     _inherit = 'stock.picking'
 
     is_done_added = fields.Boolean()
+    is_delivery = fields.Boolean(compute='compute_is_delivery')
+
+    def compute_is_delivery(self):
+        if self.picking_type_id.code == 'outgoing':
+            self.is_delivery = True
+        else:
+            self.is_delivery = False
 
     def action_add_done_qty(self):
         for line in self.move_ids_without_package:
