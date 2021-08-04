@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data>
 
         <record id="view_stock_picking_form_inh" model="ir.ui.view">
             <field name="name">stock.picking.form.inh</field>
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
+
 
                 <xpath expr="//field[@name='move_ids_without_package']//tree/field[@name='product_id']" position="before">
                     <field name="number" string="Sr No"/>
@@ -21,21 +22,21 @@
 
 
 
-<!--                <xpath expr="//field[@name='move_line_ids_without_package']" position="replace">-->
-<!--                    <field name='move_line_ids_without_package' attrs="{'readonly': ['|', '|', ('show_operations', '=', False), ('state', '=', 'cancel'), '&amp;', ('state', '=', 'done'), ('is_locked', '=', True)]}" context="{'tree_view_ref': 'stock.view_stock_move_line_detailed_operation_tree', 'default_picking_id': id, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id, 'default_company_id': company_id}">-->
-<!--                        <tree editable="bottom">-->
-<!--                            <field name="number" string="Sr No"/>-->
-<!--                            <field name="product_id"/>-->
-<!--                            <field name="remarks"/>-->
-<!--                            <field name="lot_id"/>-->
-<!--                            <field name="product_uom_qty"/>-->
-<!--                            <field name="qty_done"/>-->
-<!--                            <field name="product_uom_id"/>-->
-<!--                            <field name="company_id" invisible="1"/>-->
-<!--                            <field name="product_uom_category_id" invisible="1"/>-->
-<!--                        </tree>-->
-<!--                    </field>-->
-<!--                </xpath>-->
+                <!--                <xpath expr="//field[@name='move_line_ids_without_package']" position="replace">-->
+                <!--                    <field name='move_line_ids_without_package' attrs="{'readonly': ['|', '|', ('show_operations', '=', False), ('state', '=', 'cancel'), '&amp;', ('state', '=', 'done'), ('is_locked', '=', True)]}" context="{'tree_view_ref': 'stock.view_stock_move_line_detailed_operation_tree', 'default_picking_id': id, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id, 'default_company_id': company_id}">-->
+                <!--                        <tree editable="bottom">-->
+                <!--                            <field name="number" string="Sr No"/>-->
+                <!--                            <field name="product_id"/>-->
+                <!--                            <field name="remarks"/>-->
+                <!--                            <field name="lot_id"/>-->
+                <!--                            <field name="product_uom_qty"/>-->
+                <!--                            <field name="qty_done"/>-->
+                <!--                            <field name="product_uom_id"/>-->
+                <!--                            <field name="company_id" invisible="1"/>-->
+                <!--                            <field name="product_uom_category_id" invisible="1"/>-->
+                <!--                        </tree>-->
+                <!--                    </field>-->
+                <!--                </xpath>-->
 
             </field>
         </record>
@@ -64,25 +65,25 @@
             <field name="dpi">90</field>
         </record>
 
-<!--        <record id="stock.action_report_picking" model="ir.actions.report">-->
-<!--            <field name="name">PickList</field>-->
-<!--            <field name="model">stock.picking</field>-->
-<!--            <field name="report_type">qweb-pdf</field>-->
-<!--            <field name="report_name">stock.report_picking</field>-->
-<!--            <field name="report_file">stock.report_picking_operations</field>-->
-<!--            <field name="print_report_name">'PickList Report - %s - %s' % (object.partner_id.name or '', object.name)</field>-->
-<!--            <field name="binding_model_id" ref="model_stock_picking"/>-->
-<!--            <field name="binding_type">report</field>-->
-<!--        </record>-->
+        <!--        <record id="stock.action_report_picking" model="ir.actions.report">-->
+        <!--            <field name="name">PickList</field>-->
+        <!--            <field name="model">stock.picking</field>-->
+        <!--            <field name="report_type">qweb-pdf</field>-->
+        <!--            <field name="report_name">stock.report_picking</field>-->
+        <!--            <field name="report_file">stock.report_picking_operations</field>-->
+        <!--            <field name="print_report_name">'PickList Report - %s - %s' % (object.partner_id.name or '', object.name)</field>-->
+        <!--            <field name="binding_model_id" ref="model_stock_picking"/>-->
+        <!--            <field name="binding_type">report</field>-->
+        <!--        </record>-->
 
-<!--         <report-->
-<!--            id="action_report_picking_land"-->
-<!--            model="stock.picking"-->
-<!--            string="Picklist Landscape"-->
-<!--            report_type="qweb-pdf"-->
-<!--            name="so_po_customization.report_picking_landscape"-->
-<!--            file="so_po_customization.report_picking_landscape"-->
-<!--            paperformat="paper_format_picklist"/>-->
+        <!--         <report-->
+        <!--            id="action_report_picking_land"-->
+        <!--            model="stock.picking"-->
+        <!--            string="Picklist Landscape"-->
+        <!--            report_type="qweb-pdf"-->
+        <!--            name="so_po_customization.report_picking_landscape"-->
+        <!--            file="so_po_customization.report_picking_landscape"-->
+        <!--            paperformat="paper_format_picklist"/>-->
 
         <record id="view_products_form_inh" model="ir.ui.view">
             <field name="name">product.template.form.inh</field>
@@ -92,7 +93,7 @@
 
                 <xpath expr="//field[@name='barcode']" position="after">
                     <field name="hs_code"/>
-<!--                    <field name="incoming_quantity"/>-->
+                    <!--                    <field name="incoming_quantity"/>-->
                 </xpath>
             </field>
         </record>
@@ -103,6 +104,7 @@
             <field name="inherit_id" ref="product.product_template_tree_view"/>
             <field name="arch" type="xml">
 
+                <!--                .o_list_view .o_list_table tbody > tr > td:nth-child(8)-->
                 <xpath expr="//field[@name='default_code']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
@@ -123,7 +125,7 @@
                 </xpath>
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="uom_id" string="UOM"/>
-                    <field name="available_qty" string="Saleable Quantity"/>
+                    <field name="available_qty" string="Saleable Quantity" />
                     <field name="qty_available"/>
                 </xpath>
                 <xpath expr="//field[@name='virtual_available']" position="after">
@@ -132,6 +134,12 @@
                 <xpath expr="//field[@name='standard_price']" position="after">
                     <field name="incoming_quantity"/>
                 </xpath>
+
+                <!--                <xpath expr="//tree" position="attributes">-->
+                <!--                    <attribute name="decoration-success">type == 'product'</attribute>-->
+                <!--&lt;!&ndash;                    <attribute name="decoration-warning">blocking_level == 'warning'</attribute>&ndash;&gt;-->
+                <!--&lt;!&ndash;                    <attribute name="decoration-danger">blocking_level == 'error'</attribute>&ndash;&gt;-->
+                <!--                </xpath>-->
 
             </field>
         </record>

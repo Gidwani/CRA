@@ -21,20 +21,24 @@
 
                 <div class="row mt32 mb32" id="informations">
                     <div t-if="doc.client_order_ref" class="col-auto col-3 mw-100 mb-2">
-                        <strong>Your Reference:</strong>
+                        <strong>PO #:</strong>
                         <p class="m-0" t-field="doc.client_order_ref"/>
                     </div>
                     <div t-if="doc.date_order and doc.state not in ['draft','sent']" class="col-auto col-3 mw-100 mb-2">
                         <strong>Order Date:</strong>
-                        <p class="m-0" t-field="doc.date_order"/>
+                        <p class="m-0" t-field="doc.date_order" t-options='{"widget": "date"}'/>
                     </div>
                     <div t-if="doc.date_order and doc.state in ['draft','sent']" class="col-auto col-3 mw-100 mb-2">
                         <strong>Quotation Date:</strong>
                         <p class="m-0" t-field="doc.date_order" t-options='{"widget": "date"}'/>
                     </div>
                     <div t-if="doc.validity_date and doc.state in ['draft', 'sent']" class="col-auto col-3 mw-100 mb-2" name="expiration_date">
-                        <strong>Expiration:</strong>
+                        <strong>Valid Till:</strong>
                         <p class="m-0" t-field="doc.validity_date"/>
+                    </div>
+                    <div t-if="doc.payment_term_id" class="col-auto col-3 mw-100 mb-2">
+                        <strong>Payment Terms:</strong>
+                        <p class="m-0" t-field="doc.payment_term_id.name"/>
                     </div>
                     <div t-if="doc.user_id.name" class="col-auto col-3 mw-100 mb-2">
                         <strong>Salesperson:</strong>
@@ -55,21 +59,21 @@
                         <tr>
                             <th name="th_sr" class="text-center"><span>Sr #</span></th>
                             <th name="th_description" class="text-left">Product</th>
-<!--                            <th name="th_description" class="text-center">Remarks</th>-->
-                            <th name="th_quantity" class="text-center">Quantity</th>
+                            <!--                            <th name="th_description" class="text-center">Remarks</th>-->
+                            <th name="th_quantity" class="text-center">QTY</th>
                             <th name="th_quantity" class="text-center">UOM</th>
                             <th name="th_priceunit" class="text-center">Unit Price</th>
                             <th name="th_taxes" class="text-center">VAT(%)</th>
                             <th name="th_taxes" class="text-center">VAT Amount</th>
-<!--                            <th name="th_priceunit" class="text-right">Cost</th>-->
-<!--                            <th name="th_priceunit" class="text-right">Margin</th>-->
-<!--                            <th name="th_priceunit" class="text-right">Margin(%)</th>-->
-<!--                            <th name="th_discount" t-if="display_discount" class="text-right" groups="product.group_discount_per_so_line">-->
-<!--                                <span>Disc.%</span>-->
-<!--                            </th>-->
-<!--                            <th name="th_taxes" class="text-right">Taxes</th>-->
+                            <!--                            <th name="th_priceunit" class="text-right">Cost</th>-->
+                            <!--                            <th name="th_priceunit" class="text-right">Margin</th>-->
+                            <!--                            <th name="th_priceunit" class="text-right">Margin(%)</th>-->
+                            <!--                            <th name="th_discount" t-if="display_discount" class="text-right" groups="product.group_discount_per_so_line">-->
+                            <!--                                <span>Disc.%</span>-->
+                            <!--                            </th>-->
+                            <!--                            <th name="th_taxes" class="text-right">Taxes</th>-->
                             <th name="th_subtotal" class="text-right">
-                                <span groups="account.group_show_line_subtotals_tax_excluded">Subtotal</span>
+                                <span groups="account.group_show_line_subtotals_tax_excluded">Amount</span>
                                 <span groups="account.group_show_line_subtotals_tax_included">Total Price</span>
                             </th>
                         </tr>
@@ -84,9 +88,9 @@
                                 <t t-if="not line.display_type">
                                     <td class="text-center"><span t-field="line.number"/></td>
                                     <td name="td_name" ><span t-field="line.product_id.name"/><br/><span t-field="line.remarks"/></td>
-<!--                                    <td name="td_priceunit" class="text-left">-->
-<!--                                        <span t-field="line.remarks"/>-->
-<!--                                    </td>-->
+                                    <!--                                    <td name="td_priceunit" class="text-left">-->
+                                    <!--                                        <span t-field="line.remarks"/>-->
+                                    <!--                                    </td>-->
                                     <td name="td_quantity"  class="text-center">
                                         <span t-field="line.product_uom_qty"/>
                                     </td>
@@ -100,17 +104,17 @@
                                         <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_id))" />
                                     </td>
                                     <td name="td_priceunit" class="text-center">
-                                        <span t-field="line.vat_amount"/>
+                                        <span t-field="line.vat_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
                                     </td>
-<!--                                    <td name="td_priceunit" class="text-right">-->
-<!--                                        <span t-field="line.margin_percent"/>-->
-<!--                                    </td>-->
-<!--                                    <td t-if="display_discount" class="text-center" groups="product.group_discount_per_so_line">-->
-<!--                                        <span t-field="line.discount"/>-->
-<!--                                    </td>-->
-<!--                                    <td name="td_taxes" class="text-right">-->
-<!--                                        <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_id))"/>-->
-<!--                                    </td>-->
+                                    <!--                                    <td name="td_priceunit" class="text-right">-->
+                                    <!--                                        <span t-field="line.margin_percent"/>-->
+                                    <!--                                    </td>-->
+                                    <!--                                    <td t-if="display_discount" class="text-center" groups="product.group_discount_per_so_line">-->
+                                    <!--                                        <span t-field="line.discount"/>-->
+                                    <!--                                    </td>-->
+                                    <!--                                    <td name="td_taxes" class="text-right">-->
+                                    <!--                                        <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_id))"/>-->
+                                    <!--                                    </td>-->
                                     <td name="td_subtotal" class="text-right o_price_total">
                                         <span t-field="line.subtotal" t-options='{"widget": "monetary", "display_currency": doc.currency_id}' groups="account.group_show_line_subtotals_tax_excluded"/>
                                         <span t-field="line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
@@ -145,23 +149,109 @@
                     </tbody>
                 </table>
 
-                <div class="clearfix" name="so_total_summary">
-                    <div id="total" class="row" name="total">
-                        <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
+                <!--                <div class="clearfix" name="so_total_summary">-->
+                <!--                    <div id="total" class="row" name="total">-->
+                <!--                        <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">-->
+                <!--                            <table class="table table-sm">-->
+                <!--                                <tr class="border-black o_subtotal" style="">-->
+                <!--                                    <td name="td_amount_untaxed_label"><strong>Subtotal</strong></td>-->
+                <!--                                    <td name="td_amount_untaxed" class="text-right">-->
+                <!--                                        <span t-field="doc.subtotal_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>-->
+                <!--                                    </td>-->
+                <!--                                </tr>-->
+                <!--                                <t t-if="not doc.perc_discount == 0">-->
+                <!--                                    <tr class="border-black o_subtotal" style="">-->
+                <!--                                        &lt;!&ndash;                                    <td name="td_perc_discount_label"><strong>Discount(<span t-field="doc.perc" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%)</strong></td>&ndash;&gt;-->
+                <!--                                        <td name="td_perc_discount"><strong>Discount</strong></td>-->
+                <!--                                        <td name="td_perc_discount" class="text-right">-->
+                <!--                                            <span t-field="doc.perc_discount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>-->
+                <!--                                        </td>-->
+                <!--                                    </tr>-->
+                <!--                                </t>-->
+                <!--                                <tr class="border-black o_subtotal" style="">-->
+                <!--                                    <td name="td_net_total_label"><strong>Net Total</strong></td>-->
+                <!--                                    <td name="td_net_total" class="text-right">-->
+                <!--                                        <span t-field="doc.net_total" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>-->
+                <!--                                    </td>-->
+                <!--                                </tr>-->
+                <!--                                <tr class="border-black o_subtotal" style="">-->
+                <!--                                    <td name="td_net_total_label"><strong>Tax</strong></td>-->
+                <!--                                    <td name="td_net_total" class="text-right">-->
+                <!--                                        <span t-field="doc.net_tax" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>-->
+                <!--                                    </td>-->
+                <!--                                </tr>-->
+                <!--                                &lt;!&ndash;                                <t t-foreach="doc.amount_by_group" t-as="amount_by_group">&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                    <tr style="">&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                        <t t-if="amount_by_group[5] == 1 and doc.amount_untaxed == amount_by_group[2]">&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                            <td name="td_amount_by_group_label_3">&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                                <span t-esc="amount_by_group[0]"/>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                                <span>&amp;nbsp;<span>on</span>&amp;nbsp;<t t-esc="amount_by_group[2]" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/></span>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                            </td>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                            <td name="td_amount_by_group_3" class="text-right o_price_total">&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                                <span t-esc="amount_by_group[1]"&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                                      t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                            </td>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                        </t>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                        <t t-else ="">&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                            <td name="td_amount_by_group_label">&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                                <span t-esc="amount_by_group[0]"/>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                            </td>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                            <td name="td_amount_by_group" class="text-right o_price_total">&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                                <span t-esc="amount_by_group[1]"&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                                      t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                            </td>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                        </t>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                    </tr>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                                </t>&ndash;&gt;-->
+                <!--                                <tr class="border-black o_total">-->
+                <!--                                    <td name="td_amount_total_label"><strong>Total</strong></td>-->
+                <!--                                    <td name="td_amount_total" class="text-right">-->
+                <!--                                        <span t-field="doc.amount_total"/>-->
+                <!--                                    </td>-->
+                <!--                                </tr>-->
+                <!--                            </table>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <table class="table table-sm">
+                    <tr >
+                        <t t-if="env.context.get('proforma', False) or is_pro_forma">
+                        <td style="width:40%;">
+
+                            <strong><h4>Bank Details:</h4>
+                                <h5>CRA Trading LLC</h5>
+                                Bank Name ‐ RAK Bank<br/>
+                                A/C #: 0122 3629 36002<br/>
+                                IBAN: AE 4904 0000 0122 3629 36002<br/>
+                                Swift code: NRAK AEAK<br/>
+                                Branch: Sheikh Zayed Rd Branch</strong>
+
+                        </td>
+                        </t>
+                        <t t-else="">
+                            <td style="width:40%;border:1px solid white;">
+
+                            </td>
+                        </t>
+                        <td style="width:60%;background-color:white;border:1px solid white;;">
+                                                      <div class="clearfix" name="so_total_summary">
+<!--                                    <div id="total" class="row" name="total">-->
                             <table class="table table-sm">
-                                <tr class="border-black o_subtotal" style="">
+                                <tr class="o_subtotal" style="">
                                     <td name="td_amount_untaxed_label"><strong>Subtotal</strong></td>
                                     <td name="td_amount_untaxed" class="text-right">
                                         <span t-field="doc.subtotal_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
                                     </td>
                                 </tr>
-                                <tr class="border-black o_subtotal" style="">
-<!--                                    <td name="td_perc_discount_label"><strong>Discount(<span t-field="doc.perc" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%)</strong></td>-->
-                                    <td name="td_perc_discount"><strong>Discount</strong></td>
-                                    <td name="td_perc_discount" class="text-right">
-                                        <span t-field="doc.perc_discount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
-                                    </td>
-                                </tr>
+                                <t t-if="not doc.perc_discount == 0">
+                                    <tr class="border-black o_subtotal" style="">
+                                        <!--                                    <td name="td_perc_discount_label"><strong>Discount(<span t-field="doc.perc" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%)</strong></td>-->
+                                        <td name="td_perc_discount"><strong>Discount</strong></td>
+                                        <td name="td_perc_discount" class="text-right">
+                                            <span t-field="doc.perc_discount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </t>
                                 <tr class="border-black o_subtotal" style="">
                                     <td name="td_net_total_label"><strong>Net Total</strong></td>
                                     <td name="td_net_total" class="text-right">
@@ -174,29 +264,29 @@
                                         <span t-field="doc.net_tax" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
                                     </td>
                                 </tr>
-<!--                                <t t-foreach="doc.amount_by_group" t-as="amount_by_group">-->
-<!--                                    <tr style="">-->
-<!--                                        <t t-if="amount_by_group[5] == 1 and doc.amount_untaxed == amount_by_group[2]">-->
-<!--                                            <td name="td_amount_by_group_label_3">-->
-<!--                                                <span t-esc="amount_by_group[0]"/>-->
-<!--                                                <span>&amp;nbsp;<span>on</span>&amp;nbsp;<t t-esc="amount_by_group[2]" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/></span>-->
-<!--                                            </td>-->
-<!--                                            <td name="td_amount_by_group_3" class="text-right o_price_total">-->
-<!--                                                <span t-esc="amount_by_group[1]"-->
-<!--                                                      t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>-->
-<!--                                            </td>-->
-<!--                                        </t>-->
-<!--                                        <t t-else ="">-->
-<!--                                            <td name="td_amount_by_group_label">-->
-<!--                                                <span t-esc="amount_by_group[0]"/>-->
-<!--                                            </td>-->
-<!--                                            <td name="td_amount_by_group" class="text-right o_price_total">-->
-<!--                                                <span t-esc="amount_by_group[1]"-->
-<!--                                                      t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>-->
-<!--                                            </td>-->
-<!--                                        </t>-->
-<!--                                    </tr>-->
-<!--                                </t>-->
+                                <!--                                <t t-foreach="doc.amount_by_group" t-as="amount_by_group">-->
+                                <!--                                    <tr style="">-->
+                                <!--                                        <t t-if="amount_by_group[5] == 1 and doc.amount_untaxed == amount_by_group[2]">-->
+                                <!--                                            <td name="td_amount_by_group_label_3">-->
+                                <!--                                                <span t-esc="amount_by_group[0]"/>-->
+                                <!--                                                <span>&amp;nbsp;<span>on</span>&amp;nbsp;<t t-esc="amount_by_group[2]" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/></span>-->
+                                <!--                                            </td>-->
+                                <!--                                            <td name="td_amount_by_group_3" class="text-right o_price_total">-->
+                                <!--                                                <span t-esc="amount_by_group[1]"-->
+                                <!--                                                      t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>-->
+                                <!--                                            </td>-->
+                                <!--                                        </t>-->
+                                <!--                                        <t t-else ="">-->
+                                <!--                                            <td name="td_amount_by_group_label">-->
+                                <!--                                                <span t-esc="amount_by_group[0]"/>-->
+                                <!--                                            </td>-->
+                                <!--                                            <td name="td_amount_by_group" class="text-right o_price_total">-->
+                                <!--                                                <span t-esc="amount_by_group[1]"-->
+                                <!--                                                      t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>-->
+                                <!--                                            </td>-->
+                                <!--                                        </t>-->
+                                <!--                                    </tr>-->
+                                <!--                                </t>-->
                                 <tr class="border-black o_total">
                                     <td name="td_amount_total_label"><strong>Total</strong></td>
                                     <td name="td_amount_total" class="text-right">
@@ -204,9 +294,96 @@
                                     </td>
                                 </tr>
                             </table>
-                        </div>
-                    </div>
-                </div>
+                                    </div>
+<!--                                                      </div>-->
+
+                        </td>
+                    </tr>
+                </table>
+                <!--                <div class="clearfix" name="so_total_summary">-->
+                <!--                    <div id="total" class="row" name="total">-->
+                <!--                        <t t-if="env.context.get('proforma', False) or is_pro_forma">-->
+                <!--                            <div class="text-left" style="page-break-inside: avoid;width:40%;">-->
+                <!--                                &lt;!&ndash;                                     <strong>This Invoice: </strong> <span class="text-nowrap" t-field="o.partner_id.total_invoiced"/> &ndash;&gt;-->
+                <!--                                <table class="table table-sm" >-->
+                <!--                                    <tr style="" class="border-black o_total">-->
+                <!--                                        <td>-->
+                <!--                                            <strong><h4>Bank Details:</h4>-->
+                <!--                                                <h5>CRA Trading LLC</h5>-->
+                <!--                                                Bank Name ‐ RAK Bank<br/>-->
+                <!--                                                A/C #: 0122 3629 36002<br/>-->
+                <!--                                                IBAN: AE 4904 0000 0122 3629 36002<br/>-->
+                <!--                                                Swift code: NRAK AEAK<br/>-->
+                <!--                                                Branch: Sheikh Zayed Rd Branch</strong>-->
+                <!--                                        </td>-->
+
+                <!--                                    </tr>-->
+
+                <!--                                </table>-->
+                <!--                            </div>-->
+                <!--                        </t>-->
+                <!--                        <div class="text-right" style="width:40%;">-->
+                <!--                        <table class="table table-sm">-->
+                <!--                            <tr class="border-black o_subtotal" style="">-->
+                <!--                                <td name="td_amount_untaxed_label"><strong>Subtotal</strong></td>-->
+                <!--                                <td name="td_amount_untaxed" class="text-right">-->
+                <!--                                    <span t-field="doc.subtotal_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>-->
+                <!--                                </td>-->
+                <!--                            </tr>-->
+                <!--                            <t t-if="not doc.perc_discount == 0">-->
+                <!--                                <tr class="border-black o_subtotal" style="">-->
+                <!--                                    &lt;!&ndash;                                    <td name="td_perc_discount_label"><strong>Discount(<span t-field="doc.perc" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%)</strong></td>&ndash;&gt;-->
+                <!--                                    <td name="td_perc_discount"><strong>Discount</strong></td>-->
+                <!--                                    <td name="td_perc_discount" class="text-right">-->
+                <!--                                        <span t-field="doc.perc_discount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>-->
+                <!--                                    </td>-->
+                <!--                                </tr>-->
+                <!--                            </t>-->
+                <!--                            <tr class="border-black o_subtotal" style="">-->
+                <!--                                <td name="td_net_total_label"><strong>Net Total</strong></td>-->
+                <!--                                <td name="td_net_total" class="text-right">-->
+                <!--                                    <span t-field="doc.net_total" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>-->
+                <!--                                </td>-->
+                <!--                            </tr>-->
+                <!--                            <tr class="border-black o_subtotal" style="">-->
+                <!--                                <td name="td_net_total_label"><strong>Tax</strong></td>-->
+                <!--                                <td name="td_net_total" class="text-right">-->
+                <!--                                    <span t-field="doc.net_tax" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>-->
+                <!--                                </td>-->
+                <!--                            </tr>-->
+                <!--                            &lt;!&ndash;                                <t t-foreach="doc.amount_by_group" t-as="amount_by_group">&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                    <tr style="">&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                        <t t-if="amount_by_group[5] == 1 and doc.amount_untaxed == amount_by_group[2]">&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                            <td name="td_amount_by_group_label_3">&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                                <span t-esc="amount_by_group[0]"/>&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                                <span>&amp;nbsp;<span>on</span>&amp;nbsp;<t t-esc="amount_by_group[2]" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/></span>&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                            </td>&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                            <td name="td_amount_by_group_3" class="text-right o_price_total">&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                                <span t-esc="amount_by_group[1]"&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                                      t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                            </td>&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                        </t>&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                        <t t-else ="">&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                            <td name="td_amount_by_group_label">&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                                <span t-esc="amount_by_group[0]"/>&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                            </td>&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                            <td name="td_amount_by_group" class="text-right o_price_total">&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                                <span t-esc="amount_by_group[1]"&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                                      t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                            </td>&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                        </t>&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                    </tr>&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                                </t>&ndash;&gt;-->
+                <!--                            <tr class="border-black o_total">-->
+                <!--                                <td name="td_amount_total_label"><strong>Total</strong></td>-->
+                <!--                                <td name="td_amount_total" class="text-right">-->
+                <!--                                    <span t-field="doc.amount_total"/>-->
+                <!--                                </td>-->
+                <!--                            </tr>-->
+                <!--                        </table>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
 
 
                 <div t-if="doc.signature" class="mt32 ml64 mr4" name="signature">
@@ -224,20 +401,20 @@
                 <div class="oe_structure"/>
 
                 <p t-field="doc.note" />
-                <p t-if="doc.payment_term_id.note">
-                    <span t-field="doc.payment_term_id.note"/>
-                </p>
+                <!--                <p t-if="doc.payment_term_id.note">-->
+                <!--                    <span t-field="doc.payment_term_id.note"/>-->
+                <!--                </p>-->
                 <p id="fiscal_position_remark" t-if="doc.fiscal_position_id and doc.fiscal_position_id.sudo().note">
                     <strong>Fiscal Position Remark:</strong>
                     <span t-field="doc.fiscal_position_id.sudo().note"/>
                 </p>
-                <div class="container row" style="margin-top:4em;margin-left:1em;float:right; font-size:15px;">
-                    <div class="col-12">
-                        <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">________________________</span>
-                        <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>
-                        <strong>Signature: </strong><span style="color:black;">____________________________</span>
-                    </div>
-                </div>
+                <!--                <div class="container row" style="margin-top:4em;margin-left:1em;float:right; font-size:15px;">-->
+                <!--                    <div class="col-12">-->
+                <!--                        <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">________________________</span>-->
+                <!--                        <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>-->
+                <!--                        <strong>Signature: </strong><span style="color:black;">____________________________</span>-->
+                <!--                    </div>-->
+                <!--                </div>-->
             </div>
         </xpath>
     </template>

@@ -13,6 +13,14 @@ class AccountMoveInh(models.Model):
     total_amount_net = fields.Float('Total')
     total_amount_due = fields.Float('Amount Due')
 
+    def get_payment_term_id(self):
+        order = self.env['sale.order'].search([('name', '=', self.invoice_origin)])
+        return order.payment_term_id.name
+
+    def get_do_no(self):
+        picking = self.env['stock.picking'].search([('origin', '=', self.invoice_origin), ('backorder_id', '=', False)])
+        return picking.name
+
     def compute_taxes(self):
         flag = False
         for rec in self.invoice_line_ids:

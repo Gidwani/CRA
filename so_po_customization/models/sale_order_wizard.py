@@ -26,6 +26,7 @@ class SaleOrderWizard(models.TransientModel):
                             'qty': line.product_uom_qty,
                             'product_id': line.product_id.id,
                             'price': line.price_unit,
+                            # 'so_ref': line.so_no,
                         }
                         val_list.append(val)
             move = self.env['sale.order.wizard.line'].create(val_list)
@@ -44,6 +45,8 @@ class SaleOrderWizard(models.TransientModel):
                     'date_planned': rec.date_order,
                     'product_qty': line.qty,
                     'price_unit': line.product_id.list_price,
+                    'so_ref': line.sr_no,
+                    'sale_order': line.sale_order,
                     'taxes_id': [tax_id.id],
                 }
                 val_list.append(val)
