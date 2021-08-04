@@ -49,10 +49,16 @@ class StockMoveLineInh(models.Model):
 
     @api.onchange('qty_done')
     def onchange_done_qty(self):
-        for do_line in self.picking_id.move_ids_without_package:
-            if self.product_id.id == do_line.product_id.id:
-                if not self.qty_done <= do_line.product_uom_qty:
-                    raise UserError('Quantity Should be Less or Equal to Reserved')
+        for rec in self:
+            # print(rec.move_id)
+            # print(rec.move_id.product_uom_qty)
+            # for do_line in rec.picking_id.move_ids_without_package:
+            # print(do_line)
+            #     if rec.product_id.id == do_line.product_id.id:
+            # print(do_line.product_uom_qty, rec.qty_done)
+            # if rec.move_id.product_uom_qty == rec.qty_done:
+            if not rec.qty_done <= rec.move_id.product_uom_qty:
+                raise UserError('Quantity Should be Less or Equal to Reserved')
 
 
 class StockMoveInh(models.Model):
@@ -693,7 +699,16 @@ class StockPickingInh(models.Model):
             else:
                 raise UserError('Done Quantity Cannot be greater than Demand')
         if flag:
-            self.state = 'manager'
+            # return super(StockPickingInh, self).button_validate()
+            if self.state == 'assigned':
+                check = False
+                for rec in self.move_line_ids_without_package:
+                    if rec.qty_done == 0 and not rec.is_backorder:
+                        check = True
+                if check:
+                    raise UserError('Kindly Add Done Quantities Before Validate')
+                else:
+                    self.state = 'manager'
 
     def action_manager_approve(self):
         flag = False
@@ -705,6 +720,79 @@ class StockPickingInh(models.Model):
         if flag:
             record = super(StockPickingInh, self).button_validate()
             return record
+
+    # def button_validate(self):
+    #     # Clean-up the context key at validation to avoid forcing the creation of immediate
+    #     # transfers.
+    #     ctx = dict(self.env.context)
+    #     ctx.pop('default_immediate_transfer', None)
+    #     self = self.with_context(ctx)
+    #
+    #     # Sanity checks.
+    #     pickings_without_moves = self.browse()
+    #     pickings_without_quantities = self.browse()
+    #     pickings_without_lots = self.browse()
+    #     products_without_lots = self.env['product.product']
+    #     for picking in self:
+    #         if not picking.move_lines and not picking.move_line_ids:
+    #             pickings_without_moves |= picking
+    #
+    #         picking.message_subscribe([self.env.user.partner_id.id])
+    #         picking_type = picking.picking_type_id
+    #         precision_digits = self.env['decimal.precision'].precision_get('Product Unit of Measure')
+    #         no_quantities_done = all(float_is_zero(move_line.qty_done, precision_digits=precision_digits) for move_line in picking.move_line_ids.filtered(lambda m: m.state not in ('done', 'cancel')))
+    #         no_reserved_quantities = all(float_is_zero(move_line.product_qty, precision_rounding=move_line.product_uom_id.rounding) for move_line in picking.move_line_ids)
+    #         if no_reserved_quantities and no_quantities_done:
+    #             pickings_without_quantities |= picking
+    #
+    #         if picking_type.use_create_lots or picking_type.use_existing_lots:
+    #             lines_to_check = picking.move_line_ids
+    #             if not no_quantities_done:
+    #                 lines_to_check = lines_to_check.filtered(lambda line: float_compare(line.qty_done, 0, precision_rounding=line.product_uom_id.rounding))
+    #             for line in lines_to_check:
+    #                 product = line.product_id
+    #                 if product and product.tracking != 'none':
+    #                     if not line.lot_name and not line.lot_id:
+    #                         pickings_without_lots |= picking
+    #                         products_without_lots |= product
+    #
+    #     if not self._should_show_transfers():
+    #         if pickings_without_moves:
+    #             raise UserError(_('Please add some items to move.'))
+    #         if pickings_without_quantities:
+    #             raise UserError(self._get_without_quantities_error_message())
+    #         if pickings_without_lots:
+    #             raise UserError(_('You need to supply a Lot/Serial number for products %s.') % ', '.join(products_without_lots.mapped('display_name')))
+    #     else:
+    #         message = ""
+    #         if pickings_without_moves:
+    #             message += _('Transfers %s: Please add some items to move.') % ', '.join(pickings_without_moves.mapped('name'))
+    #         if pickings_without_quantities:
+    #             message += _('\n\nTransfers %s: You cannot validate these transfers if no quantities are reserved nor done. To force these transfers, switch in edit more and encode the done quantities.') % ', '.join(pickings_without_quantities.mapped('name'))
+    #         if pickings_without_lots:
+    #             message += _('\n\nTransfers %s: You need to supply a Lot/Serial number for products %s.') % (', '.join(pickings_without_lots.mapped('name')), ', '.join(products_without_lots.mapped('display_name')))
+    #         if message:
+    #             raise UserError(message.lstrip())
+    #
+    #     # Run the pre-validation wizards. Processing a pre-validation wizard should work on the
+    #     # moves and/or the context and never call `_action_done`.
+    #     if not self.env.context.get('button_validate_picking_ids'):
+    #         self = self.with_context(button_validate_picking_ids=self.ids)
+    #     res = self._pre_action_done_hook()
+    #     if res is not True:
+    #         return res
+    #
+    #     # Call `_action_done`.
+    #     if self.env.context.get('picking_ids_not_to_backorder'):
+    #         pickings_not_to_backorder = self.browse(self.env.context['picking_ids_not_to_backorder'])
+    #         pickings_to_backorder = self - pickings_not_to_backorder
+    #     else:
+    #         pickings_not_to_backorder = self.env['stock.picking']
+    #         pickings_to_backorder = self
+    #     pickings_not_to_backorder.with_context(cancel_backorder=True)._action_done()
+    #     pickings_to_backorder.with_context(cancel_backorder=False)._action_done()
+    #     self.state = 'manager'
+    #     return True
 
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
