@@ -10,6 +10,7 @@
 				<xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='product_id']" position="attributes">
 					<attribute name="class">text-wrap</attribute>
 				</xpath>
+
             </field>
       </record>
 
@@ -22,6 +23,7 @@
                 <xpath expr="//field[@name='order_line']//tree//field[@name='product_id']" position="attributes">
 					<attribute name="class">text-wrap</attribute>
 				</xpath>
+
             </field>
       </record>
 
@@ -34,6 +36,7 @@
                 <xpath expr="//field[@name='order_line']//tree//field[@name='product_id']" position="attributes">
 					<attribute name="class">text-wrap</attribute>
 				</xpath>
+
             </field>
       </record>
 
@@ -51,6 +54,7 @@
                             <field name="product_id"/>
                             <field name="remarks"/>
                             <field name="lot_id"/>
+                            <field name="is_backorder"/>
                             <field name="product_uom_qty"/>
                             <field name="qty_done"/>
                             <field name="product_uom_id"/>
@@ -62,6 +66,16 @@
 
                 <xpath expr="//header/button[@name='do_print_picking']" position="attributes">
                     <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="is_done_added" invisible="1"/>
+                </xpath>
+
+
+                <xpath expr="//header/button[@name='action_cancel']" position="after">
+                   <button string="Add Done Quantities" type="object" name="action_add_done_qty" attrs="{'invisible': ['|',('state', 'not in', ['assigned','confirmed']), ('is_done_added', '=', True)]}"/>
+                   <button string="Remove Done Quantities" type="object" name="action_remove_done_qty" attrs="{'invisible': ['|', ('state', 'not in', ['assigned','confirmed']), ('is_done_added', '=', False)]}"/>
                 </xpath>
 
             </field>
