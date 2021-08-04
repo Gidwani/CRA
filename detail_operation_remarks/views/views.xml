@@ -70,12 +70,13 @@
 
                 <xpath expr="//field[@name='origin']" position="after">
                     <field name="is_done_added" invisible="1"/>
+                    <field name="is_delivery" invisible="1"/>
                 </xpath>
 
 
                 <xpath expr="//header/button[@name='action_cancel']" position="after">
-                   <button string="Add Done Quantities" type="object" name="action_add_done_qty" attrs="{'invisible': ['|',('state', 'not in', ['assigned','confirmed']), ('is_done_added', '=', True)]}"/>
-                   <button string="Remove Done Quantities" type="object" name="action_remove_done_qty" attrs="{'invisible': ['|', ('state', 'not in', ['assigned','confirmed']), ('is_done_added', '=', False)]}"/>
+                   <button string="Add Done Quantities" type="object" name="action_add_done_qty" attrs="{'invisible': ['|','|',('state', 'not in', ['assigned','confirmed']), ('is_done_added', '=', True), ('is_delivery', '=', False)]}"/>
+                   <button string="Remove Done Quantities" type="object" name="action_remove_done_qty" attrs="{'invisible': ['|','|', ('state', 'not in', ['assigned','confirmed']), ('is_done_added', '=', False), ('is_delivery', '=', False)]}"/>
                 </xpath>
 
             </field>
