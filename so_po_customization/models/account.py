@@ -18,7 +18,7 @@ class AccountMoveInh(models.Model):
         return order.payment_term_id.name
 
     def get_do_no(self):
-        picking = self.env['stock.picking'].search([('origin', '=', self.invoice_origin), ('backorder_id', '=', False)])
+        picking = self.env['stock.picking'].search([('origin', '=', self.invoice_origin), ('backorder_id', '=', False)], limit=1)
         return picking.name
 
     def compute_taxes(self):
