@@ -26,6 +26,7 @@ class SaleReportInh(models.Model):
             CASE WHEN l.product_id IS NOT NULL THEN sum(l.untaxed_amount_invoiced / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) ELSE 0 END as untaxed_amount_invoiced,
             count(*) as nbr,
             s.name as name,
+            s.margin as margin,
             s.date_order as date,
             s.state as state,
             s.partner_id as partner_id,
