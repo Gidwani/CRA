@@ -1,3 +1,5 @@
+
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
@@ -23,11 +25,13 @@ class AccountMoveInh(models.Model):
 
     def compute_taxes(self):
         flag = False
+        total = 0
         for rec in self.invoice_line_ids:
             if rec.tax_ids:
                 flag = True
+                total = total + rec.subtotal
         if flag:
-            self.net_tax = (5 / 100) * self.net_total
+            self.net_tax = (5 / 100) * total
         else:
             self.net_tax = 0
 
