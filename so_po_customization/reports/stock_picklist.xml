@@ -122,7 +122,7 @@
                                         <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="4%"><strong>SR#</strong></th>
                                         <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="7%"><strong>QTY Onhand</strong></th>
                                         <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="7%"><strong>Available Qty</strong></th>
-                                        <th name="th_sm_product" style="white-space:nowrap;" width="35%"><strong>Products</strong></th>
+                                        <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="35%"><strong>Products</strong></th>
                                         <th name="th_sm_quantity" style="white-space:nowrap;" class="text-center" width="7%"><strong>Qty to Pick</strong></th>
                                         <th name="th_sm_serial" style="white-space:nowrap;" class="text-center" width="15%"><strong>Serial #</strong></th>
                                         <th name="th_sm_note" style="white-space:nowrap;" class="text-center" width="20%"><strong>Note</strong></th>
@@ -158,14 +158,13 @@
                             <div class="container row" style="margin-top:2em;margin-left:1em;float:right; font-size:15px;">
                                 <div class="col-12" t-if="o.sale_id.note_picklist">
                                     <strong><span>Note:</span> </strong><span t-esc="o.sale_id.note_picklist"/>
-
                                 </div>
                             </div>
                             <div class="container row" style="margin-top:1em;margin-left:1em;float:right; font-size:15px;">
                                 <div class="col-12">
-                                    <strong>Time Given to store: </strong><span style="color:black;">_____________________________________</span><span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span><span>&#160;</span>
-                                    <strong>Time return from store: </strong><span style="color:black;">_________________________________</span><span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span><span>&#160;</span>
-                                    <strong>Picking Person Signature: </strong><span style="color:black;">_______________________________</span><span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span><span>&#160;</span>
+                                    <strong>Time Given to store: </strong><span style="color:black;">_________________________</span><span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span><span>&#160;</span>
+                                    <strong>Time return from store: </strong><span style="color:black;">_________________________</span><span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span><span>&#160;</span>
+                                    <strong>Picking Person Signature: </strong><span style="color:black;">__________________________</span><span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span><span>&#160;</span>
                                 </div>
                             </div>
 

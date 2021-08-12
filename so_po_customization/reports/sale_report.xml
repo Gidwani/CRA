@@ -17,9 +17,9 @@
                         <span>Pro-Forma Invoice # </span>
                     </t>
                     <span t-field="doc.name"/>
-                </h2>
+                </h2><br/>
 
-                <div class="row mt32 mb32" id="informations" >
+                <div class="row mt32 mb32" style="background-color:#E0E0E0;" >
                     <div class="col-auto col-3 mw-100 mb-2">
                         <strong>Customer Name:</strong>
                         <p class="m-0" t-field="doc.partner_id.name"/>
