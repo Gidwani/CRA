@@ -1,31 +1,16 @@
 <odoo>
     <data>
         <record id="view_order_product_pivot_inh" model="ir.ui.view">
-            <field name="name">sale.report.pivot</field>
-            <field name="model">sale.report</field>
+         <field name="name">sale.report.pivot</field>
+         <field name="model">sale.report</field>
             <field name="inherit_id" ref="sale.view_order_product_pivot"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='price_subtotal']" position="before">
-                    <field name="sale_average" type="measure"/>
-                </xpath>
+         <field name="arch" type="xml">
+             <xpath expr="//field[@name='price_subtotal']" position="before">
+                 <field name="sale_average" type="measure"/>
+             </xpath>
 
-            </field>
-        </record>
-
-        <record id="view_order_tree_inh" model="ir.ui.view">
-            <field name="name">sale.order.tree</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='activity_ids']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
-                <xpath expr="//field[@name='activity_ids']" position="after">
-                    <field name="client_order_ref" string="PO No" />
-                </xpath>
-
-            </field>
-        </record>
+         </field>
+    </record>
 
 
         <record model="ir.ui.view" id="sale_order_view_multi_product_selection_inherit">
