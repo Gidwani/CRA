@@ -115,13 +115,13 @@
                                     <td name="td_priceunit" class="text-center">
                                         <span t-field="line.product_uom"/>
                                     </td>
-                                    <td name="td_priceunit" class="text-center">
+                                    <td name="td_priceunit" style="white-space:nowrap;" class="text-center">
                                         <span t-field="line.price_unit"/>
                                     </td>
-                                    <td name="td_taxes" class="text-center">
+                                    <td name="td_taxes" class="text-center" style="white-space:nowrap;">
                                         <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_id))" />
                                     </td>
-                                    <td name="td_vat" class="text-center">
+                                    <td name="td_vat" class="text-center" style="white-space:nowrap;">
                                         <span t-field="line.vat_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
                                     </td>
                                     <!--                                    <td name="td_priceunit" class="text-right">-->
