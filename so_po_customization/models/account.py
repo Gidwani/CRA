@@ -1,3 +1,5 @@
+
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
@@ -19,15 +21,22 @@ class AccountMoveInh(models.Model):
 
     def get_do_no(self):
         picking = self.env['stock.picking'].search([('origin', '=', self.invoice_origin), ('backorder_id', '=', False)], limit=1)
-        return picking.name
+        # print(picking.name.split('/'))
+        a = picking.name.split('/')
+        name = a[1] + '/' + a[2] + '/' + a[3]
+        return name
 
     def compute_taxes(self):
         flag = False
+        total = 0
         for rec in self.invoice_line_ids:
             if rec.tax_ids:
-                flag = True
+                for tax in rec.tax_ids:
+                    if tax.name == 'VAT 5%':
+                        flag = True
+                        total = total + rec.subtotal
         if flag:
-            self.net_tax = (5 / 100) * self.net_total
+            self.net_tax = (5 / 100) * total
         else:
             self.net_tax = 0
 
@@ -54,47 +63,7 @@ class AccountMoveInh(models.Model):
             rec.subtotal_amount = subtotal
             rec.net_total = rec.subtotal_amount - rec.perc_discount
             rec.total_amount_net = rec.net_total + rec.net_tax
-            # rec.amount_total = rec.net_total + rec.net_tax
             rec.total_amount_due = rec.net_total + rec.net_tax
-
-    # def action_post(self):
-    #     rec = super(AccountMoveInh, self).action_post()
-    #     debit_sum = 0.0
-    #     credit_sum = 0.0
-    #     expense_account = self.env['account.account'].search([('name', '=', 'Global Invoice Discount')])[0]
-    #     pay_account = self.env['account.account'].search([('user_type_id', '=', 'Payable')])[0]
-    #     line_ids = []
-    #     for line in self.line_ids:
-    #         print(line)
-    #         if line.account_id.name == 'Global Invoice Discount':
-    #             debit_line = (0, 0, {
-    #                 'name': 'VAT 5.00%',
-    #                 'debit': 0.0,
-    #                 'credit': self.perc_discount - 0.75,
-    #                 'account_id': line.account_id.id,
-    #                 'exclude_from_invoice_tab': True,
-    #             })
-    #             line_ids.append(debit_line)
-    #             debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
-    #         if line.account_id.name == 'Tax Received':
-    #             credit_line = (0, 0, {
-    #                 'name': 'Global Discount',
-    #                 'debit': self.net_tax,
-    #                 'credit': 0.0,
-    #                 'account_id': line.account_id.id,
-    #                 'exclude_from_invoice_tab': True,
-    #             })
-    #             line_ids.append(credit_line)
-    #             credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
-    #     vals = {
-    #         # 'date': fields.Date.today(),
-    #         # 'move_type': 'entry',
-    #         'line_ids': line_ids,
-    #     }
-    #     # print(self.perc_discount - 0.75, self.net_tax)
-    #     move = super(AccountMoveInh, self).write(vals)
-    #
-    #     return rec
 
 
 class AccountMoveLineInh(models.Model):
@@ -114,7 +83,8 @@ class AccountMoveLineInh(models.Model):
         for rec in self:
             amount = 0
             for tax in rec.tax_ids:
-                amount = amount + tax.amount
+                if tax.name == 'VAT 5%':
+                    amount = amount + tax.amount
             rec.vat_amount = (amount/100) * rec.price_unit
 
     @api.depends('sequence', 'move_id')

@@ -26,50 +26,50 @@
                 paperformat="paperformat_report_picklist"/>
 
         <template id="web.external_layout_boxed">
-<!--            <t t-name="web.external_layout_boxed">-->
-<!--                <t t-name="web.external_layout_boxed">-->
-                    <div t-attf-class="header o_company_#{res_company.id}_layout" t-att-style="report_header_style">
-                        <div class="o_boxed_header">
-                            <div class="row mb8">
-                                <div class="col-6">
-                                    <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" alt="Logo"/>
-                                </div>
-                                <div class="col-6 text-right mb4">
-                                    <h4 class="mt0" t-field="res_company.report_header"/>
-                                    <div name="company_address" class="float-right mb4">
-                                        <span class="company_address" t-field="res_company.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}"/>
-                                    </div>
-                                </div>
+            <!--            <t t-name="web.external_layout_boxed">-->
+            <!--                <t t-name="web.external_layout_boxed">-->
+            <div t-attf-class="header o_company_#{res_company.id}_layout" t-att-style="report_header_style">
+                <div class="o_boxed_header">
+                    <div class="row mb8">
+                        <div class="col-6">
+                            <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" alt="Logo"/>
+                        </div>
+                        <div class="col-6 text-right mb4">
+                            <h4 class="mt0" t-field="res_company.report_header"/>
+                            <div name="company_address" class="float-right mb4">
+                                <span class="company_address" t-field="res_company.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}"/>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div t-attf-class="article o_report_layout_boxed o_company_#{res_company.id}_layout" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
-                        <div class="pt-5">
-                            <!-- This div ensures that the address is not cropped by the header. -->
-                            <t t-call="web.address_layout"/>
-                        </div>
-                        <t t-raw="0"/>
+            <div t-attf-class="article o_report_layout_boxed o_company_#{res_company.id}_layout" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+                <div class="pt-5">
+                    <!-- This div ensures that the address is not cropped by the header. -->
+                    <t t-call="web.address_layout"/>
+                </div>
+                <t t-raw="0"/>
+            </div>
+
+            <div t-attf-class="footer o_boxed_footer o_company_#{res_company.id}_layout">
+                <div class="text-center">--This is a system generated document. No Signature required--</div>
+
+                <div class="text-center">
+                    <ul class="list-inline">
+                        <li t-if="res_company.phone" class="list-inline-item"><span class="o_force_ltr" t-field="res_company.phone"/></li>
+                        <li t-if="res_company.email" class="list-inline-item"><span t-field="res_company.email"/></li>
+                        <li t-if="res_company.website" class="list-inline-item"><span t-field="res_company.website"/></li>
+                        <li t-if="res_company.vat" class="list-inline-item"><t t-esc="res_company.country_id.vat_label or 'Tax ID'"/>: <span t-field="res_company.vat"/></li>
+                    </ul>
+                    <div t-field="res_company.report_footer"/>
+                    <div t-if="report_type == 'pdf'">
+                        Page: <span class="page"/> / <span class="topage"/>
                     </div>
-
-                    <div t-attf-class="footer o_boxed_footer o_company_#{res_company.id}_layout">
-                        <div class="text-center">--This is a system generated document. No Signature required--</div>
-
-                        <div class="text-center">
-                            <ul class="list-inline">
-                                <li t-if="res_company.phone" class="list-inline-item"><span class="o_force_ltr" t-field="res_company.phone"/></li>
-                                <li t-if="res_company.email" class="list-inline-item"><span t-field="res_company.email"/></li>
-                                <li t-if="res_company.website" class="list-inline-item"><span t-field="res_company.website"/></li>
-                                <li t-if="res_company.vat" class="list-inline-item"><t t-esc="res_company.country_id.vat_label or 'Tax ID'"/>: <span t-field="res_company.vat"/></li>
-                            </ul>
-                            <div t-field="res_company.report_footer"/>
-                            <div t-if="report_type == 'pdf'">
-                                Page: <span class="page"/> / <span class="topage"/>
-                            </div>
-                        </div>
-                    </div>
-<!--                </t>-->
-<!--            </t>-->
+                </div>
+            </div>
+            <!--                </t>-->
+            <!--            </t>-->
         </template>
 
         <template id="report_picklist_document">
@@ -119,13 +119,13 @@
                             <table class="table table-sm" name="stock_move_table">
                                 <thead>
                                     <tr>
-                                        <th name="th_sm_product" class="text-center" width="4%"><strong>SR#</strong></th>
-                                        <th name="th_sm_product" class="text-center" width="7%"><strong>QTY Onhand</strong></th>
-                                        <th name="th_sm_product" class="text-center" width="7%"><strong>Available Qty</strong></th>
-                                        <th name="th_sm_product" width="35%"><strong>Products</strong></th>
-                                        <th name="th_sm_quantity" class="text-center" width="7%"><strong>Qty to Pick</strong></th>
-                                        <th name="th_sm_serial" class="text-center" width="15%"><strong>Serial #</strong></th>
-                                        <th name="th_sm_note" class="text-center" width="20%"><strong>Note</strong></th>
+                                        <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="4%"><strong>SR#</strong></th>
+                                        <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="7%"><strong>QTY Onhand</strong></th>
+                                        <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="7%"><strong>Available Qty</strong></th>
+                                        <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="35%"><strong>Products</strong></th>
+                                        <th name="th_sm_quantity" style="white-space:nowrap;" class="text-center" width="7%"><strong>Qty to Pick</strong></th>
+                                        <th name="th_sm_serial" style="white-space:nowrap;" class="text-center" width="15%"><strong>Serial #</strong></th>
+                                        <th name="th_sm_note" style="white-space:nowrap;" class="text-center" width="20%"><strong>Note</strong></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -158,34 +158,13 @@
                             <div class="container row" style="margin-top:2em;margin-left:1em;float:right; font-size:15px;">
                                 <div class="col-12" t-if="o.sale_id.note_picklist">
                                     <strong><span>Note:</span> </strong><span t-esc="o.sale_id.note_picklist"/>
-
                                 </div>
                             </div>
                             <div class="container row" style="margin-top:1em;margin-left:1em;float:right; font-size:15px;">
                                 <div class="col-12">
-                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">____________________</span>
-                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">______________________________</span>
-                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>
-                                    <!--                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>-->
-                                    <strong>Time Given to store: </strong><span style="color:black;">_____________________________________</span>
-                                </div>
-                            </div>
-                            <div class="container row" style="margin-top:2em;margin-left:1em;float:right; font-size:15px;">
-                                <div class="col-12">
-                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_______________________</span>
-                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">___________________________</span>
-                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>
-                                    <!--                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>-->
-                                    <strong>Time return from store: </strong><span style="color:black;">_________________________________</span>
-                                </div>
-                            </div>
-                            <div class="container row" style="margin-top:2em;margin-left:1em;float:right; font-size:15px;">
-                                <div class="col-12">
-                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">______________________</span>
-                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>
-                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>
-                                    <!--                                    <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>-->
-                                    <strong>Picking Person Signature: </strong><span style="color:black;">_______________________________</span>
+                                    <strong>Time Given to store: </strong><span style="color:black;">_________________________</span><span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span><span>&#160;</span>
+                                    <strong>Time return from store: </strong><span style="color:black;">_________________________</span><span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span><span>&#160;</span>
+                                    <strong>Picking Person Signature: </strong><span style="color:black;">__________________________</span><span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span><span>&#160;</span>
                                 </div>
                             </div>
 
