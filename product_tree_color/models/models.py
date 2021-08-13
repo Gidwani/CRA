@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
-# from odoo import models, fields, api
+from odoo import models, fields, api
 
 
-# class product_tree_color(models.Model):
-#     _name = 'product_tree_color.product_tree_color'
-#     _description = 'product_tree_color.product_tree_color'
+class StockPickingInh(models.Model):
+    _inherit = 'stock.picking'
 
-#     name = fields.Char()
-#     value = fields.Integer()
-#     value2 = fields.Float(compute="_value_pc", store=True)
-#     description = fields.Text()
-#
-#     @api.depends('value')
-#     def _value_pc(self):
-#         for record in self:
-#             record.value2 = float(record.value) / 100
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        result = super(StockPickingInh, self).fields_view_get(
+            view_id=view_id, view_type=view_type, toolbar=toolbar,
+            submenu=submenu)
+        if view_type == 'form':
+            for repo in result['toolbar']['print']:
+                if repo['name'] == 'Delivery Slip':
+                    result['toolbar']['print'].remove(repo)
+            result['toolbar']['print'].reverse()
+        return result
