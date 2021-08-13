@@ -36,7 +36,7 @@
                     <t t-if="o.state == 'done'">
                         <div class="page" style="margin-top:-55px;">
                             <h2>
-                                <span t-field="o.name"/>
+                                <span t-if="not is_receipt">Delivery Note/</span><span t-field="o.name"/>
                             </h2><br/>
                             <div class="row mt32 mb32"  style="background-color:#E0E0E0;">
                                 <div class="col-auto col-3 mw-100 mb-2">
@@ -44,13 +44,13 @@
                                     <p class="m-0" t-field="o.partner_id.name"/>
                                 </div>
 
-                                <div  class="col-auto col-3 mw-100 mb-2">
+                                <div t-if="o.partner_id.street or o.partner_id.city or o.partner_id.country_id.name"  class="col-auto col-3 mw-100 mb-2">
                                     <strong>Company Address:</strong>
-                                    <p class="m-0" t-field="o.partner_id.street"/>
-                                    <p class="m-0" t-field="o.partner_id.city"/>
-                                    <p class="m-0" t-field="o.partner_id.country_id.name"/>
+                                    <p t-if="o.partner_id.street" class="m-0" t-field="o.partner_id.street"/>
+                                    <p t-if="o.partner_id.city" class="m-0" t-field="o.partner_id.city"/>
+                                    <p t-if="o.partner_id.country_id.name" class="m-0" t-field="o.partner_id.country_id.name"/>
                                 </div>
-                                <div class="col-auto col-3 mw-100 mb-2">
+                                <div t-if="o.partner_id.vat" class="col-auto col-3 mw-100 mb-2">
                                     <strong> TRN:</strong>
                                     <p class="m-0" t-field="o.partner_id.vat"/>
                                 </div>
