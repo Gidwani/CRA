@@ -6,7 +6,7 @@
         <xpath expr="//div[@class='page']" position="replace">
             <div class="page" style="margin-top:-77px;">
                 <h2>
-                                        <span t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Tax Invoice</span>
+<!--                                        <span t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Tax Invoice</span>-->
                     <span t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
                     <span t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
                     <span t-if="o.move_type == 'out_refund'">Tax Credit Note</span>

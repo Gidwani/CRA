@@ -18,9 +18,9 @@
                     <field name="do_no" attrs="{'invisible': [('is_receipt' ,'=', False)]}"/>
                     <field name="is_receipt" invisible="1"/>
                 </xpath>
-                <xpath expr="//field[@name='name']" position="before">
-                    <span attrs="{'invisible': [('is_receipt' ,'=', True)]}">Delivery Note/</span>
-                </xpath>
+<!--                <xpath expr="//field[@name='name']" position="before">-->
+<!--                    <span attrs="{'invisible': [('is_receipt' ,'=', True)]}">Delivery Note/</span>-->
+<!--                </xpath>-->
 
             </field>
         </record>
