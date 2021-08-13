@@ -76,6 +76,7 @@ class StockPickingInh(models.Model):
     #         return "True"
 
     def get_seq(self, picking):
+        print(picking.name)
         return 'Picklist/'+picking.name.split('/')[1]+"/"+picking.name.split('/')[2] + "/"+picking.name.split('/')[3]
 
     def compute_is_receipt(self):
@@ -85,15 +86,15 @@ class StockPickingInh(models.Model):
             else:
                 rec.is_receipt = False
 
-    @api.model
-    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
-        result = super(StockPickingInh, self).fields_view_get(
-            view_id=view_id, view_type=view_type, toolbar=toolbar,
-            submenu=submenu)
-        reports = self.env['ir.actions.report'].sudo().search([('report_name', 'in', ['stock.report_picking'])])
-        for report in reports:
-            report.unlink_action()
-        return result
+    # @api.model
+    # def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+    #     result = super(StockPickingInh, self).fields_view_get(
+    #         view_id=view_id, view_type=view_type, toolbar=toolbar,
+    #         submenu=submenu)
+    #     reports = self.env['ir.actions.report'].sudo().search([('report_name', 'in', ['stock.report_picking'])])
+    #     for report in reports:
+    #         report.unlink_action()
+    #     return result
 
 
 class StockMoveLineInh(models.Model):
