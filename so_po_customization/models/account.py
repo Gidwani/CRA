@@ -22,9 +22,9 @@ class AccountMoveInh(models.Model):
     def get_do_no(self):
         picking = self.env['stock.picking'].search([('origin', '=', self.invoice_origin), ('backorder_id', '=', False)], limit=1)
         # print(picking.name.split('/'))
-        a = picking.name.split('/')
-        name = a[1] + '/' + a[2] + '/' + a[3]
-        return name
+        # a = picking.name.split('/')
+        # name = a[1] + '/' + a[2] + '/' + a[3]
+        return picking.name
 
     def compute_taxes(self):
         flag = False

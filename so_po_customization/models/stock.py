@@ -76,7 +76,7 @@ class StockPickingInh(models.Model):
     #         return "True"
 
     def get_seq(self, picking):
-        return 'Picklist/'+picking.name.split('/')[1]+"/"+picking.name.split('/')[2] + "/"+picking.name.split('/')[3]
+        return 'Picklist/'+picking.name
 
     def compute_is_receipt(self):
         for rec in self:
