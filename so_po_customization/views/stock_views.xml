@@ -8,7 +8,6 @@
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
 
-
                 <xpath expr="//field[@name='move_ids_without_package']//tree/field[@name='product_id']" position="before">
                     <field name="number" string="Sr No"/>
                 </xpath>
@@ -19,24 +18,9 @@
                     <field name="do_no" attrs="{'invisible': [('is_receipt' ,'=', False)]}"/>
                     <field name="is_receipt" invisible="1"/>
                 </xpath>
-
-
-
-                <!--                <xpath expr="//field[@name='move_line_ids_without_package']" position="replace">-->
-                <!--                    <field name='move_line_ids_without_package' attrs="{'readonly': ['|', '|', ('show_operations', '=', False), ('state', '=', 'cancel'), '&amp;', ('state', '=', 'done'), ('is_locked', '=', True)]}" context="{'tree_view_ref': 'stock.view_stock_move_line_detailed_operation_tree', 'default_picking_id': id, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id, 'default_company_id': company_id}">-->
-                <!--                        <tree editable="bottom">-->
-                <!--                            <field name="number" string="Sr No"/>-->
-                <!--                            <field name="product_id"/>-->
-                <!--                            <field name="remarks"/>-->
-                <!--                            <field name="lot_id"/>-->
-                <!--                            <field name="product_uom_qty"/>-->
-                <!--                            <field name="qty_done"/>-->
-                <!--                            <field name="product_uom_id"/>-->
-                <!--                            <field name="company_id" invisible="1"/>-->
-                <!--                            <field name="product_uom_category_id" invisible="1"/>-->
-                <!--                        </tree>-->
-                <!--                    </field>-->
-                <!--                </xpath>-->
+<!--                <xpath expr="//field[@name='name']" position="before">-->
+<!--                    <span attrs="{'invisible': [('is_receipt' ,'=', True)]}">Delivery Note/</span>-->
+<!--                </xpath>-->
 
             </field>
         </record>
