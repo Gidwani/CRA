@@ -30,13 +30,18 @@ class AccountMoveInh(models.Model):
         flag = False
         total = 0
         for rec in self.invoice_line_ids:
+            # if rec.product_id.type != 'service':
             if rec.tax_ids:
                 for tax in rec.tax_ids:
-                    if tax.name == 'VAT 5%':
+                    if tax.name == 'VAT 5% (Dubai)' and self.move_type == 'out_invoice':
                         flag = True
                         total = total + rec.subtotal
+                    else:
+                        if tax.name == 'VAT 5%':
+                            flag = True
+                            total = total + rec.subtotal
         if flag:
-            self.net_tax = (5 / 100) * total
+            self.net_tax = (5 / 100) * (total - self.perc_discount)
         else:
             self.net_tax = 0
 
