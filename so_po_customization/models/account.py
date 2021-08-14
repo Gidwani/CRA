@@ -32,7 +32,10 @@ class AccountMoveInh(models.Model):
         for rec in self.invoice_line_ids:
             if rec.tax_ids:
                 for tax in rec.tax_ids:
-                    if tax.name == 'VAT 5%':
+                    if tax.name == 'VAT 5% (Dubai)' and self.move_type == 'out_invoice':
+                        flag = True
+                        total = total + rec.subtotal
+                    else:
                         flag = True
                         total = total + rec.subtotal
         if flag:
