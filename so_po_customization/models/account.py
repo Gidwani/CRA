@@ -36,8 +36,9 @@ class AccountMoveInh(models.Model):
                         flag = True
                         total = total + rec.subtotal
                     else:
-                        flag = True
-                        total = total + rec.subtotal
+                        if tax.name == 'VAT 5%':
+                            flag = True
+                            total = total + rec.subtotal
         if flag:
             self.net_tax = (5 / 100) * total
         else:
