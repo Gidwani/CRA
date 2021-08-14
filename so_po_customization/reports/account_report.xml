@@ -303,7 +303,7 @@
                 <table class="table table-sm">
                     <tr >
                         <t t-if="o.move_type == 'out_invoice' ">
-                            <td style="width:65%;" >
+                            <td style="width:65%; border:1px solid white;" >
                                 <strong><h6>Bank Details - CRA Trading LLC</h6></strong>
                                 <span style="white-space:nowrap;"><strong>Bank Name:</strong>RAK Bank&#160;&#160;</span><br/>
                                 <span style="white-space:nowrap;"><strong>Account #:</strong>0122 3629 36002&#160;&#160;</span>
