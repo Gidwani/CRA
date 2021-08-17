@@ -302,15 +302,27 @@
 
                 <table class="table table-sm">
                     <tr >
-                        <t t-if="o.move_type == 'out_invoice' ">
-                            <td style="width:65%; border:1px solid white;" >
-                                <strong><h6>Bank Details - CRA Trading LLC</h6></strong>
-                                <span style="white-space:nowrap;"><strong>Bank Name:</strong>RAK Bank&#160;&#160;</span><br/>
-                                <span style="white-space:nowrap;"><strong>Account #:</strong>0122 3629 36002&#160;&#160;</span>
-                                <span style="white-space:nowrap;"><strong>Swift code:</strong>NRAK AEAK&#160;&#160;</span>
-                                <span style="white-space:nowrap;"><strong>IBAN:</strong>AE 4904 0000 0122 3629 36002&#160;&#160;</span>
-                                <span style="white-space:nowrap;"><strong>Branch:</strong>Sheikh Zayed Rd Branch&#160;&#160;</span>
-                            </td>
+                        <t t-if="o.move_type == 'out_invoice'">
+                             <t t-if="o.company_id.id== 1">
+                                    <td style="width:65%; border:1px solid white;" >
+                                        <strong><h6>Bank Details - CRA Trading LLC</h6></strong>
+                                        <span style="white-space:nowrap;"><strong>Bank Name:</strong>RAK Bank&#160;&#160;</span><br/>
+                                        <span style="white-space:nowrap;"><strong>Account #:</strong>0122 3629 36002&#160;&#160;</span>
+                                        <span style="white-space:nowrap;"><strong>Swift code:</strong>NRAK AEAK&#160;&#160;</span>
+                                        <span style="white-space:nowrap;"><strong>IBAN:</strong>AE 4904 0000 0122 3629 36002&#160;&#160;</span>
+                                        <span style="white-space:nowrap;"><strong>Branch:</strong>Sheikh Zayed Rd Branch</span>
+                                    </td>
+                             </t>
+                            <t t-else="">
+                                <td style="width:65%; border:1px solid white;" >
+                                        <strong><h6>Bank Details - CRA Middle East FZCO</h6></strong>
+                                        <span style="white-space:nowrap;"><strong>Bank Name:</strong>RAK Bank&#160;&#160;</span><br/>
+                                        <span style="white-space:nowrap;"><strong>Account #:</strong>0662 8578 50001&#160;&#160;</span>
+                                        <span style="white-space:nowrap;"><strong>Swift code:</strong>NRAK AEAK&#160;&#160;</span>
+                                        <span style="white-space:nowrap;"><strong>IBAN:</strong>AE25 0400 0006 6285 7850 001&#160;&#160;</span>
+<!--                                        <span style="white-space:nowrap;"><strong>Branch:</strong>Sheikh Zayed Rd Branch</span>-->
+                                    </td>
+                            </t>
                         </t>
                         <t t-else="">
                             <td style="width:40%;border:1px solid white;">

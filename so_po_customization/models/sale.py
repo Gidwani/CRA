@@ -236,13 +236,14 @@ class SaleOrderLineInh(models.Model):
     subtotal = fields.Float('Subtotal', compute='_compute_subtotal')
 
     def unlink(self):
-        i = 1
-        for rec in self.order_id.order_line:
-            if rec.id != self.id:
-                rec.update({
-                    'number': i
-                })
-                i = i + 1
+        for res in self:
+            i = 1
+            for rec in res.order_id.order_line:
+                if rec.id != res.id:
+                    rec.update({
+                        'number': i
+                    })
+                    i = i + 1
         record = super(SaleOrderLineInh, self).unlink()
 
     @api.depends('price_unit', 'product_uom_qty')
