@@ -33,9 +33,10 @@ class AccountMoveInh(models.Model):
             # if rec.product_id.type != 'service':
             if rec.tax_ids:
                 for tax in rec.tax_ids:
-                    if tax.name == 'VAT 5% (Dubai)' and self.move_type == 'out_invoice':
-                        flag = True
-                        total = total + rec.subtotal
+                    if tax.name == 'VAT 5% (Dubai)':
+                        if self.move_type == 'out_invoice' or self.move_type == 'out_refund':
+                            flag = True
+                            total = total + rec.subtotal
                     else:
                         if tax.name == 'VAT 5%':
                             flag = True
@@ -88,7 +89,7 @@ class AccountMoveLineInh(models.Model):
         for rec in self:
             amount = 0
             for tax in rec.tax_ids:
-                if tax.name == 'VAT 5%':
+                if tax.name == 'VAT 5% (Dubai)':
                     amount = amount + tax.amount
             rec.vat_amount = (amount/100) * rec.price_unit
 
