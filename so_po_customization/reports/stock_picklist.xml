@@ -84,7 +84,6 @@
                             </t>
                             <span class="m-0" t-esc="current_date"/>
                             <br/>
-
                         </div>
                         <div class="page" style="margin-top:-20px;">
                             <h2>
