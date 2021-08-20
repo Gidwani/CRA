@@ -109,20 +109,21 @@ class AccountFollowupInh(models.AbstractModel):
                 'columns': [{} for col in columns],
             })
         # Remove the last empty line
+        print(lines)
         if lines:
             lines.pop()
         new_lines = []
         i = -3
-        for rec in range(0, len(lines)-2):
-            new_lines.append(lines[i])
-            i = i -1
-        print(len(lines))
-        print("--------------------------")
-
-        new_lines.append(lines[-2])
-        new_lines.append(lines[-1])
-        print(len(new_lines))
-        return new_lines
+        if lines:
+            for rec in range(0, len(lines)-2):
+                new_lines.append(lines[i])
+                i = i -1
+            print(len(lines))
+            print("--------------------------")
+            new_lines.append(lines[-2])
+            new_lines.append(lines[-1])
+        print(new_lines)
+        return sorted(new_lines, key=lambda i: i['id'])
 
 
 class StockMoveLineInh(models.Model):
@@ -196,3 +197,15 @@ class StockPickingInh(models.Model):
         for line in self.move_ids_without_package:
             line.quantity_done = 0
         self.is_done_added = False
+
+    # @api.model
+    # def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+    #     result = super(StockPickingInh, self).fields_view_get(
+    #         view_id=view_id, view_type=view_type, toolbar=toolbar,
+    #         submenu=submenu)
+    #     if view_type == 'form':
+    #         for repo in result['toolbar']['print']:
+    #             if repo['name'] == 'Delivery Slip':
+    #                 result['toolbar']['print'].remove(repo)
+    #         result['toolbar']['print'].reverse()
+    #     return result
