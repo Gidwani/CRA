@@ -82,7 +82,7 @@
             </field>
         </record>
 
-        <record id="view_products_tree_inh" model="ir.ui.view">
+        <record id="view_products_tree_inherit" model="ir.ui.view">
             <field name="name">product.template.tree.inh</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_tree_view"/>
@@ -101,12 +101,6 @@
                 <xpath expr="//field[@name='qty_available']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
-                <xpath expr="//field[@name='x_css']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
-<!--                <xpath expr="//field[@name='list_price']" position="replace">-->
-<!--                    <field name="list_price" string="Sale Price" class="sale-class"/>-->
-<!--                </xpath>-->
                 <xpath expr="//field[@name='name']" position="before">
                     <field name="default_code"/>
                 </xpath>

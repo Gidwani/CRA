@@ -69,7 +69,7 @@ class AccountMoveInh(models.Model):
             rec.subtotal_amount = subtotal
             rec.net_total = rec.subtotal_amount - rec.perc_discount
             rec.total_amount_net = rec.net_total + rec.net_tax
-            rec.total_amount_due = rec.net_total + rec.net_tax
+            rec.total_amount_due = rec.amount_residual
 
 
 class AccountMoveLineInh(models.Model):
