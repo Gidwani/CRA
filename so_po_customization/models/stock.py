@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
+
+from pytz import timezone
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
@@ -64,7 +67,7 @@ class StockPickingInh(models.Model):
         delivery = self.env['stock.picking.type'].search([('code', '=', 'outgoing')], limit=1)
         print(self.picking_type_id.id)
         print(delivery.id)
-        if self.picking_type_id.id == delivery.id:
+        if self.picking_type_id.code == 'outgoing':
             return 1
         else:
             return 0
@@ -74,6 +77,12 @@ class StockPickingInh(models.Model):
     #         raise UserWarning(('You cannot print report in this state'))
     #     else:
     #         return "True"
+
+    def get_current_date(self):
+        print('hello')
+        now_utc_date = datetime.now()
+        now_dubai = now_utc_date.astimezone(timezone('Asia/Karachi'))
+        return now_dubai.strftime('%d/%m/%Y %H:%M:%S')
 
     def get_seq(self, picking):
         print(picking.name)

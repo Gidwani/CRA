@@ -142,18 +142,6 @@ class SaleOrderInh(models.Model):
     note_picklist = fields.Char('Note')
     subtotal_amount = fields.Float('Subtotal Amount', compute='_compute_net_total')
 
-
-    def action_select_products(self):
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Select Products',
-            'view_id': self.env.ref('so_po_customization.view_select_products_form', False).id,
-            # 'context': {'default_ref': self.name, 'default_order_amount': self.amount_total, 'default_user_id': self.user_id.id},
-            'target': 'new',
-            'res_model': 'select.products',
-            'view_mode': 'form',
-        }
-
     def get_lot_no(self, line):
         picking = self.env['stock.picking'].search([('sale_id', '=', line.order_id.id)])
         lot = None

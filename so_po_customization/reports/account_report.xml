@@ -302,7 +302,7 @@
 
                 <table class="table table-sm">
                     <tr >
-                        <t t-if="o.move_type == 'out_invoice'">
+                        <t t-if="o.move_type == 'out_invoice' or o.move_type == 'out_refund'">
                              <t t-if="o.company_id.id== 1">
                                     <td style="width:65%; border:1px solid white;" >
                                         <strong><h6>Bank Details - CRA Trading LLC</h6></strong>
@@ -343,7 +343,7 @@
                                         </td>
                                     </tr>
                                     <t t-if="not o.perc_discount == 0">
-                                        <t t-if="o.move_type == 'out_invoice'">
+                                        <t t-if="o.move_type == 'out_invoice' or o.move_type == 'out_refund'">
                                             <tr class="border-black o_subtotal" style="">
                                                 <!--                                    <td name="td_perc_discount_label"><strong>Discount( <span t-esc="o.perc" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%)</strong></td>-->
                                                 <td name="td_perc_discount"><strong>Discount</strong></td>

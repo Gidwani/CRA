@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sale', 'purchase', 'stock', 'sale_margin', 'sale_discount_total', 'sale_stock'],
+    'depends': ['base', 'sale', 'purchase', 'stock', 'sale_margin', 'sale_discount_total', 'sale_stock','approval_so_po'],
 
     # always loaded
     'data': [
@@ -35,7 +35,7 @@
         'reports/delivery_report.xml',
         'reports/stock_picklist.xml',
         'wizard/sale_wizard.xml',
-        'wizard/select_products_wizard_view.xml',
+        # 'wizard/select_products_wizard_view.xml',
     ],
 
 }
