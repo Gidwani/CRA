@@ -35,7 +35,7 @@
         'reports/delivery_report.xml',
         'reports/stock_picklist.xml',
         'wizard/sale_wizard.xml',
-        'wizard/select_products_wizard_view.xml',
+        # 'wizard/select_products_wizard_view.xml',
     ],
 
 }
