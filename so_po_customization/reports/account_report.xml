@@ -302,7 +302,7 @@
 
                 <table class="table table-sm">
                     <tr >
-                        <t t-if="o.move_type == 'out_invoice'">
+                        <t t-if="o.move_type == 'out_invoice' or o.move_type == 'out_refund'">
                              <t t-if="o.company_id.id== 1">
                                     <td style="width:65%; border:1px solid white;" >
                                         <strong><h6>Bank Details - CRA Trading LLC</h6></strong>
