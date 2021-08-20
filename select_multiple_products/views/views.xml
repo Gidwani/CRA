@@ -1,0 +1,31 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="purchase_order_view_inherit">
+			<field name="name">purchase.order.view.inherit</field>
+			<field name="model">purchase.order</field>
+			<field name="inherit_id" ref="purchase.purchase_order_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='order_line']" position="before">
+					<group>
+						<button name="action_select_products" type="object" string="Select Products" context="{'default_flag_order': 'po'}" attrs="{'invisible': [('state', '!=', 'draft')]}" class="oe_highlight" invisible="1"/>
+					</group>
+				</xpath>
+			</field>
+		</record>
+
+    <record model="ir.ui.view" id="sale_order_view_multi_product_selection_inherit">
+            <field name="name">sale.order.view.multi.product.selection.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']" position="before">
+                    <group>
+                        <button name="action_select_products" type="object" string="Select Products" context="{'default_flag_order': 'so'}" attrs="{'invisible': [('state', '!=', 'draft')]}" class="oe_highlight"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+  </data>
+</odoo>
