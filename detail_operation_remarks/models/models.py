@@ -109,20 +109,21 @@ class AccountFollowupInh(models.AbstractModel):
                 'columns': [{} for col in columns],
             })
         # Remove the last empty line
+        print(lines)
         if lines:
             lines.pop()
         new_lines = []
         i = -3
-        for rec in range(0, len(lines)-2):
-            new_lines.append(lines[i])
-            i = i -1
-        print(len(lines))
-        print("--------------------------")
-
-        new_lines.append(lines[-2])
-        new_lines.append(lines[-1])
-        print(len(new_lines))
-        return new_lines
+        if lines:
+            for rec in range(0, len(lines)-2):
+                new_lines.append(lines[i])
+                i = i -1
+            print(len(lines))
+            print("--------------------------")
+            new_lines.append(lines[-2])
+            new_lines.append(lines[-1])
+        print(new_lines)
+        return sorted(new_lines, key=lambda i: i['id'])
 
 
 class StockMoveLineInh(models.Model):
