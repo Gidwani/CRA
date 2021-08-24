@@ -15,16 +15,49 @@ class AccountMoveInh(models.Model):
     total_amount_net = fields.Float('Total')
     total_amount_due = fields.Float('Amount Due')
 
+    do_link = fields.Char(string='DO link')
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        res_ids = super(AccountMoveInh, self).create(vals_list)
+        res_ids._assign_the_DO_link()
+        return res_ids
+
+    def _assign_the_DO_link(self):
+        if not self.do_link:
+            for k in self.invoice_line_ids:
+                saleorder = self.env['sale.order'].search([("name", '=', self.invoice_origin)])
+                for l in saleorder.picking_ids:
+                    if self.invoice_origin == l.sale_id.name:
+                        for j in l.move_line_ids_without_package:
+                            if j.picking_id.invoice_link != True:
+                                if j.product_id == k.product_id:
+                                    if j.qty_done == k.quantity:
+                                        self.do_link = l.name
+                                        j.picking_id.invoice_link = True
+
     def get_payment_term_id(self):
         order = self.env['sale.order'].search([('name', '=', self.invoice_origin)])
         return order.payment_term_id.name
 
     def get_do_no(self):
-        picking = self.env['stock.picking'].search([('origin', '=', self.invoice_origin), ('backorder_id', '=', False)], limit=1)
-        # print(picking.name.split('/'))
-        # a = picking.name.split('/')
-        # name = a[1] + '/' + a[2] + '/' + a[3]
-        return picking.name
+        pickings = self.env['stock.picking'].search([('name', '=', self.do_link)])
+        # inv_qty = 0
+        # for line in self.invoice_line_ids:
+        #     inv_qty = inv_qty + line.quantity
+        #
+        # name = ''
+        # for rec in pickings:
+        #     del_qty = 0
+        #     for del_line in rec.move_line_ids_without_package:
+        #         del_qty = del_qty + del_line.qty_done
+        #     if inv_qty == del_qty:
+        #         name = rec.name
+        #         break
+        # # print(picking.name.split('/'))
+        # # a = picking.name.split('/')
+        # # name = a[1] + '/' + a[2] + '/' + a[3]
+        return pickings.name
 
     def compute_taxes(self):
         flag = False

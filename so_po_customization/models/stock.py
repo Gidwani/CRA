@@ -56,6 +56,7 @@ class StockPickingInh(models.Model):
 
     do_no = fields.Char("Supplier Do #")
     is_receipt = fields.Boolean(compute='compute_is_receipt')
+    invoice_link = fields.Boolean(string='Invoice link')
 
     def get_total_qty(self):
         total = 0
@@ -148,7 +149,7 @@ class StockMoveLineInh(models.Model):
                         uom = product_qty.uom_id.name
         if ml.picking_id.purchase_id:
             for line in ml.picking_id.purchase_id.order_line:
-                if line.product_id.id == ml.product_id.id and line.number == ml.number:
+                if line.product_id.id == ml.product_id.id and line.number == ml.so_no:
                     if line.product_uom.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
                         # qty = int(line.product_qty)
                         uom =  " Lth"
@@ -246,6 +247,7 @@ class StockMoveInh(models.Model):
     def get_product_uom_lot(self, ml):
         product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
         uom = ''
+
         if ml.picking_id.sale_id:
             for line in ml.picking_id.sale_id.order_line:
                 if line.product_id.id == ml.product_id.id and line.number == ml.so_no:
@@ -288,22 +290,21 @@ class StockMoveInh(models.Model):
         return uom
 
     def _compute_remarks(self):
-        rem = ''
         for rec in self:
-
+            rem = ''
             if rec.picking_id.sale_id:
                 for line in rec.picking_id.sale_id.order_line:
-                    if rec.product_id.id == line.product_id.id and line.number == rec.number:
+                    if rec.sale_line_id.id == line.id:
                         rem = line.remarks
 
             elif rec.picking_id.purchase_id:
                 for line in rec.picking_id.purchase_id.order_line:
                     if rec.product_id.id == line.product_id.id:
-                        rem= line.remarks
+                        rem = line.remarks
 
             if rec.backorder_id.sale_id:
                 for line in rec.backorder_id.sale_id.order_line:
-                    if rec.product_id.id == line.product_id.id:
+                    if rec.sale_line_id.id == line.id:
                         rem = line.remarks
             rec.remarks = rem
 

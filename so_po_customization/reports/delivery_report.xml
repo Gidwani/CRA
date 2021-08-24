@@ -36,7 +36,7 @@
                     <t t-if="o.state == 'done'">
                         <div class="page" style="margin-top:-55px;">
                             <h2>
-                               <span t-field="o.name"/>
+                                <span t-field="o.name"/>
                             </h2><br/>
                             <div class="row mt32 mb32" style="background-color:#E0E0E0;">
                                 <div class="col-auto col-3 mw-100 mb-2">
@@ -375,7 +375,7 @@
                                     <th name="th_sm_sr" class="text-center"><strong>SR #</strong></th>
                                     <th name="th_sml_product" class="text-center"><strong>Product</strong></th>
                                     <t name="lot_serial" t-if="has_serial_number" class="text-center">
-                                        <th>
+                                        <th class="text-center">
                                             Heat Number
                                         </th>
                                     </t>
