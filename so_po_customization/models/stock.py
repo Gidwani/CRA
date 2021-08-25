@@ -20,10 +20,11 @@ class ProductProductInh(models.Model):
 class ProductTemplateInh(models.Model):
     _inherit = 'product.template'
 
-    available_qty = fields.Float('Available Quantity', compute="cal_available_qty")
-    incoming_quantity = fields.Float('Incoming Quantity', compute='cal_incoming_quantity')
+    available_qty = fields.Float('Available Quantity', compute="cal_available_qty", store=True)
+    incoming_quantity = fields.Float('Incoming Quantity', compute='cal_incoming_quantity', store=True)
     hs_code = fields.Char('HS CODE')
 
+    @api.depends('name')
     def cal_incoming_quantity(self):
         for rec in self:
             incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
@@ -35,6 +36,7 @@ class ProductTemplateInh(models.Model):
                         qty = qty + line.product_uom_qty
             rec.incoming_quantity = qty
 
+    @api.depends('name')
     def cal_available_qty(self):
         for rec in self:
             total = 0
