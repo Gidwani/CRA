@@ -207,6 +207,7 @@ class SaleOrderInh(models.Model):
 
     def action_manager_approve(self):
         record = super(SaleOrderInh, self).action_confirm()
+        print('Hello')
 
 
 class PurchaseOrderInh(models.Model):
@@ -699,7 +700,6 @@ class StockPickingInh(models.Model):
             else:
                 raise UserError('Done Quantity Cannot be greater than Demand')
         if flag:
-            # return super(StockPickingInh, self).button_validate()
             if self.state == 'assigned':
                 if self.picking_type_id.code == 'outgoing':
                     check = False
@@ -713,7 +713,7 @@ class StockPickingInh(models.Model):
                 else:
                     check = False
                     for rec in self.move_ids_without_package:
-                        if rec.quantity_done == 0:
+                        if rec.quantity_done == 0 and not rec.is_backorder:
                             check = True
                     if check:
                         raise UserError('Kindly Add Done Quantities Before Validate')

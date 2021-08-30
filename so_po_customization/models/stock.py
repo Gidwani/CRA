@@ -68,8 +68,6 @@ class StockPickingInh(models.Model):
 
     def get_delivery(self):
         delivery = self.env['stock.picking.type'].search([('code', '=', 'outgoing')], limit=1)
-        print(self.picking_type_id.id)
-        print(delivery.id)
         if self.picking_type_id.code == 'outgoing':
             return 1
         else:
@@ -224,7 +222,7 @@ class StockMoveLineInh(models.Model):
     def get_remarks(self, picking, rec):
         sr = ''
         for line in picking.move_ids_without_package:
-            if line.product_id.id == rec.product_id.id and rec.number == line.number:
+            if line.product_id.id == rec.product_id.id:
                 sr = line.remarks
         return sr
 

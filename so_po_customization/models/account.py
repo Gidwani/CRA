@@ -42,42 +42,27 @@ class AccountMoveInh(models.Model):
 
     def get_do_no(self):
         pickings = self.env['stock.picking'].search([('name', '=', self.do_link)])
-        # inv_qty = 0
-        # for line in self.invoice_line_ids:
-        #     inv_qty = inv_qty + line.quantity
-        #
-        # name = ''
-        # for rec in pickings:
-        #     del_qty = 0
-        #     for del_line in rec.move_line_ids_without_package:
-        #         del_qty = del_qty + del_line.qty_done
-        #     if inv_qty == del_qty:
-        #         name = rec.name
-        #         break
-        # # print(picking.name.split('/'))
-        # # a = picking.name.split('/')
-        # # name = a[1] + '/' + a[2] + '/' + a[3]
         return pickings.name
 
     def compute_taxes(self):
         flag = False
         total = 0
-        for rec in self.invoice_line_ids:
-            # if rec.product_id.type != 'service':
-            if rec.tax_ids:
-                for tax in rec.tax_ids:
-                    if tax.name == 'VAT 5% (Dubai)':
-                        if self.move_type == 'out_invoice' or self.move_type == 'out_refund':
-                            flag = True
-                            total = total + rec.subtotal
-                    else:
-                        if tax.name == 'VAT 5%':
-                            flag = True
-                            total = total + rec.subtotal
-        if flag:
-            self.net_tax = (5 / 100) * (total - self.perc_discount)
-        else:
-            self.net_tax = 0
+        for res in self:
+            for rec in res.invoice_line_ids:
+                if rec.tax_ids:
+                    for tax in rec.tax_ids:
+                        if tax.name == 'VAT 5% (Dubai)':
+                            if res.move_type == 'out_invoice' or res.move_type == 'out_refund':
+                                flag = True
+                                total = total + rec.subtotal
+                        else:
+                            if tax.name == 'VAT 5%':
+                                flag = True
+                                total = total + rec.subtotal
+            if flag:
+                res.net_tax = (5 / 100) * (total - res.perc_discount)
+            else:
+                res.net_tax = 0
 
     def compute_percentage(self):
         for rec in self:

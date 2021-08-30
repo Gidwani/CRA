@@ -130,6 +130,12 @@ class AccountFollowupInh(models.AbstractModel):
         return sorted_lines
 
 
+class StockMoveInh(models.Model):
+    _inherit = 'stock.move'
+
+    is_backorder = fields.Boolean()
+
+
 class StockMoveLineInh(models.Model):
     _inherit = 'stock.move.line'
 
@@ -141,15 +147,23 @@ class StockMoveLineInh(models.Model):
     def compute_so_sr_no(self):
         for rec in self:
             if not rec.picking_id.backorder_id:
-                rec.so_no = rec.move_id.number
-                product_list = []
-                for line in rec.picking_id.sale_id.order_line:
-                    if rec.move_id.sale_line_id.id == line.id:
-                        rec.so_no = line.number
+                if rec.picking_id.sale_id:
+                    for line in rec.picking_id.sale_id.order_line:
+                        if rec.move_id.sale_line_id.id == line.id:
+                            rec.so_no = line.number
+                if rec.picking_id.purchase_id:
+                    for line in rec.picking_id.purchase_id.order_line:
+                        if rec.move_id.purchase_line_id.id == line.id:
+                            rec.so_no = line.number
             else:
-                for line in rec.picking_id.backorder_id.sale_id.order_line:
-                    if rec.move_id.sale_line_id.id == line.id:
-                        rec.so_no = line.number
+                if rec.picking_id.backorder_id.sale_id:
+                    for line in rec.picking_id.backorder_id.sale_id.order_line:
+                        if rec.move_id.sale_line_id.id == line.id:
+                            rec.so_no = line.number
+                if rec.picking_id.backorder_id.purchase_id:
+                    for line in rec.picking_id.backorder_id.purchase_id.order_line:
+                        if rec.move_id.purchase_line_id.id == line.id:
+                            rec.so_no = line.number
             # if rec.picking_id.sale_id:
             #     for line in rec.picking_id.sale_id.order_line:
             #         if line.product_id.id == rec.product_id.id and line.number == rec.number:
