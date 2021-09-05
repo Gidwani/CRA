@@ -40,6 +40,10 @@ class AccountMoveInh(models.Model):
         order = self.env['sale.order'].search([('name', '=', self.invoice_origin)])
         return order.payment_term_id.name
 
+    def get_client_order_ref(self):
+        order = self.env['sale.order'].search([('name', '=', self.invoice_origin)])
+        return order.client_order_ref
+
     def get_do_no(self):
         pickings = self.env['stock.picking'].search([('name', '=', self.do_link)])
         return pickings.name

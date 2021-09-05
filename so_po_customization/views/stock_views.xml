@@ -88,7 +88,6 @@
 
                 <xpath expr="//field[@name='barcode']" position="after">
                     <field name="hs_code"/>
-                    <!--                    <field name="incoming_quantity"/>-->
                 </xpath>
             </field>
         </record>
@@ -124,7 +123,7 @@
                     <field name="responsible_id"/>
                 </xpath>
                 <xpath expr="//field[@name='standard_price']" position="after">
-                    <field name="incoming_quantity"/>
+                    <field name="incoming_qty" string="Incoming Quantity"/>
                 </xpath>
 
                 <!--                <xpath expr="//tree" position="attributes">-->

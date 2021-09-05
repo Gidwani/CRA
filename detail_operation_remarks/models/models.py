@@ -211,14 +211,16 @@ class StockPickingInh(models.Model):
             self.is_delivery = False
 
     def action_add_done_qty(self):
-        for line in self.move_ids_without_package:
-            line.quantity_done = line.forecast_availability
-        self.is_done_added = True
+        if self.move_ids_without_package:
+            for line in self.move_ids_without_package:
+                line.quantity_done = line.product_uom_qty
+            self.is_done_added = True
 
     def action_remove_done_qty(self):
-        for line in self.move_ids_without_package:
-            line.quantity_done = 0
-        self.is_done_added = False
+        if self.move_ids_without_package:
+            for line in self.move_ids_without_package:
+                line.quantity_done = 0
+            self.is_done_added = False
 
     # @api.model
     # def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):

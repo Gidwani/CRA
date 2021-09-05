@@ -5,6 +5,8 @@ from pytz import timezone
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+from odoo.tools.float_utils import float_compare
+from odoo.tools.float_utils import float_compare, float_is_zero, float_round
 
 
 class ProductProductInh(models.Model):
@@ -20,23 +22,29 @@ class ProductProductInh(models.Model):
 class ProductTemplateInh(models.Model):
     _inherit = 'product.template'
 
-    available_qty = fields.Float('Available Quantity', compute="cal_available_qty", store=True)
-    incoming_quantity = fields.Float('Incoming Quantity', compute='cal_incoming_quantity', store=True)
+    available_qty = fields.Float('Available Quantity', compute="cal_available_qty", sudo_compute=True)
+    # incoming_quantity = fields.Float('Incoming Quantity')
     hs_code = fields.Char('HS CODE')
 
-    @api.depends('name')
-    def cal_incoming_quantity(self):
-        for rec in self:
-            incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
-            pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', '!=', 'done')])
-            qty = 0
-            for picking in pickings:
-                for line in picking.move_ids_without_package:
-                    if line.product_id.product_tmpl_id.id == rec.id:
-                        qty = qty + line.product_uom_qty
-            rec.incoming_quantity = qty
+    # @api.depends('virtual_available')
+    # def cal_incoming_quantity(self):
+    #     for rec in self:
+    #         qty = 0
+    #         pickings = self.env['stock.move'].search([('product_id.product_tmpl_id', '=', rec.id), ('picking_code', '=', 'incoming'), ('state', 'not in', ['done', 'cancel'])])
+    #         for pick in pickings:
+    #             qty = qty + pick.product_uom_qty
+    #         rec.incoming_quantity = qty
+        # for rec in self:
+        #     incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
+        #     pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', '!=', 'done')])
+        #     qty = 0
+        #     for picking in pickings:
+        #         for line in picking.move_ids_without_package:
+        #             if line.product_id.product_tmpl_id.id == rec.id:
+        #                 qty = qty + line.product_uom_qty
+        #     rec.incoming_quantity = qty
 
-    @api.depends('name')
+    @api.depends('qty_available')
     def cal_available_qty(self):
         for rec in self:
             total = 0
@@ -310,8 +318,9 @@ class StockMoveInh(models.Model):
 
     @api.depends('picking_id')
     def _compute_get_number(self):
-        for order in self.mapped('picking_id'):
-            number = 1
-            for line in order.move_ids_without_package:
-                line.number = number
-                number += 1
+        if not self.picking_id.backorder_id:
+            for order in self.mapped('picking_id'):
+                number = 1
+                for line in order.move_ids_without_package:
+                    line.number = number
+                    number += 1
