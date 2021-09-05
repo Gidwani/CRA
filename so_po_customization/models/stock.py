@@ -23,7 +23,7 @@ class ProductTemplateInh(models.Model):
     _inherit = 'product.template'
 
     available_qty = fields.Float('Available Quantity', compute="cal_available_qty", sudo_compute=True)
-    # incoming_quantity = fields.Float('Incoming Quantity')
+    incoming_quantity = fields.Float('Incoming Quantity')
     hs_code = fields.Char('HS CODE')
 
     # @api.depends('virtual_available')
