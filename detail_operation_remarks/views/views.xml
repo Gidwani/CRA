@@ -24,6 +24,10 @@
                     <attribute name="class">text-wrap</attribute>
                 </xpath>
 
+                <xpath expr="//group[@name='partner_details']" position="inside">
+                    <field name="user_id"/>
+                </xpath>
+
             </field>
         </record>
 
