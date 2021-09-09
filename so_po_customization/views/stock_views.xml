@@ -2,6 +2,17 @@
 <odoo>
     <data>
 
+        <record id="stock_picking_form_view" model="ir.ui.view">
+        <field name="name">stock.picking.form.custom</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='backorder_id']" position="after">
+                <field name="invoice_link" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
         <record id="view_stock_picking_form_inh" model="ir.ui.view">
             <field name="name">stock.picking.form.inh</field>
             <field name="model">stock.picking</field>
@@ -77,12 +88,11 @@
 
                 <xpath expr="//field[@name='barcode']" position="after">
                     <field name="hs_code"/>
-                    <!--                    <field name="incoming_quantity"/>-->
                 </xpath>
             </field>
         </record>
 
-        <record id="view_products_tree_inherit" model="ir.ui.view">
+        <record id="view_products_tree_inh" model="ir.ui.view">
             <field name="name">product.template.tree.inh</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_tree_view"/>
@@ -113,7 +123,7 @@
                     <field name="responsible_id"/>
                 </xpath>
                 <xpath expr="//field[@name='standard_price']" position="after">
-                    <field name="incoming_quantity"/>
+                    <field name="incoming_qty" string="Incoming Quantity"/>
                 </xpath>
 
                 <!--                <xpath expr="//tree" position="attributes">-->

@@ -20,7 +20,6 @@ class PurchaseOrderInh(models.Model):
         }
 
 
-
 class PurchaseOrderLineInh(models.Model):
     _inherit = 'purchase.order.line'
 

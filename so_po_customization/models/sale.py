@@ -204,7 +204,7 @@ class SaleOrderInh(models.Model):
             else:
                 rec.perc_discount = rec.discount_rate
 
-    @api.depends('order_line.subtotal')
+    @api.depends('order_line', 'order_line.subtotal', 'discount_rate', 'discount_type')
     def _compute_net_total(self):
         for rec in self:
             subtotal = 0

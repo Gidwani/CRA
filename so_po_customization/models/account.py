@@ -15,36 +15,58 @@ class AccountMoveInh(models.Model):
     total_amount_net = fields.Float('Total')
     total_amount_due = fields.Float('Amount Due')
 
+    do_link = fields.Char(string='DO link')
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        res_ids = super(AccountMoveInh, self).create(vals_list)
+        res_ids._assign_the_DO_link()
+        return res_ids
+
+    def _assign_the_DO_link(self):
+        if not self.do_link:
+            for k in self.invoice_line_ids:
+                saleorder = self.env['sale.order'].search([("name", '=', self.invoice_origin)])
+                for l in saleorder.picking_ids:
+                    if self.invoice_origin == l.sale_id.name:
+                        for j in l.move_line_ids_without_package:
+                            if j.picking_id.invoice_link != True:
+                                if j.product_id == k.product_id:
+                                    if j.qty_done == k.quantity:
+                                        self.do_link = l.name
+                                        j.picking_id.invoice_link = True
+
     def get_payment_term_id(self):
         order = self.env['sale.order'].search([('name', '=', self.invoice_origin)])
         return order.payment_term_id.name
 
+    def get_client_order_ref(self):
+        order = self.env['sale.order'].search([('name', '=', self.invoice_origin)])
+        return order.client_order_ref
+
     def get_do_no(self):
-        picking = self.env['stock.picking'].search([('origin', '=', self.invoice_origin), ('backorder_id', '=', False)], limit=1)
-        # print(picking.name.split('/'))
-        # a = picking.name.split('/')
-        # name = a[1] + '/' + a[2] + '/' + a[3]
-        return picking.name
+        pickings = self.env['stock.picking'].search([('name', '=', self.do_link)])
+        return pickings.name
 
     def compute_taxes(self):
         flag = False
         total = 0
-        for rec in self.invoice_line_ids:
-            # if rec.product_id.type != 'service':
-            if rec.tax_ids:
-                for tax in rec.tax_ids:
-                    if tax.name == 'VAT 5% (Dubai)':
-                        if self.move_type == 'out_invoice' or self.move_type == 'out_refund':
-                            flag = True
-                            total = total + rec.subtotal
-                    else:
-                        if tax.name == 'VAT 5%':
-                            flag = True
-                            total = total + rec.subtotal
-        if flag:
-            self.net_tax = (5 / 100) * (total - self.perc_discount)
-        else:
-            self.net_tax = 0
+        for res in self:
+            for rec in res.invoice_line_ids:
+                if rec.tax_ids:
+                    for tax in rec.tax_ids:
+                        if tax.name == 'VAT 5% (Dubai)':
+                            if res.move_type == 'out_invoice' or res.move_type == 'out_refund':
+                                flag = True
+                                total = total + rec.subtotal
+                        else:
+                            if tax.name == 'VAT 5%':
+                                flag = True
+                                total = total + rec.subtotal
+            if flag:
+                res.net_tax = (5 / 100) * (total - res.perc_discount)
+            else:
+                res.net_tax = 0
 
     def compute_percentage(self):
         for rec in self:

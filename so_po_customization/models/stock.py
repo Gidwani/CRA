@@ -5,6 +5,8 @@ from pytz import timezone
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+from odoo.tools.float_utils import float_compare
+from odoo.tools.float_utils import float_compare, float_is_zero, float_round
 
 
 class ProductProductInh(models.Model):
@@ -20,21 +22,29 @@ class ProductProductInh(models.Model):
 class ProductTemplateInh(models.Model):
     _inherit = 'product.template'
 
-    available_qty = fields.Float('Available Quantity', compute="cal_available_qty")
-    incoming_quantity = fields.Float('Incoming Quantity', compute='cal_incoming_quantity')
+    available_qty = fields.Float('Available Quantity', compute="cal_available_qty", sudo_compute=True)
+    incoming_quantity = fields.Float('Incoming Quantity')
     hs_code = fields.Char('HS CODE')
 
-    def cal_incoming_quantity(self):
-        for rec in self:
-            incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
-            pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', '!=', 'done')])
-            qty = 0
-            for picking in pickings:
-                for line in picking.move_ids_without_package:
-                    if line.product_id.product_tmpl_id.id == rec.id:
-                        qty = qty + line.product_uom_qty
-            rec.incoming_quantity = qty
+    # @api.depends('virtual_available')
+    # def cal_incoming_quantity(self):
+    #     for rec in self:
+    #         qty = 0
+    #         pickings = self.env['stock.move'].search([('product_id.product_tmpl_id', '=', rec.id), ('picking_code', '=', 'incoming'), ('state', 'not in', ['done', 'cancel'])])
+    #         for pick in pickings:
+    #             qty = qty + pick.product_uom_qty
+    #         rec.incoming_quantity = qty
+        # for rec in self:
+        #     incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
+        #     pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', '!=', 'done')])
+        #     qty = 0
+        #     for picking in pickings:
+        #         for line in picking.move_ids_without_package:
+        #             if line.product_id.product_tmpl_id.id == rec.id:
+        #                 qty = qty + line.product_uom_qty
+        #     rec.incoming_quantity = qty
 
+    @api.depends('qty_available')
     def cal_available_qty(self):
         for rec in self:
             total = 0
@@ -56,6 +66,7 @@ class StockPickingInh(models.Model):
 
     do_no = fields.Char("Supplier Do #")
     is_receipt = fields.Boolean(compute='compute_is_receipt')
+    invoice_link = fields.Boolean(string='Invoice link')
 
     def get_total_qty(self):
         total = 0
@@ -65,8 +76,6 @@ class StockPickingInh(models.Model):
 
     def get_delivery(self):
         delivery = self.env['stock.picking.type'].search([('code', '=', 'outgoing')], limit=1)
-        print(self.picking_type_id.id)
-        print(delivery.id)
         if self.picking_type_id.code == 'outgoing':
             return 1
         else:
@@ -148,7 +157,7 @@ class StockMoveLineInh(models.Model):
                         uom = product_qty.uom_id.name
         if ml.picking_id.purchase_id:
             for line in ml.picking_id.purchase_id.order_line:
-                if line.product_id.id == ml.product_id.id and line.number == ml.number:
+                if line.product_id.id == ml.product_id.id and line.number == ml.so_no:
                     if line.product_uom.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
                         # qty = int(line.product_qty)
                         uom =  " Lth"
@@ -221,7 +230,7 @@ class StockMoveLineInh(models.Model):
     def get_remarks(self, picking, rec):
         sr = ''
         for line in picking.move_ids_without_package:
-            if line.product_id.id == rec.product_id.id and rec.number == line.number:
+            if line.product_id.id == rec.product_id.id:
                 sr = line.remarks
         return sr
 
@@ -246,6 +255,7 @@ class StockMoveInh(models.Model):
     def get_product_uom_lot(self, ml):
         product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
         uom = ''
+
         if ml.picking_id.sale_id:
             for line in ml.picking_id.sale_id.order_line:
                 if line.product_id.id == ml.product_id.id and line.number == ml.so_no:
@@ -288,29 +298,29 @@ class StockMoveInh(models.Model):
         return uom
 
     def _compute_remarks(self):
-        rem = ''
         for rec in self:
-
+            rem = ''
             if rec.picking_id.sale_id:
                 for line in rec.picking_id.sale_id.order_line:
-                    if rec.product_id.id == line.product_id.id and line.number == rec.number:
+                    if rec.sale_line_id.id == line.id:
                         rem = line.remarks
 
             elif rec.picking_id.purchase_id:
                 for line in rec.picking_id.purchase_id.order_line:
                     if rec.product_id.id == line.product_id.id:
-                        rem= line.remarks
+                        rem = line.remarks
 
             if rec.backorder_id.sale_id:
                 for line in rec.backorder_id.sale_id.order_line:
-                    if rec.product_id.id == line.product_id.id:
+                    if rec.sale_line_id.id == line.id:
                         rem = line.remarks
             rec.remarks = rem
 
     @api.depends('picking_id')
     def _compute_get_number(self):
-        for order in self.mapped('picking_id'):
-            number = 1
-            for line in order.move_ids_without_package:
-                line.number = number
-                number += 1
+        if not self.picking_id.backorder_id:
+            for order in self.mapped('picking_id'):
+                number = 1
+                for line in order.move_ids_without_package:
+                    line.number = number
+                    number += 1

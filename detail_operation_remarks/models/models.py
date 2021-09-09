@@ -113,6 +113,7 @@ class AccountFollowupInh(models.AbstractModel):
         if lines:
             lines.pop()
         new_lines = []
+        sorted_lines = []
         i = -3
         if lines:
             for rec in range(0, len(lines)-2):
@@ -120,10 +121,19 @@ class AccountFollowupInh(models.AbstractModel):
                 i = i -1
             print(len(lines))
             print("--------------------------")
-            new_lines.append(lines[-2])
-            new_lines.append(lines[-1])
-        print(new_lines)
-        return sorted(new_lines, key=lambda i: i['id'])
+
+            sorted_lines = sorted(new_lines, key=lambda i: i['id'])
+
+            sorted_lines.append(lines[-2])
+            sorted_lines.append(lines[-1])
+        # print(new_lines)
+        return sorted_lines
+
+
+class StockMoveInh(models.Model):
+    _inherit = 'stock.move'
+
+    is_backorder = fields.Boolean()
 
 
 class StockMoveLineInh(models.Model):
@@ -137,11 +147,23 @@ class StockMoveLineInh(models.Model):
     def compute_so_sr_no(self):
         for rec in self:
             if not rec.picking_id.backorder_id:
-                rec.so_no = rec.move_id.number
+                if rec.picking_id.sale_id:
+                    for line in rec.picking_id.sale_id.order_line:
+                        if rec.move_id.sale_line_id.id == line.id:
+                            rec.so_no = line.number
+                if rec.picking_id.purchase_id:
+                    for line in rec.picking_id.purchase_id.order_line:
+                        if rec.move_id.purchase_line_id.id == line.id:
+                            rec.so_no = line.number
             else:
-                for line in rec.picking_id.backorder_id.sale_id.order_line:
-                    if line.product_id.id == rec.product_id.id:
-                        rec.so_no = line.number
+                if rec.picking_id.backorder_id.sale_id:
+                    for line in rec.picking_id.backorder_id.sale_id.order_line:
+                        if rec.move_id.sale_line_id.id == line.id:
+                            rec.so_no = line.number
+                if rec.picking_id.backorder_id.purchase_id:
+                    for line in rec.picking_id.backorder_id.purchase_id.order_line:
+                        if rec.move_id.purchase_line_id.id == line.id:
+                            rec.so_no = line.number
             # if rec.picking_id.sale_id:
             #     for line in rec.picking_id.sale_id.order_line:
             #         if line.product_id.id == rec.product_id.id and line.number == rec.number:
@@ -159,11 +181,11 @@ class StockMoveLineInh(models.Model):
                 number += 1
 
     def _compute_remarks(self):
-        rem = ''
         for rec in self:
+            rem = ''
             if rec.picking_id.sale_id:
                 for line in rec.picking_id.sale_id.order_line:
-                    if rec.product_id.id == line.product_id.id and line.number == rec.number:
+                    if rec.move_id.sale_line_id.id == line.id:
                         rem = line.remarks
             if rec.picking_id.purchase_id:
                 for line in rec.picking_id.purchase_id.order_line:
@@ -171,7 +193,7 @@ class StockMoveLineInh(models.Model):
                         rem = line.remarks
             if rec.picking_id.backorder_id.sale_id:
                 for line in rec.picking_id.backorder_id.sale_id.order_line:
-                    if rec.product_id.id == line.product_id.id:
+                    if rec.move_id.sale_line_id.id == line.id:
                         rem = line.remarks
             rec.remarks = rem
 
@@ -189,14 +211,16 @@ class StockPickingInh(models.Model):
             self.is_delivery = False
 
     def action_add_done_qty(self):
-        for line in self.move_ids_without_package:
-            line.quantity_done = line.forecast_availability
-        self.is_done_added = True
+        if self.move_ids_without_package:
+            for line in self.move_ids_without_package:
+                line.quantity_done = line.product_uom_qty
+            self.is_done_added = True
 
     def action_remove_done_qty(self):
-        for line in self.move_ids_without_package:
-            line.quantity_done = 0
-        self.is_done_added = False
+        if self.move_ids_without_package:
+            for line in self.move_ids_without_package:
+                line.quantity_done = 0
+            self.is_done_added = False
 
     # @api.model
     # def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
