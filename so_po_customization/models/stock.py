@@ -23,26 +23,57 @@ class ProductTemplateInh(models.Model):
     _inherit = 'product.template'
 
     available_qty = fields.Float('Available Quantity', compute="cal_available_qty", sudo_compute=True)
-    incoming_quantity = fields.Float('Incoming Quantity')
+    incoming_quantity = fields.Float('Incoming Quantity', compute='cal_incoming_quantity')
     hs_code = fields.Char('HS CODE')
+    weight = fields.Float(
+        'Weight', compute='_compute_weight', digits='Stock Weight',
+        inverse='_set_weight', store=True, copy=True)
 
-    # @api.depends('virtual_available')
-    # def cal_incoming_quantity(self):
-    #     for rec in self:
-    #         qty = 0
-    #         pickings = self.env['stock.move'].search([('product_id.product_tmpl_id', '=', rec.id), ('picking_code', '=', 'incoming'), ('state', 'not in', ['done', 'cancel'])])
-    #         for pick in pickings:
-    #             qty = qty + pick.product_uom_qty
-    #         rec.incoming_quantity = qty
+    volume = fields.Float(
+        'Volume', compute='_compute_volume', inverse='_set_volume', digits='Volume', store=True, copy=True)
+
+    @api.depends('product_variant_ids', 'product_variant_ids.volume')
+    def _compute_volume(self):
+        unique_variants = self.filtered(lambda template: len(template.product_variant_ids) == 1)
+        for template in unique_variants:
+            template.volume = template.product_variant_ids.volume
+        for template in (self - unique_variants):
+            template.volume = 0.0
+
+    def _set_volume(self):
+        for template in self:
+            if len(template.product_variant_ids) == 1:
+                template.product_variant_ids.volume = template.volume
+
+    def _set_weight(self):
+        for template in self:
+            if len(template.product_variant_ids) == 1:
+                template.product_variant_ids.weight = template.weight
+
+    @api.depends('product_variant_ids', 'product_variant_ids.weight')
+    def _compute_weight(self):
+        unique_variants = self.filtered(lambda template: len(template.product_variant_ids) == 1)
+        for template in unique_variants:
+            template.weight = template.product_variant_ids.weight
+        for template in (self - unique_variants):
+            template.weight = 0.0
+
+    def cal_incoming_quantity(self):
         # for rec in self:
-        #     incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
-        #     pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', '!=', 'done')])
         #     qty = 0
-        #     for picking in pickings:
-        #         for line in picking.move_ids_without_package:
-        #             if line.product_id.product_tmpl_id.id == rec.id:
-        #                 qty = qty + line.product_uom_qty
+        #     pickings = self.env['stock.move'].search([('product_id.product_tmpl_id', '=', rec.id), ('picking_code', '=', 'incoming'), ('state', 'not in', ['done', 'cancel'])])
+        #     for pick in pickings:
+        #         qty = qty + pick.product_uom_qty
         #     rec.incoming_quantity = qty
+        for rec in self:
+            incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
+            pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', '!=', 'done')])
+            qty = 0
+            for picking in pickings:
+                for line in picking.move_ids_without_package:
+                    if line.product_id.product_tmpl_id.id == rec.id:
+                        qty = qty + line.product_uom_qty
+            rec.incoming_quantity = qty
 
     @api.depends('qty_available')
     def cal_available_qty(self):

@@ -152,7 +152,7 @@ class SaleOrderInh(models.Model):
         return lot
 
     def get_product_qty(self, ml):
-        product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
+        product_qty = self.env['product.template'].search([('id', '=', ml.product_id.product_tmpl_id.id)])
         # for line in ml.sale_id.order_line:
         if ml.product_uom.name == 'Lth':
             qty = int(product_qty.available_qty)/6
@@ -165,7 +165,7 @@ class SaleOrderInh(models.Model):
         return qty
 
     def get_onhand_qty(self, ml):
-        product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
+        product_qty = self.env['product.template'].search([('id', '=', ml.product_id.product_tmpl_id.id)])
         # for line in ml.sale_id.order_line:
         if ml.product_uom.name == 'Lth':
             qty = int(product_qty.qty_available)/6
