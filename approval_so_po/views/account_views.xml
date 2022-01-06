@@ -29,6 +29,7 @@
             </xpath>
             <xpath expr="//field[@name='date']" position="after">
                 <field name="x_css" />
+                <field name="available_partner_bank_ids" invisible="1"/>
             </xpath>
         </field>
     </record>

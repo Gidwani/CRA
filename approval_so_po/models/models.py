@@ -92,6 +92,9 @@ class StockReturnPickingInh(models.TransientModel):
                     raise UserError('Quantity Should be Less or Equal to Sale order Qty')
                 else:
                     new_picking = super(StockReturnPickingInh, self).create_returns()
+                    print(new_picking['res_id'])
+                    pic = self.env['stock.picking'].browse([new_picking['res_id']])
+                    pic.is_return_order = True
                     return new_picking
         elif rec.purchase_id:
             print('Purchase')
@@ -113,9 +116,15 @@ class StockReturnPickingInh(models.TransientModel):
                     raise UserError('Quantity Should be Less or Equal to Sale order Qty')
                 else:
                     new_picking = super(StockReturnPickingInh, self).create_returns()
+                    print(new_picking['res_id'])
+                    pic = self.env['stock.picking'].browse([new_picking['res_id']])
+                    pic.is_return_order = True
                     return new_picking
         else:
             new_picking = super(StockReturnPickingInh, self).create_returns()
+            print(new_picking['res_id'])
+            pic = self.env['stock.picking'].browse([new_picking['res_id']])
+            pic.is_return_order = True
             return new_picking
 
 
@@ -269,6 +278,7 @@ class AccountPaymentInh(models.Model):
     _inherit = 'account.payment'
 
     x_css = fields.Html(string='CSS', sanitize=False, compute='_compute_css', store=False)
+    available_partner_bank_ids = fields.Many2many('res.bank')
 
     @api.depends('state')
     def _compute_css(self):
@@ -428,12 +438,13 @@ class AccountMoveInh(models.Model):
                 if self.move_type == 'in_refund':
                     total_refund_qty = 0
                     total_refund_invoice_qty = 0
-                    purchase_refund_invoices = self.env['account.move'].search([('invoice_origin', '=', sale_order.name),
+                    purchase_refund_invoices = self.env['account.move'].search([('invoice_origin', '=', purchase_order.name),
                                                                      ('move_type', '=', 'in_refund'),
                                                                      ('state', '=', 'posted')])
                     if purchase_refund_invoices:
                         for rec in purchase_refund_invoices.invoice_line_ids:
                             total_refund_invoice_qty = total_refund_invoice_qty + rec.quantity
+                    print(purchase_refund_invoices)
                     for line in purchase_order.order_line:
                         total_refund_qty = total_refund_qty + line.product_uom_qty
                     for invoice_line in self.invoice_line_ids:
@@ -508,9 +519,10 @@ class AccountMoveInh(models.Model):
                     total_refund_qty = 0
                     total_refund_invoice_qty = 0
                     purchase_refund_invoices = self.env['account.move'].search(
-                        [('invoice_origin', '=', sale_order.name),
+                        [('invoice_origin', '=', purchase_order.name),
                          ('move_type', '=', 'in_refund'),
                          ('state', '=', 'posted')])
+                    # print(purchase_refund_invoices)
                     if purchase_refund_invoices:
                         for rec in purchase_refund_invoices.invoice_line_ids:
                             total_refund_invoice_qty = total_refund_invoice_qty + rec.quantity
@@ -678,6 +690,7 @@ class StockPickingInh(models.Model):
              " * Cancelled: The transfer has been cancelled.")
 
     x_css = fields.Html(string='CSS', sanitize=False, compute='_compute_css', store=False)
+    is_return_order = fields.Boolean()
 
     @api.depends('state')
     def _compute_css(self):
@@ -709,6 +722,10 @@ class StockPickingInh(models.Model):
                     if check:
                         raise UserError('Kindly Add Done Quantities Before Validate')
                     else:
+                        self.action_remove_done_qty()
+                        self.do_unreserve()
+                        self.action_assign()
+                        self.action_add_done_qty()
                         self.state = 'manager'
                 else:
                     check = False
@@ -719,7 +736,6 @@ class StockPickingInh(models.Model):
                         raise UserError('Kindly Add Done Quantities Before Validate')
                     else:
                         self.state = 'manager'
-                    # raise UserError('Purchase')
 
     def action_manager_approve(self):
         flag = False
@@ -733,7 +749,7 @@ class StockPickingInh(models.Model):
             backorder = self.env['stock.picking'].search([('backorder_id', '=', self.id)])
             if backorder:
                 backorder.update({
-                    'is_done_added': False
+                    'is_done_added': False,
                 })
             return record
 
