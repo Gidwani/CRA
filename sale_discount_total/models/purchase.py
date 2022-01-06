@@ -24,8 +24,8 @@ from odoo import api, fields, models
 import odoo.addons.decimal_precision as dp
 
 
-class SaleOrder(models.Model):
-    _inherit = "sale.order"
+class PurchaseOrder(models.Model):
+    _inherit = "purchase.order"
 
     @api.depends('order_line.price_total')
     def _amount_all(self):
@@ -37,7 +37,8 @@ class SaleOrder(models.Model):
             for line in order.order_line:
                 amount_untaxed += line.price_subtotal
                 amount_tax += line.price_tax
-                amount_discount += (line.product_uom_qty * line.price_unit * line.discount) / 100
+                amount_discount += (line.product_qty * line.price_unit * line.discount) / 100
+                amount_discount += (line.product_qty * line.price_unit) / 100
             order.update({
                 'amount_untaxed': amount_untaxed,
                 'amount_tax': amount_tax,
@@ -70,7 +71,7 @@ class SaleOrder(models.Model):
             else:
                 total = discount = 0.0
                 for line in order.order_line:
-                    total += round((line.product_uom_qty * line.price_unit))
+                    total += round((line.product_qty * line.price_unit))
                 if order.discount_rate != 0:
                     discount = (order.discount_rate / total) * 100
                 else:
@@ -79,7 +80,7 @@ class SaleOrder(models.Model):
                     line.discount = discount
 
     def _prepare_invoice(self, ):
-        invoice_vals = super(SaleOrder, self)._prepare_invoice()
+        invoice_vals = super(PurchaseOrder, self)._prepare_invoice()
         invoice_vals.update({
             'discount_type': self.discount_type,
             'discount_rate': self.discount_rate,
@@ -87,12 +88,11 @@ class SaleOrder(models.Model):
         return invoice_vals
 
     def button_dummy(self):
-
         self.supply_rate()
         return True
 
 
 class SaleOrderLine(models.Model):
-    _inherit = "sale.order.line"
+    _inherit = "purchase.order.line"
 
-    discount = fields.Float(string='Discount (%)', digits=(16, 20), default=0.0)
+    discount = fields.Float(string='Discount (%)', digits=(12, 2), default=0.0)
