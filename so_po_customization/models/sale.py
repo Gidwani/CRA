@@ -244,7 +244,7 @@ class SaleOrderLineInh(models.Model):
             amount = 0
             for tax in rec.tax_id:
                 amount = amount + tax.amount
-            rec.vat_amount = (amount/100) * rec.price_unit
+            rec.vat_amount = ((amount/100) * rec.price_unit) * rec.product_uom_qty
 
     @api.depends('sequence', 'order_id')
     def _compute_get_number(self):

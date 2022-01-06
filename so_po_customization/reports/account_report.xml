@@ -369,14 +369,15 @@
                                     <tr class="border-black o_subtotal" style="">
                                         <td name="td_net_total_label"><strong>Tax</strong></td>
                                         <td name="td_net_total" class="text-right">
-                                            <span t-field="o.net_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+<!--                                            <span t-field="o.net_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>-->
+                                            <span t-esc="o.get_tax()" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                         </td>
                                     </tr>
 
                                     <tr class="border-black o_total">
                                         <td><strong>Total</strong></td>
                                         <td class="text-right">
-                                            <span class="text-nowrap" t-field="o.total_amount_net" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            <span class="text-nowrap" t-esc="o.get_total()+o.get_tax()" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                         </td>
                                     </tr>
                                     <t t-if="print_with_payments">

@@ -25,6 +25,7 @@ class SaleOrderWizard(models.TransientModel):
                             'sr_no': line.number,
                             'qty': line.product_uom_qty,
                             'product_id': line.product_id.id,
+                            'uom_id': line.product_uom.id,
                             'price': line.price_unit,
                             # 'so_ref': line.so_no,
                         }
@@ -41,6 +42,7 @@ class SaleOrderWizard(models.TransientModel):
                 val = {
                     'order_id': rec.id,
                     'product_id': line.product_id.id,
+                    'product_uom': line.uom_id.id,
                     'name': line.product_id.name,
                     'date_planned': rec.date_order,
                     'product_qty': line.qty,
@@ -60,6 +62,7 @@ class SaleOrderLineWizard(models.TransientModel):
     is_selected = fields.Boolean()
     sale_order = fields.Char('Sale Order')
     product_id = fields.Many2one('product.product')
+    uom_id = fields.Many2one('uom.uom')
     sr_no = fields.Integer('SR #', store=True)
     qty = fields.Integer('QTY')
     price = fields.Float('Price')

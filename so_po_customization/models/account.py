@@ -17,6 +17,50 @@ class AccountMoveInh(models.Model):
 
     do_link = fields.Char(string='DO link')
 
+    def get_total(self):
+        # for rec in self:
+        subtotal = 0
+        for line in self.invoice_line_ids:
+            subtotal = subtotal + line.subtotal
+        subtotal_amount = subtotal
+
+        if self.discount_type == 'percent':
+            discount = (self.discount_rate / 100) * subtotal_amount
+        else:
+            discount = self.discount_rate
+        net_total = subtotal_amount
+        return net_total - discount
+
+    def get_tax(self):
+        flag = False
+        total = 0
+        for res in self:
+            for rec in res.invoice_line_ids:
+                if rec.tax_ids:
+                    for tax in rec.tax_ids:
+                        if tax.name == 'VAT 5% (Dubai)':
+                            if res.move_type == 'out_invoice' or res.move_type == 'out_refund':
+                                flag = True
+                                total = total + rec.subtotal
+                        else:
+                            if tax.name == 'VAT 5%':
+                                flag = True
+                                total = total + rec.subtotal
+            if flag:
+                if res.discount_type == 'percent':
+                    subtotal = 0
+                    for line in res.invoice_line_ids:
+                        subtotal = subtotal + line.subtotal
+                    subtotal_amount = subtotal
+                    discount = (res.discount_rate / 100) * subtotal_amount
+                else:
+                    discount = res.discount_rate
+                tax = (5 / 100) * (total - discount)
+                return tax
+            else:
+                tax = 0
+                return tax
+
     @api.model_create_multi
     def create(self, vals_list):
         res_ids = super(AccountMoveInh, self).create(vals_list)
@@ -48,6 +92,7 @@ class AccountMoveInh(models.Model):
         pickings = self.env['stock.picking'].search([('name', '=', self.do_link)])
         return pickings.name
 
+    @api.depends('invoice_line_ids', 'perc_discount', 'invoice_line_ids.tax_ids', 'invoice_line_ids.subtotal')
     def compute_taxes(self):
         flag = False
         total = 0
@@ -117,7 +162,7 @@ class AccountMoveLineInh(models.Model):
                 else:
                     if tax.name == 'VAT 5%':
                         amount = amount + tax.amount
-            rec.vat_amount = (amount/100) * rec.price_unit
+            rec.vat_amount = ((amount/100) * rec.price_unit) * rec.quantity
 
     @api.depends('sequence', 'move_id')
     def _compute_get_number(self):

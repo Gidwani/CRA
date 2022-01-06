@@ -15,6 +15,7 @@
 						<field name="available_qty" readonly="1" width="10%"/>
 						<field name="sr_no" readonly="1" width="7%"/>
 						<field name="product_id" readonly="1" width="30%"/>
+						<field name="uom_id" readonly="1" width="30%" invisible="1"/>
 						<field name="qty" readonly="1" width="10%"/>
 						<field name="price" readonly="1" width="10%"/>
 					</tree>

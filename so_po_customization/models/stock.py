@@ -67,11 +67,13 @@ class ProductTemplateInh(models.Model):
         #     rec.incoming_quantity = qty
         for rec in self:
             incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
-            pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', '!=', 'done')])
+            pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', 'not in', ['done', 'cancel'])])
             qty = 0
+            print(pickings)
             for picking in pickings:
                 for line in picking.move_ids_without_package:
                     if line.product_id.product_tmpl_id.id == rec.id:
+                        print(picking.name)
                         qty = qty + line.product_uom_qty
             rec.incoming_quantity = qty
 
