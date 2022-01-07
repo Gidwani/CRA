@@ -82,7 +82,8 @@ class StockReturnPickingInh(models.TransientModel):
                 total_qty = total_qty + line.product_uom_qty
 
             incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')])
-            returns_do = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('sale_id', '=', rec.sale_id.id), ('state', '=', 'done')])
+            returns_do = self.env['stock.picking'].search(
+                [('picking_type_id', '=', incoming.id), ('sale_id', '=', rec.sale_id.id), ('state', '=', 'done')])
             total_return = 0
             for do_line in returns_do:
                 for rec_line in do_line.move_ids_without_package:
@@ -104,7 +105,8 @@ class StockReturnPickingInh(models.TransientModel):
 
             outgoing = self.env['stock.picking.type'].search([('code', '=', 'outgoing')])
             returns_do = self.env['stock.picking'].search(
-                [('picking_type_id', '=', outgoing.id), ('purchase_id', '=', rec.purchase_id.id), ('state', '=', 'done')])
+                [('picking_type_id', '=', outgoing.id), ('purchase_id', '=', rec.purchase_id.id),
+                 ('state', '=', 'done')])
             print(returns_do)
             total_return = 0
             for do_line in returns_do:
@@ -237,7 +239,8 @@ class PurchaseOrderInh(models.Model):
     def _compute_css(self):
         for application in self:
             # Modify below condition
-            if self.env.user.has_group('approval_so_po.group_purchase_remove_edit_user') and application.state != 'draft':
+            if self.env.user.has_group(
+                    'approval_so_po.group_purchase_remove_edit_user') and application.state != 'draft':
                 application.x_css = '<style>.o_form_button_edit {display: none !important;}</style>'
             else:
                 application.x_css = False
@@ -266,19 +269,25 @@ class PurchaseOrderInh(models.Model):
         """Returns whether the order qualifies to be approved by the current user"""
         self.ensure_one()
         return (
-            self.company_id.po_double_validation == 'one_step'
-            or (self.company_id.po_double_validation == 'two_step'
-                and self.amount_total < self.env.company.currency_id._convert(
+                self.company_id.po_double_validation == 'one_step'
+                or (self.company_id.po_double_validation == 'two_step'
+                    and self.amount_total < self.env.company.currency_id._convert(
                     self.company_id.po_double_validation_amount, self.currency_id, self.company_id,
                     self.date_order or fields.Date.today()))
-            or self.user_has_groups('purchase.group_purchase_manager'))
+                or self.user_has_groups('purchase.group_purchase_manager'))
+
+
+class AccountPaymentRegisterInh(models.TransientModel):
+    _inherit = 'account.payment.register'
+
+    available_partner_bank_ids = fields.Many2many('res.partner.bank')
 
 
 class AccountPaymentInh(models.Model):
     _inherit = 'account.payment'
 
     x_css = fields.Html(string='CSS', sanitize=False, compute='_compute_css', store=False)
-    available_partner_bank_ids = fields.Many2many('res.bank')
+    available_partner_bank_ids = fields.Many2many('res.partner.bank')
 
     @api.depends('state')
     def _compute_css(self):
@@ -353,6 +362,7 @@ class AccountMoveInh(models.Model):
         default='draft')
 
     x_css = fields.Html(string='CSS', sanitize=False, compute='_compute_css', store=False)
+
     # x_css_tree = fields.Html(string='CSS', sanitize=False, compute='_compute_css_tree', store=False)
 
     @api.depends('state')
@@ -386,8 +396,9 @@ class AccountMoveInh(models.Model):
                 if self.move_type == 'out_invoice':
                     total_qty = 0
                     total_invoice_qty = 0
-                    sale_invoices = self.env['account.move'].search([('invoice_origin', '=', sale_order.name),('move_type', '=', 'out_invoice'),
-                                                                     ('state', '=', 'posted')])
+                    sale_invoices = self.env['account.move'].search(
+                        [('invoice_origin', '=', sale_order.name), ('move_type', '=', 'out_invoice'),
+                         ('state', '=', 'posted')])
                     if sale_invoices:
                         for rec in sale_invoices.invoice_line_ids:
                             total_invoice_qty = total_invoice_qty + rec.quantity
@@ -403,8 +414,8 @@ class AccountMoveInh(models.Model):
                     total_refund_qty = 0
                     total_refund_invoice_qty = 0
                     sale_refund_invoices = self.env['account.move'].search([('invoice_origin', '=', sale_order.name),
-                                                                     ('move_type', '=', 'out_refund'),
-                                                                     ('state', '=', 'posted')])
+                                                                            ('move_type', '=', 'out_refund'),
+                                                                            ('state', '=', 'posted')])
                     if sale_refund_invoices:
                         for rec in sale_refund_invoices.invoice_line_ids:
                             total_refund_invoice_qty = total_refund_invoice_qty + rec.quantity
@@ -438,9 +449,10 @@ class AccountMoveInh(models.Model):
                 if self.move_type == 'in_refund':
                     total_refund_qty = 0
                     total_refund_invoice_qty = 0
-                    purchase_refund_invoices = self.env['account.move'].search([('invoice_origin', '=', purchase_order.name),
-                                                                     ('move_type', '=', 'in_refund'),
-                                                                     ('state', '=', 'posted')])
+                    purchase_refund_invoices = self.env['account.move'].search(
+                        [('invoice_origin', '=', purchase_order.name),
+                         ('move_type', '=', 'in_refund'),
+                         ('state', '=', 'posted')])
                     if purchase_refund_invoices:
                         for rec in purchase_refund_invoices.invoice_line_ids:
                             total_refund_invoice_qty = total_refund_invoice_qty + rec.quantity
@@ -565,7 +577,8 @@ class SaleAdvancePaymentInh(models.TransientModel):
     def create_invoices(self):
         if self.env.user.has_group('approval_so_po.group_allow_full_refund'):
             rec = super(SaleAdvancePaymentInh, self).create_invoices()
-        elif not self.env.user.has_group('approval_so_po.group_allow_full_refund') and self.advance_payment_method == 'delivered':
+        elif not self.env.user.has_group(
+                'approval_so_po.group_allow_full_refund') and self.advance_payment_method == 'delivered':
             rec = super(SaleAdvancePaymentInh, self).create_invoices()
         else:
             raise UserError('You cannot create Down Payment.')
@@ -829,7 +842,8 @@ class StockImmediateTransferInh(models.TransientModel):
                 if picking.state != 'assigned':
                     picking.action_assign()
                     if picking.state != 'assigned':
-                        raise UserError(_("Could not reserve all requested products. Please use the \'Mark as Todo\' button to handle the reservation manually."))
+                        raise UserError(
+                            _("Could not reserve all requested products. Please use the \'Mark as Todo\' button to handle the reservation manually."))
             for move in picking.move_lines.filtered(lambda m: m.state not in ['done', 'cancel']):
                 for move_line in move.move_line_ids:
                     move_line.qty_done = move_line.product_uom_qty
