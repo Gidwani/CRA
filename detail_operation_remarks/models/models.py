@@ -213,7 +213,8 @@ class StockPickingInh(models.Model):
     def action_add_done_qty(self):
         if self.move_ids_without_package:
             for line in self.move_ids_without_package:
-                line.quantity_done = line.product_uom_qty
+                # line.quantity_done = line.product_uom_qty
+                line.quantity_done = line.forecast_availability
             self.is_done_added = True
 
     def action_remove_done_qty(self):
