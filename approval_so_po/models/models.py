@@ -69,6 +69,10 @@ class StockMoveInh(models.Model):
         if self.picking_id.origin:
             raise UserError('You cannot add Product in this Stage')
 
+# class StockReturnPickingLineInh(models.TransientModel):
+#     _inherit = 'stock.return.picking.line'
+#
+#     product_uom_category_id = fields.Many2one(related='uom_id.category_id', readonly=True)
 
 class StockReturnPickingInh(models.TransientModel):
     _inherit = 'stock.return.picking'
@@ -89,14 +93,25 @@ class StockReturnPickingInh(models.TransientModel):
                 for rec_line in do_line.move_ids_without_package:
                     total_return = total_return + rec_line.quantity_done
             for return_line in self.product_return_moves:
-                if not return_line.quantity <= (total_qty - total_return):
-                    raise UserError('Quantity Should be Less or Equal to Sale order Qty')
-                else:
-                    new_picking = super(StockReturnPickingInh, self).create_returns()
-                    print(new_picking['res_id'])
-                    pic = self.env['stock.picking'].browse([new_picking['res_id']])
-                    pic.is_return_order = True
-                    return new_picking
+                for pro_line in rec.sale_id.order_line:
+                    if pro_line.product_uom.id == return_line.uom_id.id:
+                        if not return_line.quantity <= (total_qty - total_return):
+                            raise UserError('Quantity Should be Less or Equal to Sale order Qty')
+                        else:
+                            new_picking = super(StockReturnPickingInh, self).create_returns()
+                            print(new_picking['res_id'])
+                            pic = self.env['stock.picking'].browse([new_picking['res_id']])
+                            pic.is_return_order = True
+                            return new_picking
+                    else:
+                        if not (return_line.quantity/6) <= (total_qty - total_return):
+                            raise UserError('Quantity Should be Less or Equal to Sale order Qty')
+                        else:
+                            new_picking = super(StockReturnPickingInh, self).create_returns()
+                            print(new_picking['res_id'])
+                            pic = self.env['stock.picking'].browse([new_picking['res_id']])
+                            pic.is_return_order = True
+                            return new_picking
         elif rec.purchase_id:
             print('Purchase')
             total_qty = 0
@@ -114,14 +129,25 @@ class StockReturnPickingInh(models.TransientModel):
                     total_return = total_return + rec_line.quantity_done
 
             for return_line in self.product_return_moves:
-                if not return_line.quantity <= (total_qty - total_return):
-                    raise UserError('Quantity Should be Less or Equal to Sale order Qty')
-                else:
-                    new_picking = super(StockReturnPickingInh, self).create_returns()
-                    print(new_picking['res_id'])
-                    pic = self.env['stock.picking'].browse([new_picking['res_id']])
-                    pic.is_return_order = True
-                    return new_picking
+                for pro_line in rec.purchase_id.order_line:
+                    if pro_line.product_uom.id == return_line.uom_id.id:
+                        if not return_line.quantity <= (total_qty - total_return):
+                            raise UserError('Quantity Should be Less or Equal to Sale order Qty')
+                        else:
+                            new_picking = super(StockReturnPickingInh, self).create_returns()
+                            print(new_picking['res_id'])
+                            pic = self.env['stock.picking'].browse([new_picking['res_id']])
+                            pic.is_return_order = True
+                            return new_picking
+                    else:
+                        if not (return_line.quantity / 6) <= (total_qty - total_return):
+                            raise UserError('Quantity Should be Less or Equal to Sale order Qty')
+                        else:
+                            new_picking = super(StockReturnPickingInh, self).create_returns()
+                            print(new_picking['res_id'])
+                            pic = self.env['stock.picking'].browse([new_picking['res_id']])
+                            pic.is_return_order = True
+                            return new_picking
         else:
             new_picking = super(StockReturnPickingInh, self).create_returns()
             print(new_picking['res_id'])
@@ -735,10 +761,10 @@ class StockPickingInh(models.Model):
                     if check:
                         raise UserError('Kindly Add Done Quantities Before Validate')
                     else:
-                        self.action_remove_done_qty()
-                        self.do_unreserve()
-                        self.action_assign()
-                        self.action_add_done_qty()
+                        # self.action_remove_done_qty()
+                        # self.do_unreserve()
+                        # self.action_assign()
+                        # self.action_add_done_qty()
                         self.state = 'manager'
                 else:
                     check = False
@@ -764,6 +790,8 @@ class StockPickingInh(models.Model):
                 backorder.update({
                     'is_done_added': False,
                 })
+                for res in backorder.move_line_ids_without_package:
+                    res.is_backorder = False
             return record
 
     @api.model
