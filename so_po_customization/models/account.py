@@ -1,5 +1,3 @@
-
-
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
@@ -162,7 +160,7 @@ class AccountMoveLineInh(models.Model):
                 else:
                     if tax.name == 'VAT 5%':
                         amount = amount + tax.amount
-            rec.vat_amount = ((amount/100) * rec.price_unit) * rec.quantity
+            rec.vat_amount = ((amount / 100) * rec.price_unit) * rec.quantity
 
     @api.depends('sequence', 'move_id')
     def _compute_get_number(self):
@@ -174,17 +172,23 @@ class AccountMoveLineInh(models.Model):
 
     def _compute_remarks(self):
         for rec in self:
+            # remark = ''
+            # purchases = self.env['purchase.order'].search([('name', '=', rec.move_id.invoice_origin)])
+            # sales = self.env['sale.order'].search([('name', '=', rec.move_id.invoice_origin)])
+            # if purchases:
+            #     for purchase in purchases:
+            #         for line in purchase.order_line:
+            #             if rec.product_id.id == line.product_id.id:
+            #                 remark = line.remarks
+            # if sales:
+            #     for sale in sales:
+            #         for line in sale.order_line:
+            #             if rec.product_id.id == line.product_id.id:
+            #                 remark = line.remarks
+            # rec.remarks = remark
             remark = ''
-            purchases = self.env['purchase.order'].search([('name', '=', rec.move_id.invoice_origin)])
-            sales = self.env['sale.order'].search([('name', '=', rec.move_id.invoice_origin)])
-            if purchases:
-                for purchase in purchases:
-                    for line in purchase.order_line:
-                        if rec.product_id.id == line.product_id.id:
-                            remark = line.remarks
-            if sales:
-                for sale in sales:
-                    for line in sale.order_line:
-                        if rec.product_id.id == line.product_id.id:
-                            remark = line.remarks
+            if rec.sale_line_ids:
+                remark = rec.sale_line_ids[0].remarks
+            if rec.purchase_line_id:
+                remark = rec.purchase_line_id.remarks
             rec.remarks = remark
