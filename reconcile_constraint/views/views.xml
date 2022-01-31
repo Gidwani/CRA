@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="reconcile_constraint.list">
+      <field name="name">reconcile_constraint list</field>
+      <field name="model">reconcile_constraint.reconcile_constraint</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="reconcile_constraint.action_window">
+      <field name="name">reconcile_constraint window</field>
+      <field name="res_model">reconcile_constraint.reconcile_constraint</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="reconcile_constraint.action_server">
+      <field name="name">reconcile_constraint server</field>
+      <field name="model_id" ref="model_reconcile_constraint_reconcile_constraint"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="reconcile_constraint" id="reconcile_constraint.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="reconcile_constraint.menu_1" parent="reconcile_constraint.menu_root"/>
+    <menuitem name="Menu 2" id="reconcile_constraint.menu_2" parent="reconcile_constraint.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="reconcile_constraint.menu_1_list" parent="reconcile_constraint.menu_1"
+              action="reconcile_constraint.action_window"/>
+    <menuitem name="Server to list" id="reconcile_constraint" parent="reconcile_constraint.menu_2"
+              action="reconcile_constraint.action_server"/>
+-->
+  </data>
+</odoo>
