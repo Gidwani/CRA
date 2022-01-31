@@ -15,12 +15,12 @@
                 </xpath>
                 <xpath expr="//field[@name='narration']" position="after">
                     <div>
-                        <label for="discount_type" string="Discount Type :"/>
-                        <field name="discount_type" class="oe_inline"/>
+                        <label for="discount_type" string="Discount Type :" attrs="{'invisible': [('move_type','!=', 'out_invoice')]}"/>
+                        <field name="discount_type" class="oe_inline" attrs="{'invisible': [('move_type','!=', 'out_invoice')]}"/>
                     </div>
                     <div>
-                        <label for="discount_rate" string="Discount Rate :"/>
-                        <field name="discount_rate" class="oe_inline"/>
+                        <label for="discount_rate" string="Discount Rate :" attrs="{'invisible': [('move_type','!=', 'out_invoice')]}"/>
+                        <field name="discount_rate" class="oe_inline" attrs="{'invisible': [('move_type','!=', 'out_invoice')]}"/>
                     </div>
                 </xpath>
             </field>
