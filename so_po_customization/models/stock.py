@@ -69,11 +69,11 @@ class ProductTemplateInh(models.Model):
             incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
             pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', 'not in', ['done', 'cancel'])])
             qty = 0
-            print(pickings)
+            # print(pickings)
             for picking in pickings:
                 for line in picking.move_ids_without_package:
                     if line.product_id.product_tmpl_id.id == rec.id:
-                        print(picking.name)
+                        # print(picking.name)
                         qty = qty + line.product_uom_qty
             rec.incoming_quantity = qty
 
@@ -121,13 +121,13 @@ class StockPickingInh(models.Model):
     #         return "True"
 
     def get_current_date(self):
-        print('hello')
+        # print('hello')
         now_utc_date = datetime.now()
         now_dubai = now_utc_date.astimezone(timezone('Asia/Karachi'))
         return now_dubai.strftime('%d/%m/%Y %H:%M:%S')
 
     def get_seq(self, picking):
-        print(picking.name)
+        # print(picking.name)
         return 'Picklist/'+picking.name.split('/')[1]+"/"+picking.name.split('/')[2] + "/"+picking.name.split('/')[3]
 
     def compute_is_receipt(self):

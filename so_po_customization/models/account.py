@@ -1,3 +1,5 @@
+
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
@@ -160,7 +162,7 @@ class AccountMoveLineInh(models.Model):
                 else:
                     if tax.name == 'VAT 5%':
                         amount = amount + tax.amount
-            rec.vat_amount = ((amount / 100) * rec.price_unit) * rec.quantity
+            rec.vat_amount = ((amount/100) * rec.price_unit) * rec.quantity
 
     @api.depends('sequence', 'move_id')
     def _compute_get_number(self):
