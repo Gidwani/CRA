@@ -22,8 +22,8 @@ class ProductProductInh(models.Model):
 class ProductTemplateInh(models.Model):
     _inherit = 'product.template'
 
-    available_qty = fields.Float('Available Quantity', compute="cal_available_qty", sudo_compute=True)
-    incoming_quantity = fields.Float('Incoming Quantity', compute='cal_incoming_quantity')
+    available_qty = fields.Float('Available Quantity')
+    incoming_quantity = fields.Float('Incoming Quantity')
     hs_code = fields.Char('HS CODE')
     weight = fields.Float(
         'Weight', compute='_compute_weight', digits='Stock Weight',
@@ -59,34 +59,40 @@ class ProductTemplateInh(models.Model):
             template.weight = 0.0
 
     def cal_incoming_quantity(self):
-        # for rec in self:
+        for rec in self:
+            # qty = 0
+            # pickings = self.env['stock.move'].search([('product_id.product_tmpl_id', '=', rec.id), ('picking_code', '=', 'incoming'), ('state', 'not in', ['done', 'cancel'])])
+            # for pick in pickings:
+            #     qty = qty + pick.product_uom_qty
+            # rec.incoming_quantity = qty
+        # all = self.env['product.template'].search([])
+        # for rec in all:
+        #     incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
+        #     pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', 'not in', ['done', 'cancel'])])
         #     qty = 0
-        #     pickings = self.env['stock.move'].search([('product_id.product_tmpl_id', '=', rec.id), ('picking_code', '=', 'incoming'), ('state', 'not in', ['done', 'cancel'])])
-        #     for pick in pickings:
-        #         qty = qty + pick.product_uom_qty
+        #     for picking in pickings:
+        #         for line in picking.move_ids_without_package:
+        #             if line.product_id.product_tmpl_id.id == rec.id:
+        #                 qty = qty + line.product_uom_qty
         #     rec.incoming_quantity = qty
-        for rec in self:
-            incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
-            pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', 'not in', ['done', 'cancel'])])
-            qty = 0
-            # print(pickings)
-            for picking in pickings:
-                for line in picking.move_ids_without_package:
-                    if line.product_id.product_tmpl_id.id == rec.id:
-                        # print(picking.name)
-                        qty = qty + line.product_uom_qty
-            rec.incoming_quantity = qty
-
-    @api.depends('qty_available')
-    def cal_available_qty(self):
-        for rec in self:
             total = 0
             quants = self.get_quant_lines()
             quants = self.env['stock.quant'].browse(quants)
-            for line in quants:
-                if line.product_tmpl_id.id == rec.id:
-                    total = total + line.available_quantity
+            for q_line in quants:
+                if q_line.product_tmpl_id.id == rec.id:
+                    total = total + q_line.available_quantity
             rec.available_qty = total
+
+    # @api.depends('qty_available')
+    # def cal_available_qty(self):
+    #     for rec in self:
+    #         total = 0
+    #         quants = self.get_quant_lines()
+    #         quants = self.env['stock.quant'].browse(quants)
+    #         for line in quants:
+    #             if line.product_tmpl_id.id == rec.id:
+    #                 total = total + line.available_quantity
+    #         rec.available_qty = total
 
     def get_quant_lines(self):
         domain_loc = self.env['product.product']._get_domain_locations()[0]

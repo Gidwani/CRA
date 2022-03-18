@@ -2,16 +2,28 @@
 <odoo>
     <data>
 
+        <record id="action_product_template_server" model="ir.actions.server">
+            <field name="name">Calculate incoming and available</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="binding_model_id" ref="product.model_product_template"/>
+            <!--         <field name='groups_id' eval="[(4, ref('account.group_account_invoice'))]"/> -->
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                action = records.cal_incoming_quantity()
+            </field>
+        </record>
+
         <record id="stock_picking_form_view" model="ir.ui.view">
-        <field name="name">stock.picking.form.custom</field>
-        <field name="model">stock.picking</field>
-        <field name="inherit_id" ref="stock.view_picking_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='backorder_id']" position="after">
-                <field name="invoice_link" invisible="1"/>
-            </xpath>
-        </field>
-    </record>
+            <field name="name">stock.picking.form.custom</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='backorder_id']" position="after">
+                    <field name="invoice_link" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
 
         <record id="view_stock_picking_form_inh" model="ir.ui.view">
             <field name="name">stock.picking.form.inh</field>
@@ -29,9 +41,9 @@
                     <field name="do_no" attrs="{'invisible': [('is_receipt' ,'=', False)]}"/>
                     <field name="is_receipt" invisible="1"/>
                 </xpath>
-<!--                <xpath expr="//field[@name='name']" position="before">-->
-<!--                    <span attrs="{'invisible': [('is_receipt' ,'=', True)]}">Delivery Note/</span>-->
-<!--                </xpath>-->
+                <!--                <xpath expr="//field[@name='name']" position="before">-->
+                <!--                    <span attrs="{'invisible': [('is_receipt' ,'=', True)]}">Delivery Note/</span>-->
+                <!--                </xpath>-->
 
             </field>
         </record>
@@ -117,7 +129,7 @@
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="uom_id" string="UOM"/>
                     <field name="available_qty" string="Saleable Quantity"/>
-                    <field name="qty_available"/>
+<!--                    <field name="qty_available" optional="hide"/>-->
                 </xpath>
                 <xpath expr="//field[@name='virtual_available']" position="after">
                     <field name="responsible_id"/>

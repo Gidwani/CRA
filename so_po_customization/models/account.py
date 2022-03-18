@@ -174,20 +174,6 @@ class AccountMoveLineInh(models.Model):
 
     def _compute_remarks(self):
         for rec in self:
-            # remark = ''
-            # purchases = self.env['purchase.order'].search([('name', '=', rec.move_id.invoice_origin)])
-            # sales = self.env['sale.order'].search([('name', '=', rec.move_id.invoice_origin)])
-            # if purchases:
-            #     for purchase in purchases:
-            #         for line in purchase.order_line:
-            #             if rec.product_id.id == line.product_id.id:
-            #                 remark = line.remarks
-            # if sales:
-            #     for sale in sales:
-            #         for line in sale.order_line:
-            #             if rec.product_id.id == line.product_id.id:
-            #                 remark = line.remarks
-            # rec.remarks = remark
             remark = ''
             if rec.sale_line_ids:
                 remark = rec.sale_line_ids[0].remarks
