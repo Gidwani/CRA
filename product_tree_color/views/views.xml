@@ -18,8 +18,15 @@
             <field name="inherit_id" ref="product.product_template_tree_view"/>
             <field name="arch" type="xml">
 
-               <xpath expr="//field[@name='available_qty']" position="attributes">
-                    <attribute name="class">available-class</attribute>
+<!--               <xpath expr="//field[@name='available_qty']" position="attributes">-->
+<!--                    <attribute name="class">available-class</attribute>-->
+<!--&lt;!&ndash;                   <attribute name="optional">hide</attribute>&ndash;&gt;-->
+<!--                </xpath>-->
+                <xpath expr="//field[@name='incoming_quantity']" position="attributes">
+                   <attribute name="optional">hide</attribute>
+                </xpath>
+                <xpath expr="//field[@name='qty_available']" position="attributes">
+                   <attribute name="optional">hide</attribute>
                 </xpath>
               <xpath expr="//field[@name='list_price']" position="replace">
                     <field name="list_price" string="Sale Price" class="sale-class"/>
