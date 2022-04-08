@@ -47,13 +47,11 @@ class bulk_export(models.TransientModel):
                 customer += partner.country_id.name+'\n'
 
         return customer
-        
-             
     
     def export_excel(self):
         active_ids = self._context.get('active_ids')
         model = self._context.get('active_model')
-        model_pool=self.env[model]
+        model_pool = self.env[model]
         record_ids = model_pool.browse(active_ids)
         main_header_style = easyxf('font:height 400;pattern: pattern solid, fore_color gray25;'
                                    'align: horiz center;font: color black; font:bold True;'
@@ -118,7 +116,7 @@ class bulk_export(models.TransientModel):
             if model == 'sale.order':
                 worksheet[work].write_merge(8, 8, 4, 5, 'Salesperson', text_left_bold)
 
-            date_order=''
+            date_order = ''
             if model == 'account.move':
                 if record.invoice_date:
                     date_order = record.invoice_date
@@ -126,7 +124,7 @@ class bulk_export(models.TransientModel):
                     date_order = date_order.strftime("%d-%m-%Y")
             else:
                 date_order = record.date_order
-                print ("=====",date_order,type(date_order))
+                # print ("=====",date_order,type(date_order))
 #                date_order = datetime.strptime(date_order, '%Y-%m-%d %H:%M:%S')
                 date_order = date_order.strftime("%d-%m-%Y %H:%M:%S")
             worksheet[work].write_merge(4, 4, 6, 7, date_order or '', text_left)
@@ -139,10 +137,6 @@ class bulk_export(models.TransientModel):
             else:
                 worksheet[work].write_merge(5, 5, 6, 7, record.invoice_origin or '', text_left)
                 worksheet[work].write_merge(6, 6, 6, 7, record.invoice_payment_term_id.name or '', text_left)
-
-
-            
-
 
             if model == 'account.move' or model == 'purchase.order':
                 worksheet[work].write_merge(7, 7, 6, 7, record.currency_id.name or '', text_left)
@@ -183,7 +177,7 @@ class bulk_export(models.TransientModel):
                     worksheet[work].write(r, 2, line.product_uom.name, text_center)
                     worksheet[work].write(r, 3, line.product_uom_qty, text_right)
                 elif model == 'purchase.order':
-                    worksheet[work].write(r, 4, line.product_qty, text_right)
+                    worksheet[work].write(r, 3, line.product_qty, text_right)
                 else:
                     worksheet[work].write(r, 2, line.product_uom_id.name, text_center)
                     worksheet[work].write(r, 3, line.quantity, text_right)
