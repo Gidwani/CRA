@@ -22,8 +22,8 @@ class ProductProductInh(models.Model):
 class ProductTemplateInh(models.Model):
     _inherit = 'product.template'
 
-    available_qty = fields.Float('Available Quantity')
-    incoming_quantity = fields.Float('Incoming Quantity')
+    available_qty = fields.Float('Available Quantity', copy=False)
+    incoming_quantity = fields.Float('Incoming Quantity', copy=False)
     hs_code = fields.Char('HS CODE')
     weight = fields.Float(
         'Weight', compute='_compute_weight', digits='Stock Weight',
