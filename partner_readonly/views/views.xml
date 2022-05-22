@@ -24,6 +24,7 @@
             <xpath expr="//field[@name='partner_id']" position="attributes">
                 <attribute name="attrs">{'readonly': ['|',('is_created_so_po','=', True), ('state','not in', 'draft')]}</attribute>
             </xpath>
+
         </field>
       </record>
 
