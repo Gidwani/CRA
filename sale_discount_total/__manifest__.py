@@ -15,11 +15,10 @@ Sale Discount for Total Amount
 Module to manage discount on total amount in Sale.
         as an specific amount or percentage
 """,
-    'depends': ['sale',
-                'account', 'delivery'
-                ],
+    'depends': ['sale', 'account', 'delivery', 'purchase'],
     'data': [
         'views/sale_view.xml',
+        'views/purchase_view.xml',
         'views/account_invoice_view.xml',
         # 'views/invoice_report.xml',
         # 'views/sale_order_report.xml',

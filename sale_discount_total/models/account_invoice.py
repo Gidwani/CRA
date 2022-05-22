@@ -1,26 +1,6 @@
-# -*- coding: utf-8 -*-
-#############################################################################
-#
-#    Cybrosys Technologies Pvt. Ltd.
-#
-#    Copyright (C) 2019-TODAY Cybrosys Technologies(<https://www.cybrosys.com>).
-#    Author: Faslu Rahman(odoo@cybrosys.com)
-#
-#    You can modify it under the terms of the GNU AFFERO
-#    GENERAL PUBLIC LICENSE (AGPL v3), Version 3.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU AFFERO GENERAL PUBLIC LICENSE (AGPL v3) for more details.
-#
-#    You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
-#    (AGPL v3) along with this program.
-#    If not, see <http://www.gnu.org/licenses/>.
-#
-#############################################################################
 
-from odoo import api, fields, models
+from odoo import api, fields, models ,_
+from odoo.exceptions import UserError
 
 
 class AccountInvoice(models.Model):
@@ -41,7 +21,6 @@ class AccountInvoice(models.Model):
         'line_ids.full_reconcile_id')
     def _compute_amount(self):
         for move in self:
-
             if move.payment_state == 'invoicing_legacy':
                 # invoicing_legacy state is set via SQL when setting setting field
                 # invoicing_switch_threshold (defined in account_accountant).
@@ -64,7 +43,6 @@ class AccountInvoice(models.Model):
             for line in move.line_ids:
                 if line.currency_id:
                     currencies.add(line.currency_id)
-
                 if move.is_invoice(include_receipts=True):
                     # === Invoices ===
 
@@ -96,7 +74,8 @@ class AccountInvoice(models.Model):
             else:
                 sign = -1
             if move.discount_type == 'percent':
-                move.amount_discount = sum((line.quantity * line.price_unit * line.discount) / 100 for line in move.invoice_line_ids)
+                move.amount_discount = sum \
+                    ((line.quantity * line.price_unit * line.discount) / 100 for line in move.invoice_line_ids)
             else:
                 move.amount_discount = move.discount_rate
             move.amount_untaxed = sign * (total_untaxed_currency if len(currencies) == 1 else total_untaxed)
@@ -163,11 +142,98 @@ class AccountInvoice(models.Model):
                     line._onchange_price_subtotal()
 
             inv._compute_invoice_taxes_by_group()
-    #
 
     def button_dummy(self):
         self.supply_rate()
         return True
+
+    def action_manager_approve(self):
+        for move in self:
+            if move.move_type == 'in_invoice':
+                sale = \
+                    (self.env['sale.order'].browse(self._context.get('active_id')) if move.discount_rate == 0 else move)
+                purchase_tax_acc = move.line_ids.mapped(
+                    'purchase_line_id.taxes_id.tax_group_id.property_tax_receivable_account_id')
+                # if move and move.move_type == 'out_invoice' and not move.line_ids.filtered(
+                #         lambda line: line.name == ('Discount Amount')):
+                #     discount_account_id = int(self.env['ir.config_parameter'].sudo().get_param('sales_discount_account_id'))
+                #     if move.discount_rate > 0:
+                #         if not discount_account_id:
+                #             raise UserError(_('Please select sale/purchase discount account first in accounting settings.'))
+                #         else:
+                #             ml = {'account_id': discount_account_id,
+                #                   'name': 'Discount Amount',
+                #                   'partner_id': move.partner_id.id,
+                #                   'move_id': move.id,
+                #                   'exclude_from_invoice_tab': True,
+                #                   }
+                #             self.write({'invoice_line_ids': [(0, 0, ml)]})
+                #     elif sale.discount_rate > 0:
+                #         if not discount_account_id:
+                #             raise UserError(_('Please select sale/purchase discount account first in accounting settings.'))
+                #         else:
+                #             ml = {'account_id': discount_account_id,
+                #                   'name': 'Discount Amount',
+                #                   'partner_id': move.partner_id.id,
+                #                   'move_id': move.id,
+                #                   'exclude_from_invoice_tab': True,
+                #                   }
+                #             self.write({'invoice_line_ids': [(0, 0, ml)]})
+                if move and move.move_type == 'in_invoice' and not move.line_ids.filtered(
+                        lambda line: line.name == ('Discount Amount')):
+                    discount_account_id = int(
+                        self.env['ir.config_parameter'].sudo().get_param('purchase_discount_account_id'))
+                    if move.discount_rate > 0:
+                        if not discount_account_id:
+                            raise UserError(_('Please select purchase discount account first in accounting settings.'))
+                        else:
+                            ml = {'account_id': discount_account_id,
+                                  'name': 'Discount Amount',
+                                  'partner_id': move.partner_id.id,
+                                  'move_id': move.id,
+                                  'exclude_from_invoice_tab': True,
+                                  }
+                            self.write({'invoice_line_ids': [(0, 0, ml)]})
+                to_write = {
+                    'line_ids': []
+                }
+                if move.move_type == 'in_invoice':
+                    net = move.total_amount_net
+                    print(net)
+                    if move.discount_rate > 0:
+                        for line in move.line_ids.filtered(
+                                lambda line: line.name == ('Discount Amount')):
+                            to_write['line_ids'].append((1, line.id, {'credit': move.perc_discount}))
+                        for line in move.line_ids.filtered(
+                                lambda line: line.account_id.user_type_id.type in ('receivable', 'payable')):
+                            to_write['line_ids'].append((1, line.id, {'credit': net}))
+                        tot = 0
+                        for line in move.line_ids.filtered(
+                                lambda line, acc = purchase_tax_acc: line.account_id.id == acc.id):
+                            for rec in move.line_ids.mapped('purchase_line_id'):
+                                # discounted_total = rec.subtotal - (rec.subtotal * (move.perc_discount / 100))
+                                discounted_total = (rec.price_unit*rec.qty_received)  - ((rec.price_unit*rec.qty_received) * (move.discount_rate / 100))
+                                print(discounted_total)
+                                dt_amount = discounted_total * (line.tax_line_id.amount / 100)
+                                # print(dt_amount)
+                                # print(line.tax_line_id.amount)
+                                tot = tot + dt_amount
+                        print(tot)
+                        if tot > 0:
+                            # print(move.net_tax)
+                            to_write['line_ids'].append((1, line.id, {'debit': tot}))
+                        print(to_write)
+                # elif move.move_type == 'out_invoice':
+                #     if move.discount_rate > 0:
+                #         for line in move.line_ids.filtered(
+                #                 lambda line: line.name == ('Discount Amount')):
+                #             to_write['line_ids'].append((1, line.id, {'debit': move.discount}))
+                #         for line in move.line_ids.filtered(
+                #                 lambda line: line.account_id.user_type_id.type in ('receivable', 'payable')):
+                #             to_write['line_ids'].append((1, line.id, {'debit': move.net_total}))
+                move.write(to_write)
+        rec = super(AccountInvoice, self).action_manager_approve()
+        return rec
 
 
 class AccountInvoiceLine(models.Model):

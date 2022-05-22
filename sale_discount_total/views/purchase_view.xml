@@ -2,53 +2,56 @@
 <odoo>
     <data>
 
-<!--        <record id="discount_purchase_view_form" model="ir.ui.view">-->
-<!--            <field name="name">purchase.order.order.form</field>-->
-<!--            <field name="model">purchase.order</field>-->
-<!--            <field name="inherit_id" ref="purchase.purchase_order_form"/>-->
-<!--            <field name="arch" type="xml">-->
-<!--&lt;!&ndash;                <xpath expr="//field[@name='state']" position="before">&ndash;&gt;-->
-<!--&lt;!&ndash;                    <button string="Approve" type="object" name="action_approve" states="waiting" class="oe_highlight"&ndash;&gt;-->
-<!--&lt;!&ndash;                            groups="sales_team.group_sale_manager"/>&ndash;&gt;-->
-<!--&lt;!&ndash;                </xpath>&ndash;&gt;-->
-<!--&lt;!&ndash;                <xpath expr="//button[@name='action_cancel']" position="attributes">&ndash;&gt;-->
-<!--&lt;!&ndash;                    <attribute name="states">draft,sent,sale</attribute>&ndash;&gt;-->
-<!--&lt;!&ndash;                </xpath>&ndash;&gt;-->
-<!--                <xpath expr="//group[@class='oe_subtotal_footer oe_right']" position="replace">-->
-<!--                    <group name="note_group" col="6">-->
-<!--                        <group name="discount" colspan="2">-->
-<!--                            <field name="discount_type"/>-->
-<!--                            <field name="discount_rate"/>-->
-<!--                        </group>-->
 
-<!--                        <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">-->
-<!--                            <field name="amount_untaxed" widget='monetary' options="{'currency_field': 'currency_id'}"/>-->
-<!--                            <field name="amount_discount" widget='monetary'-->
-<!--                                   options="{'currency_field': 'currency_id'}"/>-->
-<!--                            <field name="amount_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>-->
-<!--                            <div class="oe_subtotal_footer_separator oe_inline o_td_label">-->
-<!--                                <label for="amount_total"/>-->
-<!--                                <button name="button_dummy"-->
-<!--                                        states="draft,sent" string="(update)" type="object"-->
-<!--                                        class="oe_edit_only oe_link"/>-->
-<!--                            </div>-->
-<!--                            <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator"-->
-<!--                                   widget='monetary' options="{'currency_field': 'currency_id'}"/>-->
-<!--                        </group>-->
-<!--&lt;!&ndash;                        <group colspan="4">&ndash;&gt;-->
-<!--&lt;!&ndash;                            <field name="note" nolabel="1" placeholder="Terms and conditions..."/>&ndash;&gt;-->
-<!--&lt;!&ndash;                        </group>&ndash;&gt;-->
-<!--                        <div class="oe_clear"/>-->
-<!--                    </group>-->
 
+
+        <record id="discount_purchase_view_form" model="ir.ui.view">
+            <field name="name">purchase.order.order.form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+<!--                <xpath expr="//field[@name='state']" position="before">-->
+<!--                    <button string="Approve" type="object" name="action_approve" states="waiting" class="oe_highlight"-->
+<!--                            groups="sales_team.group_sale_manager"/>-->
 <!--                </xpath>-->
-<!--                &lt;!&ndash; Roundoff the discount field &ndash;&gt;-->
-<!--                <xpath expr="//field[@name='order_line']/tree/field[@name='taxes_id']" position="after">-->
-<!--&lt;!&ndash;                    <attribute name="digits">[16, 2]</attribute>&ndash;&gt;-->
-<!--                    <field name="discount"/>-->
+<!--                <xpath expr="//button[@name='action_cancel']" position="attributes">-->
+<!--                    <attribute name="states">draft,sent,sale</attribute>-->
 <!--                </xpath>-->
-<!--            </field>-->
-<!--        </record>-->
+                <xpath expr="//group[@class='oe_subtotal_footer oe_right']" position="replace">
+                    <group name="note_group" col="6">
+                        <group name="discount" colspan="2">
+                            <field name="discount_type"/>
+                            <field name="discount_rate"/>
+                        </group>
+
+                        <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                            <field name="amount_untaxed" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                            <field name="amount_discount" widget='monetary'
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="amount_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                            <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                <label for="amount_total"/>
+                                <button name="button_dummy"
+                                        states="draft,sent" string="(update)" type="object"
+                                        class="oe_edit_only oe_link"/>
+                            </div>
+                            <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator"
+                                   widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                        </group>
+<!--                        <group colspan="4">-->
+<!--                            <field name="note" nolabel="1" placeholder="Terms and conditions..."/>-->
+<!--                        </group>-->
+                        <div class="oe_clear"/>
+                    </group>
+
+                </xpath>
+                <!-- Roundoff the discount field -->
+                <xpath expr="//field[@name='order_line']/tree/field[@name='taxes_id']" position="after">
+<!--                    <attribute name="digits">[16, 2]</attribute>-->
+                    <field name="discount"/>
+                </xpath>
+            </field>
+        </record>
 
     </data>
 </odoo>
