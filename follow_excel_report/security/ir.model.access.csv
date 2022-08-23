@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_follow_excel_report_follow_excel_report,follow_excel_report.follow_excel_report,model_follow_excel_report_follow_excel_report,base.group_user,1,1,1,1

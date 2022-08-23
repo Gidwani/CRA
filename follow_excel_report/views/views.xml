@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="invoice_excel_report_inherited" model="ir.ui.view">
+        <field name="name">res.partner.inherited</field>
+        <field name="inherit_id" ref="account_followup.customer_statements_form_view"/>
+        <field name="model">res.partner</field>
+        <field name="priority">100</field>
+        <field type="xml" name="arch">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button string="Excel Report" name="excel_report" class="btn-primary" type="object" />
+                </header>
+            </xpath>
+        </field>
+    </record>
+</odoo>

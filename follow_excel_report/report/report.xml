@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <report
+            id="invoice_report_excel"
+            model="account.move"
+            string="Excel Report"
+            report_type="xlsx"
+            name="follow_excel_report.report_print_xlsx"
+            file="follow_excel_report.report_print_xlsx"
+    />
+</odoo>
