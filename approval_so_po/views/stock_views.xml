@@ -22,7 +22,7 @@
         <field name="inherit_id" ref="product.product_template_tree_view"/>
         <field name="arch" type="xml">
             <xpath expr="//tree/field[@name='virtual_available']" position="after">
-                <field name="x_css"/>
+                <field name="x_css" invisible="1"/>
             </xpath>
         </field>
     </record>
@@ -52,7 +52,7 @@
                 <attribute name="multi_edit">0</attribute>
             </xpath>
             <xpath expr="//tree/field[@name='virtual_available']" position="after">
-                <field name="x_css"/>
+                <field name="x_css" invisible="1"/>
             </xpath>
         </field>
     </record>

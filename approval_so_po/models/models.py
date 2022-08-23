@@ -744,7 +744,6 @@ class StockPickingInh(models.Model):
     x_css = fields.Html(string='CSS', sanitize=False, compute='_compute_css', store=False)
     is_return_order = fields.Boolean()
 
-
     @api.depends('state')
     def _compute_css(self):
         for application in self:
@@ -761,7 +760,7 @@ class StockPickingInh(models.Model):
     def button_validate(self):
         flag = False
         for line in self.move_ids_without_package:
-            if line.quantity_done <= line.product_uom_qty:
+            if round(line.quantity_done, 2) <= round(line.product_uom_qty, 2):
                 flag = True
             else:
                 raise UserError('Done Quantity Cannot be greater than Demand')
@@ -793,7 +792,7 @@ class StockPickingInh(models.Model):
     def action_manager_approve(self):
         flag = False
         for line in self.move_ids_without_package:
-            if line.quantity_done <= line.product_uom_qty:
+            if round(line.quantity_done, 2) <= round(line.product_uom_qty, 2):
                 flag = True
             else:
                 raise UserError('Done Quantity Cannot be greater than Demand')
@@ -836,9 +835,7 @@ class StockPickingInh(models.Model):
     #     return quant_ids
 
     def do_unreserve(self):
-        print('aaa')
         rec = super(StockPickingInh, self).do_unreserve()
-        print(self.move_ids_without_package)
         for res_line in self.move_ids_without_package:
             total = 0
             quants = self.get_quant_lines()
@@ -846,7 +843,6 @@ class StockPickingInh(models.Model):
             for q_line in quants:
                 if q_line.product_tmpl_id.id == res_line.product_id.product_tmpl_id.id:
                     total = total + q_line.available_quantity
-            print(total)
             res_line.product_id.product_tmpl_id.available_qty = total
         return
 
