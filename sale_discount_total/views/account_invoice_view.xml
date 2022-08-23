@@ -7,9 +7,9 @@
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//header" position="inside">
-                        <button string="Test" type="object" name="button_dummy"/>
-                </xpath>
+<!--                <xpath expr="//header" position="inside">-->
+<!--                        <button string="Test" type="object" name="button_dummy"/>-->
+<!--                </xpath>-->
                 <xpath expr="//field[@name='discount']" position="attributes">
                     <attribute name="digits">[16, 2]</attribute>
                 </xpath>

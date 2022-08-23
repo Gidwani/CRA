@@ -292,7 +292,7 @@
                                     <tr class="border-black o_subtotal" style="">
                                         <td name="td_net_total_label"><strong>Tax</strong></td>
                                         <td name="td_net_total" class="text-right">
-                                            <span t-field="doc.net_tax" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                            <span t-field="doc.amount_tax" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
                                         </td>
                                     </tr>
                                     <!--                                <t t-foreach="doc.amount_by_group" t-as="amount_by_group">-->

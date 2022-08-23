@@ -63,7 +63,7 @@
                         <li t-if="company.website" class="list-inline-item"><span t-field="company.website"/></li>
                         <li t-if="company.vat" class="list-inline-item"><t t-esc="company.country_id.vat_label or 'Tax ID'"/>: <span t-field="company.vat"/></li>
                     </ul>
-<!--                    <div t-field="company.report_footer"/>-->
+                    <!--                    <div t-field="company.report_footer"/>-->
                     <div t-if="report_type == 'pdf'">
                         Page: <span class="page"/> / <span class="topage"/>
                     </div>
@@ -77,95 +77,164 @@
             <t t-call="web.html_container">
                 <t t-call="web.external_layout">
                     <t t-set="o" t-value="docs.with_context(lang=docs.partner_id.lang)" />
-                        <div class="text-right col-12" style="margin-top:-52px;">
-                            <strong>Printed Date:</strong>
-                            <t>
-                                <t t-set="current_date" t-value="o.get_current_date()"/>
-<!--                                <t t-set="current_date" t-value="datetime.datetime.today().strftime('%d/%m/%Y %H:%M:%S')"/>-->
-                            </t>
-                            <span class="m-0" t-esc="current_date"/>
-                            <br/>
+                    <div class="text-right col-12" style="margin-top:-52px;">
+                        <strong>Printed Date:</strong>
+                        <t>
+                            <t t-set="current_date" t-value="o.get_current_date()"/>
+                            <!--                                <t t-set="current_date" t-value="datetime.datetime.today().strftime('%d/%m/%Y %H:%M:%S')"/>-->
+                        </t>
+                        <span class="m-0" t-esc="current_date"/>
+                        <br/>
+                    </div>
+                    <div class="page" style="margin-top:-20px;">
+                        <h2>
+                            <span t-esc="o.get_seq(o)"/>
+                        </h2>
+                        <div class="row mt32 mb32">
+                            <div t-if="o.sale_id.name" class="col-auto" name="div_origin">
+                                <strong>SO #:</strong>
+                                <p t-field="o.sale_id.name"/>
+                            </div>
+                            <div t-if="o.sale_id.partner_id" class="col-auto" name="div_origin">
+                                <strong>Customer Name:</strong>
+                                <p t-field="o.sale_id.partner_id.name"/>
+                            </div>
+                            <div t-if="o.sale_id.date_order" class="col-auto" name="div_origin">
+                                <strong>Order Date:</strong>
+                                <p t-field="o.sale_id.date_order" t-options='{"widget": "date"}'/>
+                            </div>
+                            <div t-if="o.sale_id.client_order_ref" class="col-auto" name="div_origin">
+                                <strong>PO #:</strong>
+                                <p t-field="o.sale_id.client_order_ref"/>
+                            </div>
                         </div>
-                        <div class="page" style="margin-top:-20px;">
-                            <h2>
-                                <span t-esc="o.get_seq(o)"/>
-                            </h2>
-                            <div class="row mt32 mb32">
-                                <div t-if="o.sale_id.name" class="col-auto" name="div_origin">
-                                    <strong>SO #:</strong>
-                                    <p t-field="o.sale_id.name"/>
-                                </div>
-                                <div t-if="o.sale_id.partner_id" class="col-auto" name="div_origin">
-                                    <strong>Customer Name:</strong>
-                                    <p t-field="o.sale_id.partner_id.name"/>
-                                </div>
-                                <div t-if="o.sale_id.date_order" class="col-auto" name="div_origin">
-                                    <strong>Order Date:</strong>
-                                    <p t-field="o.sale_id.date_order" t-options='{"widget": "date"}'/>
-                                </div>
-                                <div t-if="o.sale_id.client_order_ref" class="col-auto" name="div_origin">
-                                    <strong>PO #:</strong>
-                                    <p t-field="o.sale_id.client_order_ref"/>
-                                </div>
-                            </div>
-                            <table class="table table-sm" name="stock_move_table">
-                                <thead>
-                                    <tr>
-                                        <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="4%"><strong>SR#</strong></th>
-                                        <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="7%"><strong>QTY Onhand</strong></th>
-                                        <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="7%"><strong>Available Qty</strong></th>
-                                        <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="35%"><strong>Products</strong></th>
-                                        <th name="th_sm_quantity" style="white-space:nowrap;" class="text-center" width="7%"><strong>Qty to Pick</strong></th>
-                                        <th name="th_sm_serial" style="white-space:nowrap;" class="text-center" width="15%"><strong>Serial #</strong></th>
-                                        <th name="th_sm_note" style="white-space:nowrap;" class="text-center" width="20%"><strong>Note</strong></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr t-foreach="o.sale_id.order_line" t-as="line" style="border:1px solid black;">
-                                        <td class="text-center">
-                                            <span t-field="line.number"/>
-                                        </td>
-                                        <td class="text-center">
-                                            <span t-esc="o.sale_id.get_onhand_qty(line)" />
-                                        </td>
-                                        <td class="text-center">
-                                            <span t-esc="o.sale_id.get_product_qty(line)"/>
-                                        </td>
+                        <table class="table table-sm" name="stock_move_table">
+                            <thead>
+                                <tr>
+                                    <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="4%"><strong>SR#</strong></th>
+                                    <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="7%"><strong>QTY Onhand</strong></th>
+                                    <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="7%"><strong>Available Qty</strong></th>
+                                    <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="35%"><strong>Products</strong></th>
+                                    <th name="th_sm_quantity" style="white-space:nowrap;" class="text-center" width="7%"><strong>Qty to Pick</strong></th>
+                                    <th name="th_sm_serial" style="white-space:nowrap;" class="text-center" width="15%"><strong>Serial #</strong></th>
+                                    <th name="th_sm_note" style="white-space:nowrap;" class="text-center" width="20%"><strong>Note</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!--                                    <tr t-foreach="o.sale_id.order_line" t-as="line" style="border:1px solid black;">-->
+                                <!--                                        <td class="text-center">-->
+                                <!--                                            <span t-field="line.number"/>-->
+                                <!--                                        </td>-->
+                                <!--                                        <td class="text-center">-->
+                                <!--                                            <span t-esc="o.sale_id.get_onhand_qty(line)" />-->
+                                <!--                                        </td>-->
+                                <!--                                        <td class="text-center">-->
+                                <!--                                            <span t-esc="o.sale_id.get_product_qty(line)"/>-->
+                                <!--                                        </td>-->
 
-                                        <td>
-                                            <span t-esc="line.product_id.name"/><br/><span t-esc="line.remarks"/>
-                                        </td>
-                                        <td class="text-center">
-                                            <span t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/><span t-esc="line.product_uom.name"/>
-                                        </td>
-                                        <td class=" text-center h6" >
-                                            <img t-if="o.sale_id.get_lot_no(line) != None" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;humanreadable=1' % ('Code128', o.sale_id.get_lot_no(line), 400, 100)" style="width:100%;height:35px;" alt="Barcode"/>
-                                        </td>
-                                        <td>
-                                            <span>&#160;</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="container row" style="margin-top:2em;margin-left:1em;float:right; font-size:15px;">
-                                <div class="col-12" t-if="o.sale_id.note_picklist">
-                                    <strong><span>Note:</span> </strong><span t-esc="o.sale_id.note_picklist"/>
-                                </div>
-                            </div>
-                            <div class="container row" style="margin-top:1em;margin-left:1em;float:right; font-size:15px;">
-                                <div class="col-12">
-                                    <strong>Time Given to store: </strong><span style="color:black;">_________________________</span><span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span><span>&#160;</span>
-                                    <strong>Time return from store: </strong><span style="color:black;">_________________________</span><span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span><span>&#160;</span>
-                                    <strong>Picking Person Signature: </strong><span style="color:black;">__________________________</span><span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span><span>&#160;</span>
-                                </div>
-                            </div>
+                                <!--                                        <td>-->
+                                <!--                                            <span t-esc="line.product_id.name"/><br/><span t-esc="line.remarks"/>-->
+                                <!--                                        </td>-->
+                                <!--                                        <td class="text-center">-->
+                                <!--                                            <span t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/><span t-esc="line.product_uom.name"/>-->
+                                <!--                                        </td>-->
+                                <!--                                        <td class=" text-center h6" >-->
+                                <!--&lt;!&ndash;                                            <img t-if="o.sale_id.get_lot_no(line) != None" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;humanreadable=1' % ('Code128', o.sale_id.get_lot_no(line), 400, 100)" style="width:100%;height:35px;" alt="Barcode"/>&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                            <img t-if="o.sale_id.get_lot_no(line) != None" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;humanreadable=1' % ('Code128', o.sale_id.get_lot_no(line), 400, 100)" style="width:100%;height:35px;" alt="Barcode"/>&ndash;&gt;-->
+                                <!--                                        <span t-esc="o.sale_id.get_lot_no(line)"/>-->
+                                <!--                                        </td>-->
+                                <!--                                        <td>-->
+                                <!--                                            <span>&#160;</span>-->
+                                <!--                                        </td>-->
+                                <!--                                    </tr>-->
+                                <t t-set="lines" t-value="o.get_lines()"/>
 
+                                <tr t-foreach="lines" t-as="line" style="border:1px solid black;">
+                                    <td class="text-center">
+                                        <span t-esc="line['number']"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="line['onhand']" />
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="line['product_qty']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="line['product']"/><br/><span t-esc="line['remarks']"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="line['qty']" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/><span t-esc="line['uom']"/>
+                                    </td>
+                                    <td class=" text-left h6" >
+                                        <!--                                            <img t-if="o.sale_id.get_lot_no(line) != None" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;humanreadable=1' % ('Code128', o.sale_id.get_lot_no(line), 400, 100)" style="width:100%;height:35px;" alt="Barcode"/>-->
+                                        <!--                                            <img t-if="o.sale_id.get_lot_no(line) != None" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;humanreadable=1' % ('Code128', o.sale_id.get_lot_no(line), 400, 100)" style="width:100%;height:35px;" alt="Barcode"/>-->
+                                        <!--                                            <img t-if="line.lot_id != None" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;humanreadable=1' % ('Code128', line.lot_id.name, 400, 100)" style="width:100%;height:35px;" alt="Barcode"/>-->
+                                        <!--                                        <span t-esc="o.sale_id.get_lot_no(line)"/>-->
+                                        <t t-if="line['lot'] != ''">
+                                            <table style="border:none;background:none;font-size:12px;">
+                                            <tr t-foreach="line['lot']" t-as="lot">
+                                                <td style="border:none;background:none;" class="text-nowrap"><span t-esc="lot['lot_name']"/> : <strong><span t-esc="lot['lot_qty']"/></strong></td>
+                                            </tr>
+                                            </table>
+                                        </t>
+                                        <t t-else="">
+                                            <span t-esc="line['lot']"/>
+                                        </t>
+
+                                    </td>
+                                    <td>
+                                        <span>&#160;</span>
+                                    </td>
+                                </tr>
+
+                                <!--                                     <tr t-foreach="o.move_ids_without_package" t-as="line" style="border:1px solid black;">-->
+                                <!--                                        <td class="text-center">-->
+                                <!--                                            <span t-field="line.number"/>-->
+                                <!--                                        </td>-->
+                                <!--                                        <td class="text-center">-->
+                                <!--                                            <span t-esc="o.get_onhand_qty_picklist(line)" />-->
+                                <!--                                        </td>-->
+                                <!--                                        <td class="text-center">-->
+                                <!--                                            <span t-esc="o.get_product_qty_picklist(line)"/>-->
+                                <!--                                        </td>-->
+                                <!--                                        <td>-->
+                                <!--                                            <span t-esc="line.product_id.name"/><br/><span t-esc="line.remarks"/>-->
+                                <!--                                        </td>-->
+                                <!--                                        <td class="text-center">-->
+                                <!--                                            <span t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/><span t-esc="line.product_uom.name"/>-->
+                                <!--                                        </td>-->
+                                <!--                                        <td class=" text-center h6" >-->
+                                <!--&lt;!&ndash;                                            <img t-if="o.sale_id.get_lot_no(line) != None" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;humanreadable=1' % ('Code128', o.sale_id.get_lot_no(line), 400, 100)" style="width:100%;height:35px;" alt="Barcode"/>&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                            <img t-if="o.sale_id.get_lot_no(line) != None" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;humanreadable=1' % ('Code128', o.sale_id.get_lot_no(line), 400, 100)" style="width:100%;height:35px;" alt="Barcode"/>&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                            <img t-if="line.lot_id != None" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;humanreadable=1' % ('Code128', line.lot_id.name, 400, 100)" style="width:100%;height:35px;" alt="Barcode"/>&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                        <span t-esc="o.sale_id.get_lot_no(line)"/>&ndash;&gt;-->
+                                <!--                                        <span t-esc="line.get_lot()"/>-->
+                                <!--                                        </td>-->
+                                <!--                                        <td>-->
+                                <!--                                            <span>&#160;</span>-->
+                                <!--                                        </td>-->
+                                <!--                                    </tr>-->
+                            </tbody>
+                        </table>
+                        <div class="container row" style="margin-top:2em;margin-left:1em;float:right; font-size:15px;">
+                            <div class="col-12" t-if="o.sale_id.note_picklist">
+                                <strong><span>Note:</span> </strong><span t-esc="o.sale_id.note_picklist"/>
+                            </div>
                         </div>
-                        <div class="oe_structure"/>
+                        <div class="container row" style="margin-top:1em;margin-left:1em;float:right; font-size:15px;">
+                            <div class="col-12">
+                                <strong>Time Given to store: </strong><span style="color:black;">_________________________</span><span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span><span>&#160;</span>
+                                <strong>Time return from store: </strong><span style="color:black;">_________________________</span><span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span><span>&#160;</span>
+                                <strong>Picking Person Signature: </strong><span style="color:black;">__________________________</span><span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span><span>&#160;</span>
+                            </div>
+                        </div>
 
-                    </t>
+                    </div>
+                    <div class="oe_structure"/>
+
                 </t>
-<!--            </t>-->
+            </t>
+            <!--            </t>-->
         </template>
 
 

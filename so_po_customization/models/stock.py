@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
+import os
 from datetime import datetime
-
 from pytz import timezone
-
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError
-from odoo.tools.float_utils import float_compare
-from odoo.tools.float_utils import float_compare, float_is_zero, float_round
+from odoo import models, fields, api
+from odoo.http import request
 
 
 class ProductProductInh(models.Model):
@@ -107,6 +104,52 @@ class StockPickingInh(models.Model):
     is_receipt = fields.Boolean(compute='compute_is_receipt')
     invoice_link = fields.Boolean(string='Invoice link')
 
+    def get_lines(self):
+        pro_list = []
+        for line in self.move_ids_without_package:
+            lot_list = []
+            if line.move_line_ids:
+                for rec in line.move_line_ids:
+                    lot_list.append({
+                        'lot_name': rec.lot_id.name,
+                        'lot_qty': rec.product_uom_qty,
+                    })
+                    # pro_list.append({
+                    #     'number': line.number,
+                    #     'onhand': self.get_onhand_qty_picklist_lot(rec),
+                    #     'product_qty': self.get_product_qty_picklist(line),
+                    #     'product': rec.product_id.name,
+                    #     'remarks': rec.remarks,
+                    #     'qty': line.product_uom_qty,
+                    #     'uom': rec.product_uom_id.name,
+                    #     'lot': rec.lot_id.name,
+                    # })
+                lot_str = ''
+                for f in lot_list:
+                    lot_str = lot_str + f.get('lot_name')+' : ' +str(f.get('lot_qty')) + ', '
+                pro_list.append({
+                    'number': line.number,
+                    'onhand': self.get_onhand_qty_picklist(line),
+                    'product_qty': self.get_product_qty_picklist(line),
+                    'product': rec.product_id.name,
+                    'remarks': rec.remarks,
+                    'qty': line.product_uom_qty,
+                    'uom': rec.product_uom_id.name,
+                    'lot': lot_list,
+                })
+            else:
+                pro_list.append({
+                    'number': line.number,
+                    'onhand': self.get_onhand_qty_picklist(line),
+                    'product_qty': self.get_product_qty_picklist(line),
+                    'product': line.product_id.name,
+                    'remarks': line.remarks,
+                    'qty': line.product_uom_qty,
+                    'uom': line.product_uom.name,
+                    'lot': '',
+                })
+        return pro_list
+
     def get_total_qty(self):
         total = 0
         for rec in self.move_line_ids_without_package:
@@ -127,13 +170,11 @@ class StockPickingInh(models.Model):
     #         return "True"
 
     def get_current_date(self):
-        # print('hello')
         now_utc_date = datetime.now()
         now_dubai = now_utc_date.astimezone(timezone('Asia/Karachi'))
         return now_dubai.strftime('%d/%m/%Y %H:%M:%S')
 
     def get_seq(self, picking):
-        # print(picking.name)
         return 'Picklist/'+picking.name.split('/')[1]+"/"+picking.name.split('/')[2] + "/"+picking.name.split('/')[3]
 
     def compute_is_receipt(self):
@@ -152,6 +193,66 @@ class StockPickingInh(models.Model):
     #     for report in reports:
     #         report.unlink_action()
     #     return result
+
+    def get_lot_onhand_qty(self, line):
+        domain_loc = self.env['product.product']._get_domain_locations()[0]
+        quant_ids = [l['id'] for l in self.env['stock.quant'].search_read(domain_loc, ['id'])]
+        quants = self.env['stock.quant'].browse(quant_ids)
+        total = 0
+        for q_line in quants:
+            if q_line.product_tmpl_id.id == line.product_id.product_tmpl_id.id and q_line.lot_id.id == line.lot_id.id:
+                total = total + q_line.inventory_quantity
+        return total
+        # rec.available_qty = total
+
+    def get_onhand_qty_picklist(self, ml):
+        print(ml)
+        # if ml.lot_id:
+        #     product_qty = self.get_lot_onhand_qty(ml)
+        # else:
+        product_qty = self.env['product.template'].search([('id', '=', ml.product_id.product_tmpl_id.id)]).qty_available
+        # for line in ml.sale_id.order_line:
+        if ml.product_uom.name == 'Lth':
+            qty = int(product_qty)/6
+            formatted_float = "{:.2f}".format(float(qty))
+            qty = str(formatted_float) + " Lth"
+        else:
+            qty = float(product_qty)
+            formatted_float = "{:.2f}".format(qty)
+            qty = str(formatted_float) + ' ' +  ml.product_id.uom_id.name
+        return qty
+
+    def get_onhand_qty_picklist_lot(self, ml):
+        print(ml)
+        if ml.lot_id:
+            product_qty = self.get_lot_onhand_qty(ml)
+        else:
+            product_qty = self.env['product.template'].search([('id', '=', ml.product_id.product_tmpl_id.id)]).qty_available
+        # for line in ml.sale_id.order_line:
+        if ml.product_uom_id.name == 'Lth':
+            qty = int(product_qty)/6
+            formatted_float = "{:.2f}".format(float(qty))
+            qty = str(formatted_float) + " Lth"
+        else:
+            qty = float(product_qty)
+            formatted_float = "{:.2f}".format(qty)
+            qty = str(formatted_float) + ' ' +  ml.product_id.uom_id.name
+        return qty
+
+    def get_product_qty_picklist(self, ml):
+        product_qty = self.env['product.template'].search([('id', '=', ml.product_id.product_tmpl_id.id)])
+        # for line in ml.sale_id.order_line:
+        if ml.product_uom.name == 'Lth':
+            qty = int(product_qty.available_qty)/6
+            formatted_float = "{:.2f}".format(float(qty))
+            qty = str(formatted_float) + " Lth"
+        else:
+            qty = float(product_qty.available_qty)
+            formatted_float = "{:.2f}".format(qty)
+            qty = str(formatted_float) + ' ' + product_qty.uom_id.name
+        return qty
+
+
 
 
 class StockMoveLineInh(models.Model):
@@ -279,22 +380,17 @@ class StockMoveInh(models.Model):
 
     remarks = fields.Char("Remarks", compute='_compute_remarks')
     number = fields.Integer(compute='_compute_get_number', store=True)
-    # product_uom = fields.Many2one('uom.uom', 'Unit of Measure', required=True,
-    #                               domain="[('category_id', '=', product_uom_category_id)]", compute="get_sale_uom")
-    #
-    # def get_sale_uom(self):
-    #     for rec in self:
-    #         for line in rec.picking_id.sale_id.order_line:
-    #             if line.product_id == rec.product_id.id:
-    #                 uom = line.product_uom
-    #             else:
-    #                 uom = rec.product_uom
-    #         rec.product_uom = uom
+
+    def get_lot(self):
+        lot_list = []
+        for rec in self.picking_id.move_line_ids_without_package:
+            if rec.move_id.id == self.id:
+                lot_list.append(rec.lot_id.name)
+        return ','.join(lot_list)
 
     def get_product_uom_lot(self, ml):
         product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
         uom = ''
-
         if ml.picking_id.sale_id:
             for line in ml.picking_id.sale_id.order_line:
                 if line.product_id.id == ml.product_id.id and line.number == ml.so_no:

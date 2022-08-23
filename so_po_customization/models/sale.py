@@ -144,11 +144,19 @@ class SaleOrderInh(models.Model):
 
     def get_lot_no(self, line):
         picking = self.env['stock.picking'].search([('sale_id', '=', line.order_id.id)])
-        lot = None
+        lot = ''
         if picking:
             for rec in picking.move_line_ids_without_package:
-                if rec.product_id.id == line.product_id.id:
+                if rec.product_id.id == line.product_id.id and rec.so_no == line.number:
+                    # lot.append(rec.lot_id.name)
                     lot = rec.lot_id.name
+        # a = ''
+        # if lot:
+        #     if len(lot) > 1:
+        #         a = ','.join(lot)
+        #     else:
+        #         a = a[0]
+        # return a
         return lot
 
     def get_product_qty(self, ml):
