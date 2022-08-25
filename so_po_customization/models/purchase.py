@@ -77,10 +77,10 @@ class PurchaseOrderLineInh(models.Model):
     vat_amount = fields.Float('VAT Amount', compute='_compute_vat_amount')
     subtotal = fields.Float('Subtotal', compute='_compute_subtotal')
 
-    @api.depends('price_unit', 'product_qty')
+    @api.depends('price_unit', 'product_qty', 'product_uom')
     def _compute_subtotal(self):
         for rec in self:
-            rec.subtotal = rec.product_uom_qty * rec.price_unit
+            rec.subtotal = rec.product_qty * rec.price_unit
 
     def _compute_vat_amount(self):
         for rec in self:

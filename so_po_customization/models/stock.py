@@ -112,7 +112,7 @@ class StockPickingInh(models.Model):
                 for rec in line.move_line_ids:
                     lot_list.append({
                         'lot_name': rec.lot_id.name,
-                        'lot_qty': rec.product_uom_qty,
+                        'lot_qty': rec.product_uom_qty/6 if rec.product_uom_id.name == 'Mtr' else rec.product_uom_qty,
                     })
                     # pro_list.append({
                     #     'number': line.number,
@@ -125,6 +125,7 @@ class StockPickingInh(models.Model):
                     #     'lot': rec.lot_id.name,
                     # })
                 lot_str = ''
+                print(lot_list)
                 for f in lot_list:
                     lot_str = lot_str + f.get('lot_name')+' : ' +str(f.get('lot_qty')) + ', '
                 pro_list.append({
@@ -133,8 +134,8 @@ class StockPickingInh(models.Model):
                     'product_qty': self.get_product_qty_picklist(line),
                     'product': rec.product_id.name,
                     'remarks': rec.remarks,
-                    'qty': line.product_uom_qty,
-                    'uom': rec.product_uom_id.name,
+                    'qty': line.product_uom_qty/6 if line.product_uom.name == 'Mtr' else line.product_uom_qty,
+                    'uom': 'Lth' if line.product_uom.name == 'Mtr' else rec.product_uom_id.name,
                     'lot': lot_list,
                 })
             else:
@@ -212,7 +213,7 @@ class StockPickingInh(models.Model):
         # else:
         product_qty = self.env['product.template'].search([('id', '=', ml.product_id.product_tmpl_id.id)]).qty_available
         # for line in ml.sale_id.order_line:
-        if ml.product_uom.name == 'Lth':
+        if ml.product_uom.name == 'Mtr':
             qty = int(product_qty)/6
             formatted_float = "{:.2f}".format(float(qty))
             qty = str(formatted_float) + " Lth"
@@ -222,27 +223,27 @@ class StockPickingInh(models.Model):
             qty = str(formatted_float) + ' ' +  ml.product_id.uom_id.name
         return qty
 
-    def get_onhand_qty_picklist_lot(self, ml):
-        print(ml)
-        if ml.lot_id:
-            product_qty = self.get_lot_onhand_qty(ml)
-        else:
-            product_qty = self.env['product.template'].search([('id', '=', ml.product_id.product_tmpl_id.id)]).qty_available
-        # for line in ml.sale_id.order_line:
-        if ml.product_uom_id.name == 'Lth':
-            qty = int(product_qty)/6
-            formatted_float = "{:.2f}".format(float(qty))
-            qty = str(formatted_float) + " Lth"
-        else:
-            qty = float(product_qty)
-            formatted_float = "{:.2f}".format(qty)
-            qty = str(formatted_float) + ' ' +  ml.product_id.uom_id.name
-        return qty
+    # def get_onhand_qty_picklist_lot(self, ml):
+    #     print(ml)
+    #     if ml.lot_id:
+    #         product_qty = self.get_lot_onhand_qty(ml)
+    #     else:
+    #         product_qty = self.env['product.template'].search([('id', '=', ml.product_id.product_tmpl_id.id)]).qty_available
+    #     # for line in ml.sale_id.order_line:
+    #     if ml.product_uom_id.name == 'Lth':
+    #         qty = int(product_qty)/6
+    #         formatted_float = "{:.2f}".format(float(qty))
+    #         qty = str(formatted_float) + " Lth"
+    #     else:
+    #         qty = float(product_qty)
+    #         formatted_float = "{:.2f}".format(qty)
+    #         qty = str(formatted_float) + ' ' +  ml.product_id.uom_id.name
+    #     return qty
 
     def get_product_qty_picklist(self, ml):
         product_qty = self.env['product.template'].search([('id', '=', ml.product_id.product_tmpl_id.id)])
         # for line in ml.sale_id.order_line:
-        if ml.product_uom.name == 'Lth':
+        if ml.product_uom.name == 'Mtr':
             qty = int(product_qty.available_qty)/6
             formatted_float = "{:.2f}".format(float(qty))
             qty = str(formatted_float) + " Lth"
