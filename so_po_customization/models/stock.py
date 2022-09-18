@@ -145,8 +145,8 @@ class StockPickingInh(models.Model):
                     'product_qty': self.get_product_qty_picklist(line),
                     'product': line.product_id.name,
                     'remarks': line.remarks,
-                    'qty': line.product_uom_qty,
-                    'uom': line.product_uom.name,
+                    'qty': line.product_uom_qty/6 if line.product_uom.name == 'Mtr' else line.product_uom_qty,
+                    'uom': 'Lth' if line.product_uom.name == 'Mtr' else line.product_uom_id.name,
                     'lot': '',
                 })
         return pro_list
