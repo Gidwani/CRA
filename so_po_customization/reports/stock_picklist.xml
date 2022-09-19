@@ -173,7 +173,7 @@
                                         <t t-if="line['lot'] != ''">
                                             <table style="border:none;background:none;font-size:12px;">
                                             <tr t-foreach="line['lot']" t-as="lot">
-                                                <td style="border:none;background:none;" class="text-nowrap"><span t-esc="lot['lot_name']"/> : <strong><span t-esc="lot['lot_qty']"/></strong></td>
+                                                <td style="border:none;background:none;" class="text-nowrap"><span t-esc="lot['lot_name']"/> : <strong><span t-esc="lot['lot_qty']" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
                                             </tr>
                                             </table>
                                         </t>

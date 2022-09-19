@@ -125,7 +125,7 @@ class StockPickingInh(models.Model):
                     #     'lot': rec.lot_id.name,
                     # })
                 lot_str = ''
-                print(lot_list)
+                # print(lot_list)
                 for f in lot_list:
                     lot_str = lot_str + f.get('lot_name')+' : ' +str(f.get('lot_qty')) + ', '
                 pro_list.append({
@@ -146,7 +146,7 @@ class StockPickingInh(models.Model):
                     'product': line.product_id.name,
                     'remarks': line.remarks,
                     'qty': line.product_uom_qty/6 if line.product_uom.name == 'Mtr' else line.product_uom_qty,
-                    'uom': 'Lth' if line.product_uom.name == 'Mtr' else line.product_uom_id.name,
+                    'uom': 'Lth' if line.product_uom.name == 'Mtr' else line.product_uom.name,
                     'lot': '',
                 })
         return pro_list
