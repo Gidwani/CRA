@@ -36,14 +36,13 @@ Excel report export
 Odoo excel report export
 
     """,
-    'author': 'DevIntelle Consulting Service Pvt.Ltd',
+    'author': 'DevIntelle Consulting Service Pvt.Ltd', 
     'website': 'http://www.devintellecs.com',
     "depends": ['sale','sale_stock','purchase'],
     "data": [
         'security/ir.model.access.csv',
         'wizard/bulk_export_views.xml',
     ],
-    'license': 'AGPL-3',
     'demo': [],
     'test': [],
     'css': [],

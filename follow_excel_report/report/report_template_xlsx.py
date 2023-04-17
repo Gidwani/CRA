@@ -35,9 +35,9 @@ class ReportXlsxInh(models.AbstractModel):
             sheet.set_column('I:I', 15)
             sheet.set_column('J:J', 15)
             partner = self.env['res.partner'].search([('id', '=', report.id)])
-            # print(partner)
-            invoices = self.env['account.move'].search([('id', 'in', partner.unpaid_invoice_ids.ids)], order='id asc')
-            # print(invoices)
+            print(partner)
+            invoices = self.env['account.move'].search([('id', 'in', partner.unpaid_invoices.ids)], order='id asc')
+            print(invoices)
             row = 12
             sheet.write(6, 1, 'Customer Name', style)
             sheet.write(6, 2, partner.name, center)
@@ -59,15 +59,15 @@ class ReportXlsxInh(models.AbstractModel):
             for p in invoices:
                 row += 1
                 if p.move_type == 'out_refund':
-                    total_due = total_due - p.amount_residual
+                    total_due = total_due - p.total_amount_due
                 else:
-                    total_due = total_due + p.amount_residual
+                    total_due = total_due + p.total_amount_due
                 sheet.write(row, 0, p.invoice_date, date_style)
                 sheet.write(row, 1, p.name, center)
                 sheet.write(row, 2, self.get_ref(p), center)
                 sheet.write(row, 3, p.invoice_date_due, date_style)
-                # print(p.total_amount_due)
-                sheet.write(row, 4, -p.amount_residual if p.move_type == 'out_refund' else p.amount_residual, center)
+                print(p.total_amount_due)
+                sheet.write(row, 4, -p.total_amount_due if p.move_type == 'out_refund' else p.total_amount_due, center)
                 sheet.write(row, 5, total_due, center)
                 sheet.write(row, 6, date.today() - p.invoice_date_due, center)
                 cr_list.append(p.id)
@@ -85,10 +85,8 @@ class ReportXlsxInh(models.AbstractModel):
                 #             sheet.write(row, 5, total_due, center)
             # print('dd',invoices)
             if invoices:
-
-                if invoices[0].invoice_outstanding_credits_debits_widget:
-                    print(invoices[0].invoice_outstanding_credits_debits_widget)
-                    res = json.loads(invoices[0].invoice_outstanding_credits_debits_widget)
+                res = json.loads(invoices[0].invoice_outstanding_credits_debits_widget)
+                if invoices[0].invoice_outstanding_credits_debits_widget != 'false':
                     for b in res['content']:
                         if b['move_id'] not in payments_list:
                             payment_name = self.env['account.move'].browse([b['move_id']])

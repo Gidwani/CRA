@@ -164,13 +164,13 @@ class StockMoveLineInh(models.Model):
                     for line in rec.picking_id.backorder_id.purchase_id.order_line:
                         if rec.move_id.purchase_line_id.id == line.id:
                             rec.so_no = line.number
-            if rec.picking_id.sale_id:
-                for line in rec.picking_id.sale_id.order_line:
-                    if line.product_id.id == rec.product_id.id and line.number == rec.number:
-                        rec.so_no = line.number
-
-            else:
-                rec.so_no = 0
+            # if rec.picking_id.sale_id:
+            #     for line in rec.picking_id.sale_id.order_line:
+            #         if line.product_id.id == rec.product_id.id and line.number == rec.number:
+            #             rec.so_no = line.number
+            #
+            # else:
+            #     rec.so_no = 0
 
     @api.depends('picking_id')
     def _compute_get_number(self):
@@ -210,36 +210,35 @@ class StockPickingInh(models.Model):
         else:
             self.is_delivery = False
 
-    # def action_add_done_qty(self):
-    #     if self.move_ids_without_package:
-    #         for line in self.move_ids_without_package:
-    #             # line.quantity_done = line.product_uom_qty
-    #             if line.move_line_ids:
-    #                 for rec in line.move_line_ids:
-    #                     rec.qty_done = rec.reserved_uom_qty
-    #             else:
-    #                 line.quantity_done = line.forecast_availability
-    #         self.is_done_added = True
-    #
-    # def action_remove_done_qty(self):
-    #     if self.move_ids_without_package:
-    #         for line in self.move_ids_without_package:
-    #             if line.move_line_ids:
-    #                 for rec in line.move_line_ids:
-    #                     rec.qty_done = 0
-    #             else:
-    #                 line.quantity_done = 0
-    #         self.is_done_added = False
+    def action_add_done_qty(self):
+        if self.move_ids_without_package:
+            for line in self.move_ids_without_package:
+                # line.quantity_done = line.product_uom_qty
+                if line.move_line_ids:
+                    for rec in line.move_line_ids:
+                        rec.qty_done = rec.product_uom_qty
+                else:
+                    line.quantity_done = line.forecast_availability
+            self.is_done_added = True
 
-    @api.model
-    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
-        result = super(StockPickingInh, self).fields_view_get(
-            view_id=view_id, view_type=view_type, toolbar=toolbar,
-            submenu=submenu)
-        if view_type == 'form':
-            print(result['toolbar']['print'])
-            for repo in result['toolbar']['print']:
-                if repo['name'] == 'Delivery Slip':
-                    result['toolbar']['print'].remove(repo)
-            result['toolbar']['print'].reverse()
-        return result
+    def action_remove_done_qty(self):
+        if self.move_ids_without_package:
+            for line in self.move_ids_without_package:
+                if line.move_line_ids:
+                    for rec in line.move_line_ids:
+                        rec.qty_done = 0
+                else:
+                    line.quantity_done = 0
+            self.is_done_added = False
+
+    # @api.model
+    # def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+    #     result = super(StockPickingInh, self).fields_view_get(
+    #         view_id=view_id, view_type=view_type, toolbar=toolbar,
+    #         submenu=submenu)
+    #     if view_type == 'form':
+    #         for repo in result['toolbar']['print']:
+    #             if repo['name'] == 'Delivery Slip':
+    #                 result['toolbar']['print'].remove(repo)
+    #         result['toolbar']['print'].reverse()
+    #     return result

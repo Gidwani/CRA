@@ -9,9 +9,12 @@
 	    <field name="arch" type="xml">
 	        <notebook position="inside">
 	            <page string="Hide Specific Menu">
+	                <group colspan="4">
 	                    <field name="menu_ids" nolabel="1"/>
+	                </group>
 	            </page>
 	            <page string="Hide Specific Report">
+	                <group colspan="4">
 	                    <field name="report_ids" nolabel="1">
 	                        <tree>
 	                            <field name="name"/>
@@ -20,6 +23,7 @@
 	                            <field name="report_type"/>
 	                        </tree>
 	                    </field>
+	                </group>
 	            </page>
 	        </notebook>
 	    </field>
