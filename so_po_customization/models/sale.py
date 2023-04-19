@@ -135,12 +135,49 @@ class SaleReportInh(models.Model):
 class SaleOrderInh(models.Model):
     _inherit = 'sale.order'
 
-    perc_discount = fields.Float('Discount', compute="_compute_discount")
-    net_total = fields.Float('Net Total', compute="_compute_net_total")
+    perc_discount = fields.Float('Discount', compute='_compute_discount')
+    net_total = fields.Float('Net Total',compute='_compute_net_total')
     perc = fields.Float(compute='compute_percentage')
     net_tax = fields.Float('Tax', compute='compute_taxes')
     note_picklist = fields.Char('Note')
     subtotal_amount = fields.Float('Subtotal Amount', compute='_compute_net_total')
+
+    @api.depends('order_line', 'discount_rate')
+    def compute_taxes(self):
+        flag = False
+        for rec in self.order_line:
+            if rec.tax_id:
+                flag = True
+        if flag:
+            self.net_tax = (5 / 100) * self.net_total
+        else:
+            self.net_tax = 0
+
+    @api.depends('discount_rate')
+    def compute_percentage(self):
+        for rec in self:
+            if rec.discount_type == 'percent':
+                rec.perc = rec.discount_rate
+            else:
+                rec.perc = (rec.discount_rate / rec.subtotal_amount) * 100
+
+    @api.depends('discount_rate')
+    def _compute_discount(self):
+        for rec in self:
+            if rec.discount_type == 'percent':
+                rec.perc_discount = (rec.discount_rate / 100) * rec.subtotal_amount
+            else:
+                rec.perc_discount = rec.discount_rate
+
+    @api.depends('order_line', 'order_line.subtotal', 'discount_rate', 'discount_type')
+    def _compute_net_total(self):
+        for rec in self:
+            subtotal = 0
+            for line in rec.order_line:
+                subtotal = subtotal + line.subtotal
+            rec.subtotal_amount = subtotal
+            rec.net_total = rec.subtotal_amount - rec.perc_discount
+            rec.amount_total = rec.net_total + rec.amount_tax
 
     def get_lot_no(self, line):
         picking = self.env['stock.picking'].search([('sale_id', '=', line.order_id.id)])
@@ -185,42 +222,7 @@ class SaleOrderInh(models.Model):
             qty = str(formatted_float) + ' ' + product_qty.uom_id.name
         return qty
 
-    @api.depends('order_line', 'discount_rate')
-    def compute_taxes(self):
-        flag = False
-        for rec in self.order_line:
-            if rec.tax_id:
-                flag = True
-        if flag:
-            self.net_tax = (5/100) * self.net_total
-        else:
-            self.net_tax = 0
 
-    @api.depends('discount_rate')
-    def compute_percentage(self):
-        for rec in self:
-            if rec.discount_type == 'percent':
-                rec.perc = rec.discount_rate
-            else:
-                rec.perc = (rec.discount_rate/rec.subtotal_amount) * 100
-
-    @api.depends('discount_rate')
-    def _compute_discount(self):
-        for rec in self:
-            if rec.discount_type == 'percent':
-                rec.perc_discount = (rec.discount_rate / 100) * rec.subtotal_amount
-            else:
-                rec.perc_discount = rec.discount_rate
-
-    @api.depends('order_line', 'order_line.subtotal', 'discount_rate', 'discount_type')
-    def _compute_net_total(self):
-        for rec in self:
-            subtotal = 0
-            for line in rec.order_line:
-                subtotal = subtotal + line.subtotal
-            rec.subtotal_amount = subtotal
-            rec.net_total = rec.subtotal_amount - rec.perc_discount
-            rec.amount_total = rec.net_total + rec.amount_tax
 
 
 class SaleOrderLineInh(models.Model):

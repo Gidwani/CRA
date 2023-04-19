@@ -28,4 +28,10 @@
         'views/views.xml',
         'views/templates.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            '/product_tree_color/static/src/css/*',
+        ],
+
+    },
 }

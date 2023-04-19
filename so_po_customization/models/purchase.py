@@ -4,14 +4,14 @@ from odoo import models, fields, api
 class PurchaseOrderInh(models.Model):
     _inherit = 'purchase.order'
 
-    perc_discount = fields.Float('Discount', compute="_compute_discount")
-    net_total = fields.Float('Net Total', compute="_compute_net_total")
+    perc_discount = fields.Float('Discount', compute='_compute_discount')
+    net_total = fields.Float('Net Total', compute='_compute_net_total')
     perc = fields.Float(compute='compute_percentage')
     net_tax = fields.Float('Tax', compute='compute_taxes')
     note_picklist = fields.Char('Note')
-    subtotal_amount = fields.Float('Subtotal Amount', compute='_compute_net_total')
+    subtotal_amount = fields.Float('Subtotal Amount')
 
-    @api.depends('order_line', 'discount_rate')
+    @api.depends('order_line')
     def compute_taxes(self):
         for order in self:
             amount_tax = 0.0
@@ -27,13 +27,15 @@ class PurchaseOrderInh(models.Model):
         # else:
         #     self.net_tax = 0
 
-    @api.depends('discount_rate')
+    @api.depends('discount_rate', 'discount_type')
     def compute_percentage(self):
         for rec in self:
+            disc = 0
             if rec.discount_type == 'percent':
-                rec.perc = rec.discount_rate
+                disc = rec.discount_rate
             else:
-                rec.perc = (rec.discount_rate / rec.subtotal_amount) * 100
+                disc = (rec.discount_rate / rec.subtotal_amount) * 100
+            rec.perc = disc
 
     @api.depends('order_line', 'discount_rate', 'discount_type')
     def _compute_net_total(self):
@@ -44,11 +46,10 @@ class PurchaseOrderInh(models.Model):
             rec.subtotal_amount = subtotal
             rec.net_total = rec.subtotal_amount - rec.perc_discount
             rec.amount_tax = rec.net_tax
-            print(rec.net_tax)
             rec.amount_total = rec.net_total + rec.amount_tax
             # rec.total_amount_due = rec.amount_total
 
-    @api.depends('discount_rate')
+    @api.depends('discount_rate', 'discount_type')
     def _compute_discount(self):
         for rec in self:
             if rec.discount_type == 'percent':
@@ -82,6 +83,7 @@ class PurchaseOrderLineInh(models.Model):
         for rec in self:
             rec.subtotal = rec.product_qty * rec.price_unit
 
+    @api.depends('taxes_id', 'price_unit', 'product_qty')
     def _compute_vat_amount(self):
         for rec in self:
             amount = 0
@@ -103,10 +105,10 @@ class PurchaseOrderLineInh(models.Model):
         for rec in self:
             rec.taxes_id = tax
 
-    def _compute_tax_id(self):
-        for line in self:
-            line = line.with_company(line.company_id)
-            fpos = line.order_id.fiscal_position_id or line.order_id.fiscal_position_id.get_fiscal_position(line.order_id.partner_id.id)
+    # def _compute_tax_id(self):
+    #     for line in self:
+    #         line = line.with_company(line.company_id)
+    #         fpos = line.order_id.fiscal_position_id or line.order_id.fiscal_position_id.get_fiscal_position(line.order_id.partner_id.id)
             # filter taxes by company
             # taxes = line.product_id.supplier_taxes_id.filtered(lambda r: r.company_id == line.env.company)
             # line.taxes_id = fpos.map_tax(taxes, line.product_id, line.order_id.partner_id)

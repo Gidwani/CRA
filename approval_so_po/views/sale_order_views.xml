@@ -21,17 +21,17 @@
         </field>
     </record>
 
-    <record id="view_sales_order_group_form_inh" model="ir.ui.view">
-        <field name="name">sales.order.form.inh</field>
-        <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_order_form"/>
-        <field name="groups_id" eval="[(4, ref('approval_so_po.group_remove_customer_create_user'))]"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='partner_id']" position="attributes">
-                <attribute name="options">{'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
-            </xpath>
-        </field>
-    </record>
+<!--    <record id="view_sales_order_group_form_inh" model="ir.ui.view">-->
+<!--        <field name="name">sales.order.form.inh</field>-->
+<!--        <field name="model">sale.order</field>-->
+<!--        <field name="inherit_id" ref="sale.view_order_form"/>-->
+<!--&lt;!&ndash;        <field name="groups_id" eval="[(4, ref('approval_so_po.group_remove_customer_create_user'))]"/>&ndash;&gt;-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//field[@name='partner_id']" position="attributes">-->
+<!--                <attribute name="options">{'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
 
     <record id="view_sale_order_form_price_inh" model="ir.ui.view">
 		<field name="name">sale.order.form.inh</field>

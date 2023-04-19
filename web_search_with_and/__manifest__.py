@@ -4,11 +4,17 @@
 
 {
     "name": "Use AND conditions on omnibar search",
-    "version": "13.0.1.0.0",
-    "author": "Versada UAB, ACSONE SA/NV, Odoo Community Association (OCA)",
+    "version": "16.0.1.0.0",
+    "author": """Sandip SCS, Versada UAB, ACSONE SA/NV, Serincloud,
+    Odoo Community Association (OCA)""",
     "license": "AGPL-3",
     "category": "web",
     "website": "https://github.com/OCA/web",
     "depends": ["web"],
-    "data": ["data/data.xml"],
+    "assets": {
+        "web.assets_backend": [
+            "/web_search_with_and/static/src/js/search_model.esm.js",
+            "/web_search_with_and/static/src/js/search_bar.esm.js",
+        ],
+    },
 }

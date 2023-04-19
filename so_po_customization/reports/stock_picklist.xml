@@ -77,16 +77,17 @@
             <t t-call="web.html_container">
                 <t t-call="web.external_layout">
                     <t t-set="o" t-value="docs.with_context(lang=docs.partner_id.lang)" />
-                    <div class="text-right col-12" style="margin-top:-52px;">
-                        <strong>Printed Date:</strong>
-                        <t>
-                            <t t-set="current_date" t-value="o.get_current_date()"/>
-                            <!--                                <t t-set="current_date" t-value="datetime.datetime.today().strftime('%d/%m/%Y %H:%M:%S')"/>-->
-                        </t>
-                        <span class="m-0" t-esc="current_date"/>
-                        <br/>
-                    </div>
-                    <div class="page" style="margin-top:-20px;">
+
+                    <div class="page" style="margin-top:-10px;">
+                        <div class="row text-right" style="margin-top:-52px;">
+                            <div class="col-8"></div>
+                            <div class="col-4">
+                                <strong>Printed Date:</strong>
+                                <t t-set="current_date" t-value="o.get_current_date()"/>
+                                <span class="m-0" t-esc="current_date"/>
+                                <br/>
+                            </div>
+                        </div>
                         <h2>
                             <span t-esc="o.get_seq(o)"/>
                         </h2>
@@ -172,9 +173,9 @@
                                         <!--                                        <span t-esc="o.sale_id.get_lot_no(line)"/>-->
                                         <t t-if="line['lot'] != ''">
                                             <table style="border:none;background:none;font-size:12px;">
-                                            <tr t-foreach="line['lot']" t-as="lot">
-                                                <td style="border:none;background:none;" class="text-nowrap"><span t-esc="lot['lot_name']"/> : <strong><span t-esc="lot['lot_qty']" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
-                                            </tr>
+                                                <tr t-foreach="line['lot']" t-as="lot">
+                                                    <td style="border:none;background:none;" class="text-nowrap"><span t-esc="lot['lot_name']"/> : <strong><span t-esc="lot['lot_qty']" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
+                                                </tr>
                                             </table>
                                         </t>
                                         <t t-else="">

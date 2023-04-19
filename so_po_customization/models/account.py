@@ -8,7 +8,7 @@ class AccountMoveInh(models.Model):
     _inherit = 'account.move'
 
     perc_discount = fields.Float('Discount', compute='_compute_discount')
-    net_total = fields.Float('Net Total', compute="_compute_net_total")
+    net_total = fields.Float('Net Total', )
     perc = fields.Float(compute='compute_percentage')
     net_tax = fields.Float('Tax', compute='compute_taxes')
     subtotal_amount = fields.Float('Subtotal Amount', compute='_compute_net_total')
@@ -68,17 +68,18 @@ class AccountMoveInh(models.Model):
         return res_ids
 
     def _assign_the_DO_link(self):
-        if not self.do_link:
-            for k in self.invoice_line_ids:
-                saleorder = self.env['sale.order'].search([("name", '=', self.invoice_origin)])
-                for l in saleorder.picking_ids:
-                    if self.invoice_origin == l.sale_id.name:
-                        for j in l.move_line_ids_without_package:
-                            if j.picking_id.invoice_link != True:
-                                if j.product_id == k.product_id:
-                                    if j.qty_done == k.quantity:
-                                        self.do_link = l.name
-                                        j.picking_id.invoice_link = True
+        for r in self:
+            if not r.do_link:
+                for k in r.invoice_line_ids:
+                    saleorder = self.env['sale.order'].search([("name", '=', r.invoice_origin)])
+                    for l in saleorder.picking_ids:
+                        if r.invoice_origin == l.sale_id.name:
+                            for j in l.move_line_ids_without_package:
+                                if j.picking_id.invoice_link != True:
+                                    if j.product_id == k.product_id:
+                                        if j.qty_done == k.quantity:
+                                            r.do_link = l.name
+                                            j.picking_id.invoice_link = True
 
     def get_payment_term_id(self):
         order = self.env['sale.order'].search([('name', '=', self.invoice_origin)])
@@ -113,6 +114,7 @@ class AccountMoveInh(models.Model):
             else:
                 res.net_tax = 0
 
+    @api.depends('discount_rate', 'discount_type')
     def compute_percentage(self):
         for rec in self:
             if rec.discount_type == 'percent':
@@ -120,6 +122,7 @@ class AccountMoveInh(models.Model):
             else:
                 rec.perc = (rec.discount_rate / rec.subtotal_amount) * 100
 
+    @api.depends('discount_rate', 'discount_type')
     def _compute_discount(self):
         for rec in self:
             if rec.discount_type == 'percent':
@@ -144,7 +147,7 @@ class AccountMoveLineInh(models.Model):
 
     remarks = fields.Char("Remarks", compute='_compute_remarks')
     number = fields.Integer(compute='_compute_get_number', store=True)
-    vat_amount = fields.Float('VAT Amount', compute='_compute_vat_amount')
+    vat_amount = fields.Float('VAT Amount', compute='_compute_vat_amount_custom')
     subtotal = fields.Float('Subtotal', compute='_compute_subtotal')
 
     @api.depends('price_unit', 'quantity')
@@ -152,7 +155,8 @@ class AccountMoveLineInh(models.Model):
         for rec in self:
             rec.subtotal = rec.quantity * rec.price_unit
 
-    def _compute_vat_amount(self):
+    @api.depends('tax_ids', 'price_unit', 'quantity')
+    def _compute_vat_amount_custom(self):
         for rec in self:
             amount = 0
             for tax in rec.tax_ids:

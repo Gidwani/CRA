@@ -2,6 +2,17 @@
 <odoo>
     <data>
 
+<!--        <record id="stock.action_report_delivery" model="ir.actions.report">-->
+<!--            <field name="name">Delivery Slip</field>-->
+<!--            <field name="model">stock.picking</field>-->
+<!--            <field name="report_type">qweb-pdf</field>-->
+<!--            <field name="report_name">so_po_customization.report_deliveryslip_inh</field>-->
+<!--            <field name="report_file">so_po_customization.report_deliveryslip_inh</field>-->
+<!--            <field name="print_report_name">'Delivery Slip - %s - %s' % (object.partner_id.name or '', object.name)</field>-->
+<!--            <field name="binding_model_id" ref="stock.model_stock_picking"/>-->
+<!--            <field name="binding_type">report</field>-->
+<!--        </record>-->
+
         <record id="action_product_template_server" model="ir.actions.server">
             <field name="name">Calculate incoming and available</field>
             <field name="model_id" ref="product.model_product_template"/>
@@ -41,20 +52,11 @@
                     <field name="do_no" attrs="{'invisible': [('is_receipt' ,'=', False)]}"/>
                     <field name="is_receipt" invisible="1"/>
                 </xpath>
-                <!--                <xpath expr="//field[@name='name']" position="before">-->
-                <!--                    <span attrs="{'invisible': [('is_receipt' ,'=', True)]}">Delivery Note/</span>-->
-                <!--                </xpath>-->
 
             </field>
         </record>
 
-        <!--        <record id="seq_num_view" model="ir.sequence">-->
-        <!--            <field name="name">Stock</field>-->
-        <!--            <field name="code">stock.picking.sequence</field>-->
-        <!--            <field name="prefix">Picklist/CRA/%(year)s/</field>-->
-        <!--            <field name="padding">5</field>-->
-        <!--            &lt;!&ndash;            <field name="company_id" eval="False"/>&ndash;&gt;-->
-        <!--        </record>-->
+
 
         <record id="paper_format_picklist" model="report.paperformat">
             <field name="name">Picklist Report</field>
@@ -72,26 +74,6 @@
             <field name="dpi">90</field>
         </record>
 
-        <!--        <record id="stock.action_report_picking" model="ir.actions.report">-->
-        <!--            <field name="name">PickList</field>-->
-        <!--            <field name="model">stock.picking</field>-->
-        <!--            <field name="report_type">qweb-pdf</field>-->
-        <!--            <field name="report_name">stock.report_picking</field>-->
-        <!--            <field name="report_file">stock.report_picking_operations</field>-->
-        <!--            <field name="print_report_name">'PickList Report - %s - %s' % (object.partner_id.name or '', object.name)</field>-->
-        <!--            <field name="binding_model_id" ref="model_stock_picking"/>-->
-        <!--            <field name="binding_type">report</field>-->
-        <!--        </record>-->
-
-        <!--         <report-->
-        <!--            id="action_report_picking_land"-->
-        <!--            model="stock.picking"-->
-        <!--            string="Picklist Landscape"-->
-        <!--            report_type="qweb-pdf"-->
-        <!--            name="so_po_customization.report_picking_landscape"-->
-        <!--            file="so_po_customization.report_picking_landscape"-->
-        <!--            paperformat="paper_format_picklist"/>-->
-
         <record id="view_products_form_inh" model="ir.ui.view">
             <field name="name">product.template.form.inh</field>
             <field name="model">product.template</field>
@@ -101,6 +83,7 @@
                 <xpath expr="//field[@name='barcode']" position="after">
                     <field name="hs_code"/>
                 </xpath>
+
             </field>
         </record>
 
@@ -123,13 +106,15 @@
                 <xpath expr="//field[@name='qty_available']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
+                <xpath expr="//field[@name='product_tag_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <xpath expr="//field[@name='name']" position="before">
                     <field name="default_code"/>
                 </xpath>
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="uom_id" string="UOM"/>
                     <field name="available_qty" string="Saleable Quantity"/>
-<!--                    <field name="qty_available" optional="hide"/>-->
                 </xpath>
                 <xpath expr="//field[@name='virtual_available']" position="after">
                     <field name="responsible_id"/>
@@ -137,12 +122,9 @@
                 <xpath expr="//field[@name='standard_price']" position="after">
                     <field name="incoming_qty" string="Incoming Quantity"/>
                 </xpath>
-
-                <!--                <xpath expr="//tree" position="attributes">-->
-                <!--                    <attribute name="decoration-success">type == 'product'</attribute>-->
-                <!--&lt;!&ndash;                    <attribute name="decoration-warning">blocking_level == 'warning'</attribute>&ndash;&gt;-->
-                <!--&lt;!&ndash;                    <attribute name="decoration-danger">blocking_level == 'error'</attribute>&ndash;&gt;-->
-                <!--                </xpath>-->
+                <xpath expr="//field[@name='list_price']" position="replace">
+                    <field name="list_price" string="Sale Price"/>
+                </xpath>
 
             </field>
         </record>

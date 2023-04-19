@@ -1,29 +1,11 @@
 <odoo>
 	<data>
 
-		<record id="delivery_order_do_link" model="ir.ui.view">
-			<field name="name">related.pickings.account.invoice.form</field>
-			<field name="model">account.move</field>
-			<field name="inherit_id" ref="account.view_move_form" />
-			<field name="arch" type="xml">
-				<xpath expr="//field[@name='ref']" position="after">
-					<field name="do_link"/>
-				</xpath>
-			</field>
-		</record>
-
-		<record id="view_account_move_form_inh" model="ir.ui.view">
+		<record id="view_account_move_form_inh_nn" model="ir.ui.view">
 			<field name="name">account.move.form.inh</field>
 			<field name="model">account.move</field>
 			<field name="inherit_id" ref="account.view_move_form"/>
 			<field name="arch" type="xml">
-
-				<!--				<xpath expr="//field[@name='name']" position="before">-->
-				<!--					<span attrs="{'invisible': [('move_type' ,'!=', 'out_invoice')]}">Tax Invoice/</span>-->
-				<!--					<span attrs="{'invisible': [('move_type' ,'!=', 'out_refund')]}">Tax Credit Note/</span>-->
-				<!--					<span attrs="{'invisible': [('move_type' ,'!=', 'in_refund')]}">Tax Debit Note/</span>-->
-				<!--					<span attrs="{'invisible': [('move_type' ,'!=', 'in_invoice')]}">Vendor Bill/</span>-->
-				<!--				</xpath>-->
 
 				<xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='name']" position="attributes">
 					<attribute name="invisible">1</attribute>
@@ -43,58 +25,56 @@
 				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='tax_ids']" position="after">
 					<field name="vat_amount"/>
 				</xpath>
-				<xpath expr="//field[@name='amount_untaxed']" position="attributes">
-					<attribute name="invisible">1</attribute>
+<!--				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='price_subtotal']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//field[@name='amount_discount']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='price_subtotal']" position="after">
+					<field name="subtotal"/>
 				</xpath>
 				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='price_subtotal']" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
-				<xpath expr="//field[@name='amount_discount']" position="attributes">
-					<attribute name="invisible">1</attribute>
+<!--				<xpath expr="//field[@name='amount_total']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+				<xpath expr="//field[@name='ref']" position="after">
+					<field name="do_link"/>
 				</xpath>
-				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='price_subtotal']" position="after">
-					<field name="subtotal"/>
-				</xpath>
-				<xpath expr="//field[@name='amount_total']" position="attributes">
+				<xpath expr="//field[@name='tax_totals']" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
 				<xpath expr="//field[@name='amount_residual']" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
-				<xpath expr="//field[@class='oe_subtotal_footer_separator']" position="attributes">
-					<attribute name="invisible">1</attribute>
-				</xpath>
-				<!--				<xpath expr="//field[@name='total_discount']" position="attributes">-->
-				<!--					<attribute name="invisible">1</attribute>-->
-				<!--				</xpath>-->
-				<xpath expr="//field[@name='amount_total']" position="after">
+<!--				<xpath expr="//field[@class='oe_subtotal_footer_separator']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+				<xpath expr="//field[@name='tax_totals']" position="after">
 					<label for="total_amount_net" string="Total"/>
 					<div>
-						<strong><field name="total_amount_net" widget='monetary' options="{'currency_field': 'currency_id'}"/></strong>
+						<strong><field name="total_amount_net" widget='monetary' options="{'currency_field': 'currency_id'}" readonly="1"/></strong>
 					</div>
 				</xpath>
-
 				<xpath expr="//field[@name='amount_residual']" position="after">
 					<label for="total_amount_due" string="Amount Due"/>
 					<div>
-						<strong><field name="total_amount_due" widget='monetary' options="{'currency_field': 'currency_id'}"/></strong>
+						<strong><field name="total_amount_due" widget='monetary' options="{'currency_field': 'currency_id'}" readonly="1"/></strong>
 					</div>
 				</xpath>
-
-				<xpath expr="//field[@name='amount_by_group']" position="attributes">
-					<attribute name="invisible">1</attribute>
-				</xpath>
-				<xpath expr="//field[@name='amount_untaxed']" position="after">
-					<field name="subtotal_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-					<label for="perc_discount"  attrs="{'invisible': [('move_type','!=', 'out_invoice')]}"/>
-					<div class="text-nowrap" attrs="{'invisible': [('move_type','!=', 'out_invoice')]}">
-						<field name="perc_discount" class="oe_inline" widget='monetary' options="{'currency_field': 'currency_id'}" attrs="{'invisible': [('move_type','!=', 'out_invoice')]}"/>
+				<xpath expr="//field[@name='tax_totals']" position="after">
+					<field name="subtotal_amount" widget='monetary' options="{'currency_field': 'currency_id'}" readonly="1"/>
+					<label for="perc_discount"  attrs="{'invisible': [('move_type','not in', ['out_invoice', 'in_invoice'])]}"/>
+					<div class="text-nowrap" attrs="{'invisible': [('move_type','not in', ['out_invoice', 'in_invoice'])]}">
+						<field name="perc_discount" class="oe_inline" widget='monetary' options="{'currency_field': 'currency_id'}" readonly="1" attrs="{'invisible': [('move_type','not in', ['out_invoice', 'in_invoice'])]}"/>
 						<span class="oe_inline">
-							(<field name="perc" nolabel="1" class="oe_inline" />%)
+							(<field name="perc" nolabel="1" class="oe_inline" readonly="1"/>%)
 						</span>
 					</div>
-					<field name="net_total" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-					<field name="net_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+					<field name="net_total" widget='monetary' options="{'currency_field': 'currency_id'}" readonly="1"/>
+					<field name="net_tax" widget='monetary' options="{'currency_field': 'currency_id'}" readonly="1"/>
 				</xpath>
 
 			</field>

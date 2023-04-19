@@ -17,37 +17,36 @@ from datetime import datetime
 
 
 class bulk_export(models.TransientModel):
-    _name ='bulk.export'
-    
-    
-    def get_customer_detail(self,partner):
+    _name = 'bulk.export'
+
+    def get_customer_detail(self, partner):
         customer = '\n'
         if partner.name:
-            customer += partner.name+'\n'
+            customer += partner.name + '\n'
         if partner.street:
-            customer += partner.street+'\n'
+            customer += partner.street + '\n'
         if partner.street2:
-            customer += partner.street2+'\n'
+            customer += partner.street2 + '\n'
         if partner.city:
             customer += partner.city
             if partner.zip:
-                customer += ', '+partner.zip+'\n'
+                customer += ', ' + partner.zip + '\n'
             else:
                 customer += '\n'
-        
+
         if partner.state_id:
             customer += partner.state_id.name
             if partner.country_id:
-                customer += ', '+partner.country_id.name+'\n'
+                customer += ', ' + partner.country_id.name + '\n'
             else:
                 customer += '\n'
-                    
+
         if not partner.state_id:
             if partner.country_id:
-                customer += partner.country_id.name+'\n'
+                customer += partner.country_id.name + '\n'
 
         return customer
-    
+
     def export_excel(self):
         active_ids = self._context.get('active_ids')
         model = self._context.get('active_model')
@@ -60,7 +59,7 @@ class bulk_export(models.TransientModel):
         header_style = easyxf('font:height 200;pattern: pattern solid, fore_color gray25;'
                               'align: horiz center;font: color black; font:bold True;'
                               "borders: top thin,left thin,right thin,bottom thin")
-                                   
+
         text_left = easyxf('font:height 200; align: horiz left;' "borders: top thin,bottom thin")
         text_center = easyxf('font:height 200; align: horiz center;' "borders: top thin,bottom thin")
         text_left_bold = easyxf('font:height 200; align: horiz left;font:bold True;' "borders: top thin,bottom thin")
@@ -71,10 +70,10 @@ class bulk_export(models.TransientModel):
         worksheet = []
         for l in range(0, len(active_ids)):
             worksheet.append(l)
-            
+
         work = 0
         if model == 'sale.order':
-            filename='Sale Export.xls'
+            filename = 'Sale Export.xls'
         elif model == 'purchase.order':
             filename = 'Purchase Export.xls'
         else:
@@ -84,21 +83,21 @@ class bulk_export(models.TransientModel):
                 number = ''
                 if record.name:
                     number = str(record.name)
-                    number= number.replace('/','_')
+                    number = number.replace('/', '_')
                 else:
-                    number = 'Unknown_'+str(work)
+                    number = 'Unknown_' + str(work)
                 worksheet[work] = workbook.add_sheet(number)
             else:
                 worksheet[work] = workbook.add_sheet(record.name)
 
             if model == 'sale.order':
-                worksheet[work].write_merge(0, 1, 1, 6, 'SALE ORDER: '+record.name, main_header_style)
+                worksheet[work].write_merge(0, 1, 1, 6, 'SALE ORDER: ' + record.name, main_header_style)
             elif model == 'purchase.order':
                 worksheet[work].write_merge(0, 1, 1, 6, 'PURCHASE ORDER: ' + record.name, main_header_style)
             else:
                 inv_name = 'INVOICE'
                 if record.name:
-                    inv_name = inv_name + ' : '+record.name
+                    inv_name = inv_name + ' : ' + record.name
                 worksheet[work].write_merge(0, 1, 1, 6, inv_name, main_header_style)
 
             customer = self.get_customer_detail(record.partner_id)
@@ -120,12 +119,12 @@ class bulk_export(models.TransientModel):
             if model == 'account.move':
                 if record.invoice_date:
                     date_order = record.invoice_date
-#                    date_order = datetime.strptime(date_order, '%Y-%m-%d')
+                    #                    date_order = datetime.strptime(date_order, '%Y-%m-%d')
                     date_order = date_order.strftime("%d-%m-%Y")
             else:
                 date_order = record.date_order
                 # print ("=====",date_order,type(date_order))
-#                date_order = datetime.strptime(date_order, '%Y-%m-%d %H:%M:%S')
+                #                date_order = datetime.strptime(date_order, '%Y-%m-%d %H:%M:%S')
                 date_order = date_order.strftime("%d-%m-%Y %H:%M:%S")
             worksheet[work].write_merge(4, 4, 6, 7, date_order or '', text_left)
             if model == 'sale.order':
@@ -146,9 +145,8 @@ class bulk_export(models.TransientModel):
             if model == 'sale.order':
                 worksheet[work].write_merge(8, 8, 6, 7, record.user_id.name or '', text_left)
 
-
             worksheet[work].write_merge(10, 11, 0, 7, ' ')
-            r=12
+            r = 12
             # worksheet[work].write_merge(r, r, 0, 1, 'CODE', header_style)
             # worksheet[work].write_merge(r, r, 2, 3, 'PRODUCT', header_style)
             # worksheet[work].write(r, 4, 'QTY', header_style)
@@ -164,8 +162,8 @@ class bulk_export(models.TransientModel):
             worksheet[work].write(r, 7, 'T.Weight', header_style)
             worksheet[work].write(r, 8, 'HS Code', header_style)
             worksheet[work].write(r, 9, 'COO', header_style)
-            r+=1
-            rec_lines=False
+            r += 1
+            rec_lines = False
             if model == 'account.move':
                 rec_lines = record.invoice_line_ids
             else:
@@ -193,25 +191,25 @@ class bulk_export(models.TransientModel):
                 if model == 'account.move':
                     worksheet[work].write(r, 7, (line.product_id.weight * line.quantity), text_center)
                 worksheet[work].write(r, 8, line.product_id.hs_code, text_center)
-                r+=1
+                r += 1
             worksheet[work].write_merge(r, r, 0, 7, '')
-            r+=1
-            worksheet[work].write_merge(r, r+2, 0, 4, '')
+            r += 1
+            worksheet[work].write_merge(r, r + 2, 0, 4, '')
             worksheet[work].write_merge(r, r, 6, 8, 'SUBTOTAL', header_style)
             worksheet[work].write(r, 9, record.amount_untaxed, text_right)
-            r+=1
+            r += 1
             worksheet[work].write_merge(r, r, 6, 8, 'TAX', header_style)
             worksheet[work].write(r, 9, record.amount_tax, text_right)
             r += 1
             worksheet[work].write_merge(r, r, 6, 8, 'TOTAL', header_style)
             worksheet[work].write(r, 9, record.amount_total, text_right)
 
-            work+=1
-            
+            work += 1
+
         fp = BytesIO()
         workbook.save(fp)
         export_id = self.env['bulk.export.excel'].create(
-            {'excel_file': base64.encodestring(fp.getvalue()), 'file_name': filename})
+            {'excel_file': base64.encodebytes(fp.getvalue()), 'file_name': filename})
         fp.close()
 
         return {
@@ -222,20 +220,18 @@ class bulk_export(models.TransientModel):
             'type': 'ir.actions.act_window',
             'target': 'new',
         }
-            
-        
-    
-     
-bulk_export()
+
+
+# bulk_export()
 
 
 class bulk_export_excel(models.TransientModel):
-    _name= "bulk.export.excel"
-    
+    _name = "bulk.export.excel"
+
     excel_file = fields.Binary('Excel File')
     file_name = fields.Char('Excel Name', size=64)
 
-bulk_export_excel()
+# bulk_export_excel()
 
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -9,7 +9,7 @@ class StockQuantInh(models.Model):
 
 
 class StockProductionInh(models.Model):
-    _inherit = 'stock.production.lot'
+    _inherit = 'stock.lot'
 
     yom = fields.Selection(selection=[(f'{i}', i) for i in range(1900, 3000)], string='YOM')
 
@@ -59,7 +59,8 @@ class AccountMoveInh(models.Model):
             [('partner_id', '=', self.partner_id.id),
              ('move_id.state', '=', 'posted'), ('balance', '!=', 0),
              ('account_id.reconcile', '=', True), ('full_reconcile_id', '=', False), '|',
-             ('account_id.internal_type', '=', 'payable'), ('account_id.internal_type', '=', 'receivable')])
+             ('account_id.account_type', '=', 'liability_payable'), ('account_id.account_type', '=', 'asset_receivable')])
+        # ('asset_receivable', 'liability_payable')
         bal = 0
         for par_rec in partner_ledger:
             bal = bal + (par_rec.debit - par_rec.credit)

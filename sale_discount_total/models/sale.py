@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #############################################################################
 #
 #    Cybrosys Technologies Pvt. Ltd.
@@ -20,8 +21,9 @@
 #
 #############################################################################
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 import odoo.addons.decimal_precision as dp
+from odoo.exceptions import ValidationError
 
 
 class SaleOrder(models.Model):
@@ -62,7 +64,6 @@ class SaleOrder(models.Model):
 
     @api.onchange('discount_type', 'discount_rate', 'order_line')
     def supply_rate(self):
-
         for order in self:
             if order.discount_type == 'percent':
                 for line in order.order_line:
@@ -77,6 +78,9 @@ class SaleOrder(models.Model):
                     discount = order.discount_rate
                 for line in order.order_line:
                     line.discount = discount
+                    # print(line.discount)
+                    new_sub_price = (line.price_unit * (discount/100))
+                    line.total_discount = line.price_unit - new_sub_price
 
     def _prepare_invoice(self, ):
         invoice_vals = super(SaleOrder, self)._prepare_invoice()
@@ -91,8 +95,27 @@ class SaleOrder(models.Model):
         self.supply_rate()
         return True
 
+    # def write(self, vals):
+    #     print(self)
+    #     print(self.order_line)
+    #     for line in self.order_line:
+    #         line.write({
+    #             'price_subtotal': line.total_discount
+    #         })
+    #     return super(SaleOrder, self).write(vals)
+    # @api.onchange('discount_type', 'discount_rate')
+    # def warning_msg(self):
+    #     # settings_discount = self.env['ir.config_parameter'].get_param('group_discount_per_so_line')
+    #     local_fields = self.env['sale.order.line'].fields_get()
+    #     print(local_fields)
+    #     # settings_discount = order.discount
+    #     # print(settings_discount)
+    #     # if not settings_discount:
+    #     #     raise ValidationError(_("You have enable discount from configuration setting"))
+
 
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     discount = fields.Float(string='Discount (%)', digits=(16, 20), default=0.0)
+    total_discount = fields.Float(string="Total Discount", default=0.0, store=True)

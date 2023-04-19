@@ -26,28 +26,28 @@ class StockQuantIh(models.Model):
         quant_ids = [l['id'] for l in self.env['stock.quant'].search_read(domain_loc, ['id'])]
         return quant_ids
 
-class StockInventoryIh(models.Model):
-    _inherit = "stock.inventory"
-
-    def post_inventory(self):
-        res = super(StockInventoryIh, self).post_inventory()
-        self.cal_incoming_quantity()
-        return res
-
-    def cal_incoming_quantity(self):
-        for res_line in self.product_ids:
-            total = 0
-            quants = self.get_quant_lines()
-            quants = self.env['stock.quant'].browse(quants)
-            for q_line in quants:
-                if q_line.product_tmpl_id.id == res_line.product_tmpl_id.id:
-                    total = total + q_line.available_quantity
-            res_line.product_tmpl_id.available_qty = total
-
-    def get_quant_lines(self):
-        domain_loc = self.env['product.product']._get_domain_locations()[0]
-        quant_ids = [l['id'] for l in self.env['stock.quant'].search_read(domain_loc, ['id'])]
-        return quant_ids
+# class StockInventoryIh(models.Model):
+#     _inherit = "stock.inventory"
+#
+#     def post_inventory(self):
+#         res = super(StockInventoryIh, self).post_inventory()
+#         self.cal_incoming_quantity()
+#         return res
+#
+#     def cal_incoming_quantity(self):
+#         for res_line in self.product_ids:
+#             total = 0
+#             quants = self.get_quant_lines()
+#             quants = self.env['stock.quant'].browse(quants)
+#             for q_line in quants:
+#                 if q_line.product_tmpl_id.id == res_line.product_tmpl_id.id:
+#                     total = total + q_line.available_quantity
+#             res_line.product_tmpl_id.available_qty = total
+#
+#     def get_quant_lines(self):
+#         domain_loc = self.env['product.product']._get_domain_locations()[0]
+#         quant_ids = [l['id'] for l in self.env['stock.quant'].search_read(domain_loc, ['id'])]
+#         return quant_ids
 
 
 class StockMoveInh(models.Model):
@@ -74,6 +74,7 @@ class StockMoveInh(models.Model):
             #     if float_compare(quantity_done, ml_quantity_done, precision_rounding=move.product_uom.rounding) != 0:
             #         raise UserError(
             #             _("Cannot set the done quantity from this stock move, work directly with the move lines."))
+
 
 class AccountMoveInh(models.Model):
     _inherit = 'account.move'

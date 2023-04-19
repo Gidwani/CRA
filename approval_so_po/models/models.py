@@ -74,6 +74,7 @@ class StockMoveInh(models.Model):
 #
 #     product_uom_category_id = fields.Many2one(related='uom_id.category_id', readonly=True)
 
+
 class StockReturnPickingInh(models.TransientModel):
     _inherit = 'stock.return.picking'
 
@@ -85,7 +86,7 @@ class StockReturnPickingInh(models.TransientModel):
             for line in rec.sale_id.order_line:
                 total_qty = total_qty + line.product_uom_qty
 
-            incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')])
+            incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
             returns_do = self.env['stock.picking'].search(
                 [('picking_type_id', '=', incoming.id), ('sale_id', '=', rec.sale_id.id), ('state', '=', 'done')])
             total_return = 0
@@ -118,7 +119,7 @@ class StockReturnPickingInh(models.TransientModel):
             for line in rec.purchase_id.order_line:
                 total_qty = total_qty + line.product_qty
 
-            outgoing = self.env['stock.picking.type'].search([('code', '=', 'outgoing')])
+            outgoing = self.env['stock.picking.type'].search([('code', '=', 'outgoing')], limit=1)
             returns_do = self.env['stock.picking'].search(
                 [('picking_type_id', '=', outgoing.id), ('purchase_id', '=', rec.purchase_id.id),
                  ('state', '=', 'done')])
@@ -561,7 +562,8 @@ class AccountMoveInh(models.Model):
                     for line in purchase_order.order_line:
                         total_qty = total_qty + line.product_uom_qty
                     for invoice_line in self.invoice_line_ids:
-                        total_invoice_qty = total_invoice_qty + invoice_line.quantity
+                        if invoice_line.product_id:
+                            total_invoice_qty = total_invoice_qty + invoice_line.quantity
                     if total_invoice_qty <= total_qty:
                         record = super(AccountMoveInh, self).action_post()
                     else:

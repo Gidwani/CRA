@@ -104,30 +104,33 @@ class StockPickingInh(models.Model):
     is_receipt = fields.Boolean(compute='compute_is_receipt')
     invoice_link = fields.Boolean(string='Invoice link')
 
+    # @api.model
+    # def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+    #     result = super(StockPickingInh, self).fields_view_get(
+    #         view_id=view_id, view_type=view_type, toolbar=toolbar,
+    #         submenu=submenu)
+    #     if view_type == 'form':
+    #         for repo in result['toolbar']['print']:
+    #             if repo['name'] == 'Delivery Slip':
+    #                 result['toolbar']['print'].remove(repo)
+    #         result['toolbar']['print'].reverse()
+    #     return result
+
     def get_lines(self):
         pro_list = []
         for line in self.move_ids_without_package:
             lot_list = []
             if line.move_line_ids:
                 for rec in line.move_line_ids:
-                    lot_list.append({
-                        'lot_name': rec.lot_id.name,
-                        'lot_qty': rec.product_uom_qty/6 if rec.product_uom_id.name == 'Mtr' else rec.product_uom_qty,
-                    })
-                    # pro_list.append({
-                    #     'number': line.number,
-                    #     'onhand': self.get_onhand_qty_picklist_lot(rec),
-                    #     'product_qty': self.get_product_qty_picklist(line),
-                    #     'product': rec.product_id.name,
-                    #     'remarks': rec.remarks,
-                    #     'qty': line.product_uom_qty,
-                    #     'uom': rec.product_uom_id.name,
-                    #     'lot': rec.lot_id.name,
-                    # })
+                    if rec.lot_id:
+                        lot_list.append({
+                            'lot_name': rec.lot_id.name,
+                            'lot_qty': rec.reserved_uom_qty/6 if rec.product_uom_id.name == 'Mtr' else rec.reserved_uom_qty,
+                        })
                 lot_str = ''
-                # print(lot_list)
-                for f in lot_list:
-                    lot_str = lot_str + f.get('lot_name')+' : ' +str(f.get('lot_qty')) + ', '
+                if lot_list:
+                    for f in lot_list:
+                        lot_str = lot_str + f.get('lot_name')+' : ' +str(f.get('lot_qty')) + ', '
                 pro_list.append({
                     'number': line.number,
                     'onhand': self.get_onhand_qty_picklist(line),
@@ -164,19 +167,14 @@ class StockPickingInh(models.Model):
         else:
             return 0
 
-    # def check_state(self):
-    #     if self.state != 'done':
-    #         raise UserWarning(('You cannot print report in this state'))
-    #     else:
-    #         return "True"
-
     def get_current_date(self):
         now_utc_date = datetime.now()
         now_dubai = now_utc_date.astimezone(timezone('Asia/Karachi'))
         return now_dubai.strftime('%d/%m/%Y %H:%M:%S')
 
     def get_seq(self, picking):
-        return 'Picklist/'+picking.name.split('/')[1]+"/"+picking.name.split('/')[2] + "/"+picking.name.split('/')[3]
+        # return 'Picklist/'+picking.name.split('/')[1]+"/"+picking.name.split('/')[2] + "/"+picking.name.split('/')[3]
+        return 'Picklist/'+picking.name.split('/')[1]+"/"+picking.name.split('/')[2]
 
     def compute_is_receipt(self):
         for rec in self:
@@ -252,7 +250,6 @@ class StockPickingInh(models.Model):
             formatted_float = "{:.2f}".format(qty)
             qty = str(formatted_float) + ' ' + product_qty.uom_id.name
         return qty
-
 
 
 
@@ -446,17 +443,17 @@ class StockMoveInh(models.Model):
                     if rec.product_id.id == line.product_id.id:
                         rem = line.remarks
 
-            if rec.backorder_id.sale_id:
-                for line in rec.backorder_id.sale_id.order_line:
+            if rec.picking_id.backorder_id.sale_id:
+                for line in rec.picking_id.backorder_id.sale_id.order_line:
                     if rec.sale_line_id.id == line.id:
                         rem = line.remarks
             rec.remarks = rem
 
     @api.depends('picking_id')
     def _compute_get_number(self):
-        if not self.picking_id.backorder_id:
-            for order in self.mapped('picking_id'):
-                number = 1
-                for line in order.move_ids_without_package:
-                    line.number = number
-                    number += 1
+        # if not self.picking_id.backorder_id:
+        for order in self.mapped('picking_id'):
+            number = 1
+            for line in order.move_ids_without_package:
+                line.number = number
+                number += 1

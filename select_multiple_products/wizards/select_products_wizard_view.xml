@@ -6,9 +6,9 @@
         <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Select Products">
-                <group string="Products">
+<!--                <group string="Products">-->
                     <field name="product_ids" nolabel="1" />
-                </group>
+<!--                </group>-->
                 <footer>
                     <button name="select_products" string="Add" type="object" class="oe_highlight" />
                     <button string="Cancel" special="cancel" />

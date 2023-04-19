@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sale', 'purchase', 'stock', 'sale_margin', 'sale_discount_total', 'sale_stock', 'approval_so_po', 'product'],
+    'depends': ['base', 'account', 'sale', 'purchase', 'stock', 'sale_margin',  'sale_stock', 'approval_so_po', 'product', 'web', 'sale_discount_total'],
 
     # always loaded
     'data': [
@@ -37,5 +37,7 @@
         'wizard/sale_wizard.xml',
         # 'wizard/select_products_wizard_view.xml',
     ],
+'license': 'AGPL-3',
+
 
 }

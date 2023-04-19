@@ -17,7 +17,7 @@
             <field name="name">res.partner.tree.inh</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_tree"/>
-            <field name="groups_id" eval="[(4, ref('approval_so_po.group_contact_user'))]"/>
+<!--            <field name="groups_id" eval="[(4, ref('approval_so_po.group_contact_user'))]"/>-->
             <field name="arch" type="xml">
                 <xpath expr="//tree" position="attributes">
                         <attribute name="multi_edit">0</attribute>

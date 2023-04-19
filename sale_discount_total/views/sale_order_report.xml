@@ -3,10 +3,10 @@
     <data>
 
         <template id="report_saleorder_customized" inherit_id="sale.report_saleorder_document">
-            <xpath expr="//span[@t-field='line.discount']" position="replace">
-                 <span t-esc="'%.2f'%(line.discount)"/>
-            </xpath>
-            <xpath expr="//tr[hasclass('border-black')]" position="after">
+<!--            <xpath expr="//span[@t-field='line.discount']" position="replace">-->
+<!--                 <span t-esc="'%.2f'%(line.discount)"/>-->
+<!--            </xpath>-->
+            <xpath expr="//tr[hasclass('is-subtotal')]" position="after">
                 <tr>
                     <td>Total Discount</td>
                     <td class="text-right">
