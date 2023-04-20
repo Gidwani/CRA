@@ -40,16 +40,16 @@
             </field>
         </record>
 
-<!--        <record id="view_sale_order_discount_form_inh" model="ir.ui.view">-->
-<!--            <field name="name">sale.order.form.inh</field>-->
-<!--            <field name="model">sale.order</field>-->
-<!--            <field name="inherit_id" ref="sale_discount_total.discount_sale_view_form"/>-->
-<!--            <field name="arch" type="xml">-->
-<!--                <xpath expr="//field[@name='discount_rate']" position="after">-->
-<!--                    <field name="note_picklist" invisible="1"/>-->
-<!--                </xpath>-->
-<!--            </field>-->
-<!--        </record>-->
+        <!--        <record id="view_sale_order_discount_form_inh" model="ir.ui.view">-->
+        <!--            <field name="name">sale.order.form.inh</field>-->
+        <!--            <field name="model">sale.order</field>-->
+        <!--            <field name="inherit_id" ref="sale_discount_total.discount_sale_view_form"/>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <xpath expr="//field[@name='discount_rate']" position="after">-->
+        <!--                    <field name="note_picklist" invisible="1"/>-->
+        <!--                </xpath>-->
+        <!--            </field>-->
+        <!--        </record>-->
 
         <record id="view_sale_order_form_inhh" model="ir.ui.view">
             <field name="name">sale.order.form.inh</field>
@@ -89,21 +89,52 @@
                     <field name="vat_amount" width="5%"/>
                 </xpath>
 
-                <xpath expr="//field[@name='note']" position="after">
-                    <field name="note_picklist"/>
+                <xpath expr="//field[@name='payment_term_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
                 </xpath>
+
+                 <xpath expr="//field[@name='validity_date']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                </xpath>
+
+                 <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                </xpath>
+
+                 <xpath expr="//field[@name='date_order']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                </xpath>
+
+<!--                attrs="{'readonly': [('state', 'in', ('done','cancel'))]}"-->
+
+                <xpath expr="//field[@name='note']" position="after">
+                    <field name="note_picklist" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
+                </xpath>
+
+                <xpath expr="//button[@name='action_unlock']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
 
                 <xpath expr="//group[@name='note_group']" position="replace">
                     <group name="note_group" col="6">
                         <group name="discount" colspan="2">
-                            <field name="discount_type" groups="product.group_discount_per_so_line"/>
-                            <field name="discount_rate" groups="product.group_discount_per_so_line"/>
-                            <field name="note_picklist"/>
+                            <field name="discount_type" groups="product.group_discount_per_so_line" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
+                            <field name="discount_rate" groups="product.group_discount_per_so_line" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
+                            <field name="note_picklist" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
                         </group>
 
                         <group class="oe_subtotal_footer oe_right" colspan="2"
                                name="sale_total">
 
+                            <field name="amount_untaxed" invisible="1"/>
                             <field name="subtotal_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                             <label for="perc_discount" />
                             <div class="text-nowrap" >
@@ -114,14 +145,23 @@
                             </div>
                             <field name="net_total" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                             <field name="net_tax" widget='monetary' invisible="0" options="{'currency_field': 'currency_id'}"/>
-                            <!--                            <field name="amount_total" widget='monetary' invisible="0" options="{'currency_field': 'currency_id'}"/>-->
+                            <field name="amount_total" widget='monetary' invisible="0" options="{'currency_field': 'currency_id'}"/>
+                            <label for="margin" groups="base.group_user"/>
+                            <div class="text-nowrap" groups="base.group_user">
+                                <field name="margin" class="oe_inline"/>
+                                <!--                    <field name="amount_untaxed" invisible="1"/>-->
+                                <span class="oe_inline" attrs="{'invisible': [('amount_untaxed', '=', 0)]}">
+                                    (<field name="margin_percent" nolabel="1" class="oe_inline" widget="percentage"/>)
+                                </span>
+                            </div>
                         </group>
                     </group>
                 </xpath>
 
+
                 <xpath expr="//field[@name='partner_id']" position="after">
-                    <field name="client_order_ref"/>
-                    <field name="incoterm"/>
+                    <field name="client_order_ref" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
+                    <field name="incoterm" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
                 </xpath>
 
             </field>

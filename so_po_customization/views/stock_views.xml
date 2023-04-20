@@ -106,6 +106,9 @@
                 <xpath expr="//field[@name='qty_available']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
+                <xpath expr="//field[@name='incoming_quantity']" position="attributes">
+                     <attribute name="optional">hide</attribute>
+                </xpath>
                 <xpath expr="//field[@name='product_tag_ids']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
@@ -120,7 +123,7 @@
                     <field name="responsible_id"/>
                 </xpath>
                 <xpath expr="//field[@name='standard_price']" position="after">
-                    <field name="incoming_qty" string="Incoming Quantity"/>
+                    <field name="incoming_qty" string="Incoming Quantity" optional="hide"/>
                 </xpath>
                 <xpath expr="//field[@name='list_price']" position="replace">
                     <field name="list_price" string="Sale Price"/>

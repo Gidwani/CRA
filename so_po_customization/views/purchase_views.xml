@@ -10,71 +10,6 @@
 			<field name="target">current</field>
 		</record>
 
-		<!--		<record model="ir.ui.view" id="purchase_order_view_inherit">-->
-		<!--			<field name="name">purchase.order.view.inherit</field>-->
-		<!--			<field name="model">purchase.order</field>-->
-		<!--			<field name="inherit_id" ref="purchase.purchase_order_form"/>-->
-		<!--			<field name="arch" type="xml">-->
-		<!--				<xpath expr="//field[@name='order_line']" position="before">-->
-		<!--					<group>-->
-		<!--						<button name="action_select_products" type="object" string="Select Products" context="{'default_flag_order': 'po'}" attrs="{'invisible': [('state', '!=', 'draft')]}" class="oe_highlight" invisible="1"/>-->
-		<!--					</group>-->
-		<!--				</xpath>-->
-		<!--			</field>-->
-		<!--		</record>-->
-
-		<!--				<record id="view_purchase_order_form_dis_inh" model="ir.ui.view">-->
-		<!--					<field name="name">purchase.order.form.inh</field>-->
-		<!--					<field name="model">purchase.order</field>-->
-		<!--					<field name="inherit_id" ref="sale_discount_total.discount_purchase_view_form"/>-->
-		<!--					<field name="arch" type="xml">-->
-
-		<!--						<xpath expr="//field[@name='amount_discount']" position="attributes">-->
-		<!--							<attribute name="invisible">1</attribute>-->
-		<!--						</xpath>-->
-		<!--						<xpath expr="//field[@name='amount_untaxed']" position="attributes">-->
-		<!--							<attribute name="invisible">1</attribute>-->
-		<!--						</xpath>-->
-
-		<!--						<xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']" position="attributes">-->
-		<!--							<attribute name="invisible">1</attribute>-->
-		<!--						</xpath>-->
-
-		<!--						<xpath expr="//field[@name='order_line']/tree//field[@name='discount']" position="attributes">-->
-		<!--							<attribute name="invisible">1</attribute>-->
-		<!--						</xpath>-->
-
-		<!--						<xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']" position="after">-->
-		<!--							<field name="vat_amount"/>-->
-		<!--							<field name="subtotal"/>-->
-		<!--						</xpath>-->
-
-		<!--				<xpath expr="//field[@name='amount_untaxed']" position="after">-->
-		<!--					&lt;!&ndash;					<field name="perc_discount" readonly="1"/>&ndash;&gt;-->
-		<!--					<field name="subtotal_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>-->
-		<!--					<label for="perc_discount"/>-->
-		<!--					<div class="text-nowrap" >-->
-		<!--						<field name="perc_discount" class="oe_inline" widget='monetary' options="{'currency_field': 'currency_id'}"/>-->
-		<!--						<span class="oe_inline">-->
-		<!--							(<field name="perc" nolabel="1" class="oe_inline" />%)-->
-		<!--						</span>-->
-		<!--					</div>-->
-		<!--					<field name="net_total" widget='monetary' options="{'currency_field': 'currency_id'}"/>-->
-		<!--					<field name="net_tax" widget='monetary' invisible="1" options="{'currency_field': 'currency_id'}"/>-->
-		<!--				</xpath>-->
-		<!--                <xpath expr="//field[@name='amount_total']" position="after">-->
-		<!--                    <label for="margin" groups="base.group_user"/>-->
-		<!--                    <div class="text-nowrap" groups="base.group_user">-->
-		<!--&lt;!&ndash;                        <field name="margin" class="oe_inline"/>&ndash;&gt;-->
-		<!--                        <span class="oe_inline" attrs="{'invisible': [('amount_untaxed', '=', 0)]}">-->
-		<!--                            (<field name="margin_percent" nolabel="1" class="oe_inline" widget="percentage"/>)-->
-		<!--                        </span>-->
-		<!--                    </div>-->
-		<!--                </xpath>-->
-
-		<!--	</field>-->
-		<!--</record>-->
-
 		<record id="view_purchase_order_form_inh" model="ir.ui.view">
 			<field name="name">purchase.order.form.inh</field>
 			<field name="model">purchase.order</field>
@@ -97,35 +32,72 @@
 				<xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="after">
 					<field name="remarks"/>
 				</xpath>
+
 				<xpath expr="//field[@name='order_line']/tree//field[@name='sequence']" position="after">
 					<field name="number" string="Sr No"/>
 					<field name="so_ref"/>
 					<field name="sale_order"/>
 				</xpath>
+
 				<xpath expr="//div[@name='reminder']" position="after">
 					<field name="payment_term_id"/>
 				</xpath>
+
 				<xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
+
 				<xpath expr="//field[@name='order_line']//tree//field[@name='price_subtotal']" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
 
-<!--				<xpath expr="//field[@name='order_line']//tree//field[@name='price_subtotal']" position="attributes">-->
-<!--					<attribute name="invisible">1</attribute>-->
-<!--				</xpath>-->
+				<xpath expr="//button[@name='button_unlock']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				 <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                </xpath>
+
+				 <xpath expr="//field[@name='payment_term_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                </xpath>
+
+				 <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                </xpath>
+
+				<xpath expr="//field[@name='partner_ref']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                </xpath>
+
+				<xpath expr="//field[@name='currency_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                </xpath>
+
+<!--				 <xpath expr="//field[@name='note']" position="attributes">-->
+<!--                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>-->
+<!--                </xpath>-->
+
+                 <xpath expr="//field[@name='date_order']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                </xpath>
 
 				<xpath expr="//page/group[1]" position="replace">
 					<!--					<field name="perc_discount" readonly="1"/>-->
 					<group>
 						<group >
-							<field colspan="2" name="discount_type" groups="product.group_discount_per_so_line"/>
-							<field colspan="2" name="discount_rate" groups="product.group_discount_per_so_line"/>
+							<field colspan="2" name="discount_type" groups="product.group_discount_per_so_line" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
+							<field colspan="2" name="discount_rate" groups="product.group_discount_per_so_line" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
 
-							<field colspan="2" name="note_picklist" nolabel="1" placeholder="Define your terms and conditions ..."/>
+							<field colspan="2" name="note_picklist" nolabel="1" placeholder="Define your terms and conditions ..." attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
 						</group>
 						<group class="oe_subtotal_footer oe_right">
+							<field name="amount_untaxed" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
 							<field colspan="2" name="subtotal_amount" readonly="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
 							<label for="perc_discount"/>
 							<div class="text-nowrap">
@@ -135,10 +107,14 @@
 								</span>
 							</div>
 							<field colspan="2" name="net_total" readonly="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-							<field name="net_tax" widget='monetary' invisible="1" options="{'currency_field': 'currency_id'}"/>
+							<field name="net_tax" string="Taxes" widget='monetary'  options="{'currency_field': 'currency_id'}"/>
+							<field name="amount_total" widget='monetary'  options="{'currency_field': 'currency_id'}"/>
+
 						</group>
 					</group>
 				</xpath>
+
+
 
 			</field>
 		</record>

@@ -9,7 +9,7 @@ class PurchaseOrderInh(models.Model):
     perc = fields.Float(compute='compute_percentage')
     net_tax = fields.Float('Tax', compute='compute_taxes')
     note_picklist = fields.Char('Note')
-    subtotal_amount = fields.Float('Subtotal Amount')
+    subtotal_amount = fields.Float('Subtotal Amount', comput='_compute_net_total')
 
     @api.depends('order_line')
     def compute_taxes(self):
