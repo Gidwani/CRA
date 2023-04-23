@@ -11,6 +11,13 @@ class PurchaseOrderInh(models.Model):
     note_picklist = fields.Char('Note')
     subtotal_amount = fields.Float('Subtotal Amount', comput='_compute_net_total')
 
+    def action_po_update_subtotal(self):
+        for rec in self:
+            subtotal = 0
+            for line in rec.order_line:
+                subtotal = subtotal + line.subtotal
+            rec.subtotal_amount = subtotal
+
     @api.depends('order_line')
     def compute_taxes(self):
         for order in self:

@@ -1,15 +1,15 @@
 <odoo>
 
-<!--    <record id="stock.action_report_delivery" model="ir.actions.report">-->
-<!--        <field name="name">Delivery Slip</field>-->
-<!--        <field name="model">stock.picking</field>-->
-<!--        <field name="report_type">qweb-pdf</field>-->
-<!--        <field name="report_name">so_po_customization.report_deliveryslip_inh</field>-->
-<!--        <field name="report_file">so_po_customization.report_deliveryslip_inh</field>-->
-<!--        <field name="print_report_name">'Delivery Slip - %s - %s' % (object.partner_id.name or '', object.name)</field>-->
-<!--        <field name="binding_model_id" ref="stock.model_stock_picking"/>-->
-<!--        <field name="binding_type">report</field>-->
-<!--    </record>-->
+    <!--    <record id="stock.action_report_delivery" model="ir.actions.report">-->
+    <!--        <field name="name">Delivery Slip</field>-->
+    <!--        <field name="model">stock.picking</field>-->
+    <!--        <field name="report_type">qweb-pdf</field>-->
+    <!--        <field name="report_name">so_po_customization.report_deliveryslip_inh</field>-->
+    <!--        <field name="report_file">so_po_customization.report_deliveryslip_inh</field>-->
+    <!--        <field name="print_report_name">'Delivery Slip - %s - %s' % (object.partner_id.name or '', object.name)</field>-->
+    <!--        <field name="binding_model_id" ref="stock.model_stock_picking"/>-->
+    <!--        <field name="binding_type">report</field>-->
+    <!--    </record>-->
 
     <report
             id="action_report_picking_slip"
@@ -24,7 +24,7 @@
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
                 <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)" />
-<!--                                <t t-set="partner" t-value="o.partner_id or (o.move_lines and o.move_lines[0].partner_id) or False"/>-->
+                <!--                                <t t-set="partner" t-value="o.partner_id or (o.move_lines and o.move_lines[0].partner_id) or False"/>-->
                 <!--                <t t-if="partner" name="partner_header">-->
                 <!--                    <t t-set="address">-->
                 <!--                        <div t-esc="partner"-->
@@ -258,10 +258,11 @@
                             <!--                            </table>-->
                             <!--                        </t>-->
 
-                            <div class="clearfix" name="so_total_summary">
-                                <div id="total" class="row" name="total">
-                                    <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
-                                        <table class="table table-sm">
+                            <div class="clearfix mb-4">
+                                <div id="total" class="row">
+                                    <div t-attf-class="#{'col-6' if report_type != 'html' else 'col-sm-7 col-md-6'} ms-auto">
+                                        <table class="table table-sm" style="page-break-inside: avoid;">
+<!--                                        <table class="table table-sm">-->
                                             <tr class="border-black o_total">
                                                 <td name="td_amount_total_label"><strong>Total Qty</strong></td>
                                                 <td name="td_amount_total" class="text-right">

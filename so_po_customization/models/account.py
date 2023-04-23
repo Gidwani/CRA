@@ -17,6 +17,14 @@ class AccountMoveInh(models.Model):
 
     do_link = fields.Char(string='DO link')
 
+    @api.onchange('discount_rate', 'discount_type')
+    def _onchange_sale_discount(self):
+        for move in self:
+            print(move.invoice_line_ids[0].sale_line_ids)
+            print(move.invoice_line_ids[0].purchase_order_id)
+            if move.invoice_line_ids[0].sale_line_ids or move.invoice_line_ids[0].purchase_order_id:
+                raise UserError('You cannot change invoice values.')
+
     def get_total(self):
         # for rec in self:
         subtotal = 0
@@ -149,6 +157,14 @@ class AccountMoveLineInh(models.Model):
     number = fields.Integer(compute='_compute_get_number', store=True)
     vat_amount = fields.Float('VAT Amount', compute='_compute_vat_amount_custom')
     subtotal = fields.Float('Subtotal', compute='_compute_subtotal')
+
+    @api.onchange('tax_ids', 'price', 'quantity')
+    def _onchange_sale_taxes(self):
+        for line in self:
+            print(line.sale_line_ids)
+            print(line.purchase_order_id)
+            if line.sale_line_ids or line.purchase_order_id:
+                raise UserError('You cannot change invoice/bill values.')
 
     @api.depends('price_unit', 'quantity')
     def _compute_subtotal(self):

@@ -173,8 +173,8 @@ class StockPickingInh(models.Model):
         return now_dubai.strftime('%d/%m/%Y %H:%M:%S')
 
     def get_seq(self, picking):
-        # return 'Picklist/'+picking.name.split('/')[1]+"/"+picking.name.split('/')[2] + "/"+picking.name.split('/')[3]
-        return 'Picklist/'+picking.name.split('/')[1]+"/"+picking.name.split('/')[2]
+        return 'Picklist/'+picking.name.split('/')[1]+"/"+picking.name.split('/')[2] + "/"+picking.name.split('/')[3]
+        # return 'Picklist/'+picking.name.split('/')[1]+"/"+picking.name.split('/')[2]
 
     def compute_is_receipt(self):
         for rec in self:

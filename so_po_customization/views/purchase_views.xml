@@ -1,6 +1,18 @@
 <odoo>
 	<data>
 
+		<record id="action_purchase_order_server" model="ir.actions.server">
+            <field name="name">Update PO Subtotal</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+            <!--         <field name='groups_id' eval="[(4, ref('account.group_account_invoice'))]"/> -->
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                action = records.action_po_update_subtotal()
+            </field>
+        </record>
+
 		<record id="purchase.action_purchase_order_report_all" model="ir.actions.act_window">
 			<field name="name">Purchase Analysis</field>
 			<field name="res_model">purchase.report</field>
@@ -51,9 +63,9 @@
 					<attribute name="invisible">1</attribute>
 				</xpath>
 
-				<xpath expr="//button[@name='button_unlock']" position="attributes">
-					<attribute name="invisible">1</attribute>
-				</xpath>
+<!--				<xpath expr="//button[@name='button_unlock']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
 
 				 <xpath expr="//field[@name='user_id']" position="attributes">
                     <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>

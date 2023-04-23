@@ -50,7 +50,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-<!--                                <t t-set="lines" t-value="o.move_lines.filtered(lambda x: x.product_uom_qty)"/>-->
+                                <!--                                <t t-set="lines" t-value="o.move_lines.filtered(lambda x: x.product_uom_qty)"/>-->
                                 <tr t-foreach="o.move_ids_without_package" t-as="move" style="border:1px solid black;">
                                     <td class="text-center">
                                         <span t-field="move.number"/>
@@ -69,8 +69,8 @@
                                         <span t-esc="move.qty_done"/>
                                     </td>
                                     <td class="text-center" name="move_line_lot_qty_done">
-                                    <span t-esc="move.get_product_uom_lot(move)"/>
-                                </td>
+                                        <span t-esc="move.get_product_uom_lot(move)"/>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -159,8 +159,8 @@
                                                 <span  t-esc="i"/>
                                             </td>
                                             <td class="text-center">
-                                                    <span t-field="move_line.so_no"/>
-                                                </td>
+                                                <span t-field="move_line.so_no"/>
+                                            </td>
                                             <t t-call="so_po_customization.stock_report_delivery_has_serial_move_line_inh"/>
                                         </tr>
                                     </t>
@@ -188,7 +188,7 @@
                                 </thead>
                                 <tbody>
                                     <t t-foreach="backorders" t-as="backorder">
-<!--                                        <t t-set="bo_lines" t-value="backorder.move_lines.filtered(lambda x: x.product_uom_qty)"/>-->
+                                        <!--                                        <t t-set="bo_lines" t-value="backorder.move_lines.filtered(lambda x: x.product_uom_qty)"/>-->
                                         <tr t-foreach="backorder.move_ids_without_package" t-as="bo_line" style="border:1px solid black;">
                                             <td class="text-center">
                                                 <span t-field="bo_line.number"/>
@@ -201,10 +201,10 @@
                                             </td>
                                             <td class="text-center">
                                                 <span t-field="bo_line.product_uom_qty"/>
-<!--                                                <span t-field="bo_line.product_uom"/>-->
+                                                <!--                                                <span t-field="bo_line.product_uom"/>-->
                                             </td>
                                             <td class="text-center">
-<!--                                                <span t-field="bo_line.product_uom_qty"/>-->
+                                                <!--                                                <span t-field="bo_line.product_uom_qty"/>-->
                                                 <span t-field="bo_line.product_uom"/>
                                             </td>
                                         </tr>
@@ -213,33 +213,33 @@
                             </table>
                         </t>
 
-                <div class="clearfix" name="so_total_summary">
-                    <div id="total" class="row" name="total">
-                        <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
-                            <table class="table table-sm">
-                                <tr class="border-black o_total">
-                                    <td name="td_amount_total_label"><strong>Total Qty</strong></td>
-                                    <td name="td_amount_total" class="text-right">
-                                        <span t-esc="o.get_total_qty()"/>
-                                    </td>
-                                </tr>
-                            </table>
+                        <div class="clearfix mb-4">
+                            <div id="total" class="row">
+                                <div t-attf-class="#{'col-6' if report_type != 'html' else 'col-sm-7 col-md-6'} ms-auto">
+                                    <table class="table table-sm" style="page-break-inside: avoid;">
+                                        <tr class="border-black o_total">
+                                            <td name="td_amount_total_label"><strong>Total Qty</strong></td>
+                                            <td name="td_amount_total" class="text-right">
+                                                <span t-esc="o.get_total_qty()"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-<!--                        <div class="container row" style="margin-top:4em;margin-left:1em;float:right; font-size:15px;">-->
-<!--                            <div class="col-12">-->
-<!--                                <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">________________________</span>-->
-<!--                                <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>-->
-<!--                                <strong>Signature: </strong><span style="color:black;">____________________________</span>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                        <!--                        <div class="container row" style="margin-top:4em;margin-left:1em;float:right; font-size:15px;">-->
+                        <!--                            <div class="col-12">-->
+                        <!--                                <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">________________________</span>-->
+                        <!--                                <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>-->
+                        <!--                                <strong>Signature: </strong><span style="color:black;">____________________________</span>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
                         <div class="container row" style="margin-top:10em;margin-left:1em;float:right; font-size:15px;">
                             <div class="col-12">
                                 <strong><span >Received By:</span> </strong>
-<!--                                <strong><span>Mobile:</span> </strong><span >_________________________  &#160; &#160;</span>-->
-<!--                                <strong>Date: </strong><span>____________________________   </span>-->
+                                <!--                                <strong><span>Mobile:</span> </strong><span >_________________________  &#160; &#160;</span>-->
+                                <!--                                <strong>Date: </strong><span>____________________________   </span>-->
                             </div>
                         </div>
                         <div class="container row" style="margin-top:1em;margin-left:1em;float:right; font-size:15px;">
@@ -301,7 +301,7 @@
                             </tr>
                         </thead>
                         <tbody>
-<!--                            <t t-set="lines" t-value="o.move_lines.filtered(lambda x: x.product_uom_qty)"/>-->
+                            <!--                            <t t-set="lines" t-value="o.move_lines.filtered(lambda x: x.product_uom_qty)"/>-->
                             <tr t-foreach="o.move_ids_without_package" t-as="move" style="border:1px solid black;">
                                 <td class="text-center">
                                     <span t-field="move.number"/>
@@ -474,7 +474,7 @@
     <template id="stock_report_delivery_has_serial_move_line_inh">
         <td>
             <span style="white-space:nowrap;" t-field="move_line.product_id.name"/><br/>
-<!--            <span t-esc="move_line.get_remarks(move_line.picking_id, move_line)"/>-->
+            <!--            <span t-esc="move_line.get_remarks(move_line.picking_id, move_line)"/>-->
             <span t-esc="move_line.remarks"/>
             <!-- this is an annoying workaround for the multiple types of descriptions (often auto-filled) that we do not want to print -->
             <!-- this makes it so we can pre-filter the descriptions in inherited templates since we cannot extend the standard "if" condition -->
@@ -483,7 +483,7 @@
                 <t t-set="description" t-value="move_line.move_id.description_picking"/>
             </t>
             <p t-if="description !='' and description != move_line.product_id.name">
-<!--                <span t-esc="description"/><br/><span t-esc="move_line.get_remarks(move_line.picking_id, move_line)"/>-->
+                <!--                <span t-esc="description"/><br/><span t-esc="move_line.get_remarks(move_line.picking_id, move_line)"/>-->
                 <span t-esc="description"/><br/><span t-esc="move_line.remarks"/>
             </p>
         </td>
@@ -491,7 +491,7 @@
             <td class="text-center"><span t-field="move_line.lot_id.name"/></td>
         </t>
         <td class="text-center" name="move_line_lot_qty_done">
-<!--            <span t-field="move_line.get_product_qty_lot(move_line)"/>-->
+            <!--            <span t-field="move_line.get_product_qty_lot(move_line)"/>-->
             <span t-field="move_line.qty_done"/>
             <!--            <span t-field="move_line.product_uom_id"/>-->
         </td>
@@ -506,10 +506,10 @@
         <xpath expr="//div[@class='page']" position="replace">
             <div class="page">
                 <div class="row justify-content-end mb16">
-                    <div class="col-4" name="right_box">
-                        <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 600, 100)" style="width:300px;height:50px;" alt="Barcode"/>
-                    </div>
-                </div>
+                                <div class="col-4" name="right_box">
+                                    <div t-field="o.name" t-options="{'widget': 'barcode', 'width': 600, 'height': 100, 'img_style': 'width:300px;height:50px;'}"/>
+                                </div>
+                            </div>
                 <div class="row">
                     <div class="col-6" name="div_outgoing_address">
                         <div t-if="o.move_ids_without_package and o.move_ids_without_package[0].partner_id and o.move_ids_without_package[0].partner_id.id != o.partner_id.id">
@@ -630,20 +630,16 @@
                                         </div>
                                     </td>
                                     <td class=" text-center h6" t-if="has_serial_number">
-                                        <img t-if="has_serial_number and (ml.lot_id or ml.lot_name)" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;humanreadable=1' % ('Code128', ml.lot_id.name or ml.lot_name, 400, 100)" style="width:100%;height:35px;" alt="Barcode"/>
-
-                                    </td>
+                                                <div t-if="has_serial_number and (ml.lot_id or ml.lot_name)" t-esc="ml.lot_id.name or ml.lot_name" t-options="{'widget': 'barcode', 'humanreadable': 1, 'width': 400, 'height': 100, 'img_style': 'width:100%;height:35px;'}"/>
+                                            </td>
                                     <td class="text-center" t-if="has_barcode">
-                                        <t t-if="product_barcode != move.product_id.barcode">
-                                            <span t-if="move.product_id and move.product_id.barcode">
-                                                <img t-if="len(move.product_id.barcode) == 13" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;quiet=%s' % ('EAN13', move.product_id.barcode, 400, 100, 0)" style="height:35px" alt="Barcode"/>
-                                                <img t-elif="len(move.product_id.barcode) == 8" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;quiet=%s' % ('EAN8', move.product_id.barcode, 400, 100, 0)" style="height:35px" alt="Barcode"/>
-                                                <img t-else="" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;quiet=%s' % ('Code128', move.product_id.barcode, 400, 100, 0)" style="height:35px" alt="Barcode"/>
-
-                                            </span>
-                                            <t t-set="product_barcode" t-value="move.product_id.barcode"/>
-                                        </t>
-                                    </td>
+                                                <t t-if="product_barcode != ml.product_id.barcode">
+                                                    <span t-if="ml.product_id and ml.product_id.barcode">
+                                                        <div t-field="ml.product_id.barcode" t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 400, 'height': 100, 'quiet': 0, 'img_style': 'height:35px;'}"/>
+                                                    </span>
+                                                    <t t-set="product_barcode" t-value="ml.product_id.barcode"/>
+                                                </t>
+                                            </td>
                                 </tr>
                             </t>
                         </t>
@@ -672,10 +668,10 @@
                         </tr>
                     </tbody>
                 </table>
-<!--                <t t-set="no_reserved_product" t-value="o.move_lines.filtered(lambda x: x.product_uom_qty != x.reserved_availability and x.move_line_ids and x.state!='done')"/>-->
-<!--                <p t-if="o.state in ['draft', 'waiting', 'confirmed'] or no_reserved_product"><i class="fa fa-exclamation-triangle" />-->
-<!--                    All products could not be reserved. Click on the "Check Availability" button to try to reserve products.-->
-<!--                </p>-->
+                <!--                <t t-set="no_reserved_product" t-value="o.move_lines.filtered(lambda x: x.product_uom_qty != x.reserved_availability and x.move_line_ids and x.state!='done')"/>-->
+                <!--                <p t-if="o.state in ['draft', 'waiting', 'confirmed'] or no_reserved_product"><i class="fa fa-exclamation-triangle" />-->
+                <!--                    All products could not be reserved. Click on the "Check Availability" button to try to reserve products.-->
+                <!--                </p>-->
 
                 <p t-field="o.note"/>
                 <div class="container row" style="margin-top:4em;margin-left:1em;float:right; font-size:15px;">

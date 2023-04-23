@@ -35,7 +35,7 @@
                         <div class="col-6">
                             <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" alt="Logo"/>
                         </div>
-                        <div class="col-6 text-right mb4">
+                        <div style="text-align:right;" class="col-6 text-right mb4">
                             <h4 class="mt0" t-field="company.report_header"/>
                             <div name="company_address" class="float-right mb4">
                                 <span class="company_address" t-field="company.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}"/>
@@ -80,8 +80,8 @@
 
                     <div class="page" style="margin-top:-10px;">
                         <div class="row text-right" style="margin-top:-52px;">
-                            <div class="col-8"></div>
-                            <div class="col-4">
+                            <div class="col-9"></div>
+                            <div class="col-3 text-right">
                                 <strong>Printed Date:</strong>
                                 <t t-set="current_date" t-value="o.get_current_date()"/>
                                 <span class="m-0" t-esc="current_date"/>

@@ -1,12 +1,21 @@
 <odoo>
     <template id="account_move_report_inherit" inherit_id="account.report_invoice_document">
-        <xpath expr="//t[@t-set='address']" position="replace">
-            <span>&#160;</span>
+        <!--        <xpath expr="//t[@t-set='address']" position="replace">-->
+        <!--            <span>&#160;</span>-->
+        <!--        </xpath>-->
+        <xpath expr="//div[hasclass('row')]" position="replace">
+             <span>&#160;</span>
+        </xpath>
+        <xpath expr="//p[@name='payment_communication']" position="replace">
+             <span>&#160;</span>
+        </xpath>
+        <xpath expr="//div[@name='payment_term']" position="replace">
+             <span>&#160;</span>
         </xpath>
         <xpath expr="//div[@class='page']" position="replace">
-            <div class="page" style="margin-top:-60px;">
+            <div class="page" style="margin-top:-125px;">
                 <h2>
-<!--                                        <span t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Tax Invoice</span>-->
+                    <!--                                        <span t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Tax Invoice</span>-->
                     <span t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
                     <span t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
                     <span t-if="o.move_type == 'out_refund'">Tax Credit Note</span>
@@ -33,9 +42,9 @@
                     </div>
                 </div>
 
-                <div id="informations" class="row mt32 mb32">
+                <div id="informations" class="row mt-4 mb-4">
                     <t t-if="o.move_type == 'in_refund'">
-                        <div class="col-auto mw-100 mb-2" name="reference">
+                        <div class="col-auto col-3 mw-100 mb-2" name="reference">
                             <strong>Supplier Invoice #:</strong>
                             <p class="m-0" t-field="o.payment_reference"/>
                         </div>
@@ -60,7 +69,7 @@
                         </div>
                     </t>
                     <t t-if="o.move_type == 'out_invoice'  or o.move_type == 'in_invoice'" style="white-space:nowrap;">
-                        <div class="col-auto mw-100 mb-2" t-if="o.ref" name="reference">
+                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.ref" name="reference">
                             <strong>PO #:</strong>
                             <p class="m-0" t-field="o.ref"/>
                         </div>
@@ -72,18 +81,18 @@
                         </div>
                     </t>
                     <t t-if="o.move_type == 'out_refund'" style="white-space:nowrap;">
-                        <div class="col-auto mw-100 mb-2" t-if="o.get_client_order_ref()"  name="reference">
+                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.get_client_order_ref()"  name="reference">
                             <strong>PO #:</strong>
                             <p class="m-0" t-esc="o.get_client_order_ref()"/>
                         </div>
                     </t>
                     <t t-if="o.move_type == 'in_invoice' or o.move_type == 'in_refund'">
-                        <div class="col-auto mw-100 mb-2" t-if="o.ref" name="reference">
+                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.ref" name="reference">
                             <strong>Bill #:</strong>
                             <p class="m-0" t-field="o.ref"/>
                         </div>
                     </t>
-                    <div t-if="o.get_payment_term_id()" class="col-auto mw-100 mb-2">
+                    <div t-if="o.get_payment_term_id()" class="col-auto col-3 mw-100 mb-2">
                         <strong>Payment Terms:</strong>
                         <p class="m-0" t-esc="o.get_payment_term_id()"/>
                     </div>
@@ -113,7 +122,7 @@
                     <thead>
                         <tr>
                             <th name="th_sr" style="white-space:nowrap;" class="text-center"><span>Sr #</span></th>
-                            <th name="th_description" style="white-space:nowrap;" class="text-center"><span>Products</span></th>
+                            <th name="th_description" style="white-space:nowrap;text-align:left;"><span>Products</span></th>
                             <!--                                <th name="th_description" class="text-left"><span>Remarks</span></th>-->
                             <th name="th_quantity" style="white-space:nowrap;" class="text-center"><span>QTY</span></th>
                             <th name="th_uom" style="white-space:nowrap;" class="text-center"><span>UOM</span></th>
@@ -131,7 +140,7 @@
                     </thead>
                     <tbody class="invoice_tbody">
                         <t t-set="current_subtotal" t-value="0"/>
-<!--                        <t t-set="lines" t-value="o.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>-->
+                        <!--                        <t t-set="lines" t-value="o.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>-->
                         <t t-set="lines" t-value="o.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>
 
                         <t t-foreach="lines" t-as="line">
@@ -204,25 +213,25 @@
                 <table class="table table-sm">
                     <tr >
                         <t t-if="o.move_type == 'out_invoice' or o.move_type == 'out_refund'">
-                             <t t-if="o.company_id.id== 1">
-                                    <td style="width:65%; border:1px solid white;" >
-                                        <strong><h6>Bank Details - CRA Trading LLC</h6></strong>
-                                        <span style="white-space:nowrap;"><strong>Bank Name:</strong>RAK Bank&#160;&#160;</span><br/>
-                                        <span style="white-space:nowrap;"><strong>Account #:</strong>0122 3629 36002&#160;&#160;</span>
-                                        <span style="white-space:nowrap;"><strong>Swift code:</strong>NRAK AEAK&#160;&#160;</span>
-                                        <span style="white-space:nowrap;"><strong>IBAN:</strong>AE 4904 0000 0122 3629 36002&#160;&#160;</span>
-                                        <span style="white-space:nowrap;"><strong>Branch:</strong>Sheikh Zayed Rd Branch</span>
-                                    </td>
-                             </t>
+                            <t t-if="o.company_id.id== 1">
+                                <td style="width:65%; border:1px solid white;" >
+                                    <strong><h6>Bank Details - CRA Trading LLC</h6></strong>
+                                    <span style="white-space:nowrap;"><strong>Bank Name:</strong>RAK Bank&#160;&#160;</span><br/>
+                                    <span style="white-space:nowrap;"><strong>Account #:</strong>0122 3629 36002&#160;&#160;</span>
+                                    <span style="white-space:nowrap;"><strong>Swift code:</strong>NRAK AEAK&#160;&#160;</span>
+                                    <span style="white-space:nowrap;"><strong>IBAN:</strong>AE 4904 0000 0122 3629 36002&#160;&#160;</span>
+                                    <span style="white-space:nowrap;"><strong>Branch:</strong>Sheikh Zayed Rd Branch</span>
+                                </td>
+                            </t>
                             <t t-else="">
                                 <td style="width:65%; border:1px solid white;" >
-                                        <strong><h6>Bank Details - CRA Middle East FZCO</h6></strong>
-                                        <span style="white-space:nowrap;"><strong>Bank Name:</strong>RAK Bank&#160;&#160;</span><br/>
-                                        <span style="white-space:nowrap;"><strong>Account #:</strong>0662 8578 50001&#160;&#160;</span>
-                                        <span style="white-space:nowrap;"><strong>Swift code:</strong>NRAK AEAK&#160;&#160;</span>
-                                        <span style="white-space:nowrap;"><strong>IBAN:</strong>AE25 0400 0006 6285 7850 001&#160;&#160;</span>
-<!--                                        <span style="white-space:nowrap;"><strong>Branch:</strong>Sheikh Zayed Rd Branch</span>-->
-                                    </td>
+                                    <strong><h6>Bank Details - CRA Middle East FZCO</h6></strong>
+                                    <span style="white-space:nowrap;"><strong>Bank Name:</strong>RAK Bank&#160;&#160;</span><br/>
+                                    <span style="white-space:nowrap;"><strong>Account #:</strong>0662 8578 50001&#160;&#160;</span>
+                                    <span style="white-space:nowrap;"><strong>Swift code:</strong>NRAK AEAK&#160;&#160;</span>
+                                    <span style="white-space:nowrap;"><strong>IBAN:</strong>AE25 0400 0006 6285 7850 001&#160;&#160;</span>
+                                    <!--                                        <span style="white-space:nowrap;"><strong>Branch:</strong>Sheikh Zayed Rd Branch</span>-->
+                                </td>
                             </t>
                         </t>
                         <t t-else="">
@@ -230,15 +239,15 @@
 
                             </td>
                         </t>
-<!--                        <td style="width:25%;border:1px solid white;">-->
+                        <!--                        <td style="width:25%;border:1px solid white;">-->
 
-<!--                        </td>-->
-                        <td style="width:35%;background-color:white;border:1px solid white;;">
+                        <!--                        </td>-->
+                        <td style="width:35%;background-color:white;border:1px solid white;text-align:right;">
                             <div class="clearfix" name="so_total_summary">
                                 <!--                                    <div id="total" class="row" name="total">-->
                                 <table class="table table-sm" style="page-break-inside: avoid;">
                                     <tr class="border-black o_subtotal" style="">
-                                        <td><strong>Subtotal</strong></td>
+                                        <td style="text-align:left;"><strong>Subtotal</strong></td>
                                         <td class="text-right">
                                             <span t-field="o.subtotal_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                         </td>
@@ -247,7 +256,7 @@
                                         <t t-if="o.move_type == 'out_invoice' or o.move_type == 'out_refund'">
                                             <tr class="border-black o_subtotal" style="">
                                                 <!--                                    <td name="td_perc_discount_label"><strong>Discount( <span t-esc="o.perc" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%)</strong></td>-->
-                                                <td name="td_perc_discount"><strong>Discount</strong></td>
+                                                <td name="td_perc_discount" style="text-align:left;"><strong>Discount</strong></td>
                                                 <td name="td_perc_discount" class="text-right">
                                                     <span t-field="o.perc_discount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                                 </td>
@@ -255,55 +264,55 @@
                                         </t>
 
                                         <tr class="border-black o_subtotal" style="">
-                                            <td name="td_net_total_label"><strong>Net Total</strong></td>
+                                            <td name="td_net_total_label" style="text-align:left;"><strong>Net Total</strong></td>
                                             <td name="td_net_total" class="text-right">
                                                 <span t-field="o.net_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                             </td>
                                         </tr>
                                     </t>
                                     <tr class="border-black o_subtotal" style="">
-                                        <td name="td_net_total_label"><strong>Tax</strong></td>
+                                        <td name="td_net_total_label" style="text-align:left;"><strong>Tax</strong></td>
                                         <td name="td_net_total" class="text-right">
-<!--                                            <span t-field="o.net_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>-->
+                                            <!--                                            <span t-field="o.net_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>-->
                                             <span t-esc="o.get_tax()" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                         </td>
                                     </tr>
 
                                     <tr class="border-black o_total">
-                                        <td><strong>Total</strong></td>
+                                        <td style="text-align:left;"><strong>Total</strong></td>
                                         <td class="text-right">
                                             <span class="text-nowrap" t-esc="o.get_total()+o.get_tax()" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                         </td>
                                     </tr>
-<!--                                    <t t-if="print_with_payments">-->
-<!--                                        <t t-if="o.payment_state != 'invoicing_legacy'">-->
-<!--                                            <t t-set="payments_vals" t-value="o.sudo()._get_reconciled_info_JSON_values()"/>-->
-<!--                                            <t t-foreach="payments_vals" t-as="payment_vals">-->
-<!--                                                <tr>-->
-<!--                                                    <td>-->
-<!--                                                        <i class="oe_form_field text-right oe_payment_label">Paid on <t t-esc="payment_vals['date']" t-options='{"widget": "date"}'/></i>-->
-<!--                                                    </td>-->
-<!--                                                    <td class="text-right">-->
-<!--                                                        <span t-esc="payment_vals['amount']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>-->
-<!--                                                    </td>-->
-<!--                                                </tr>-->
-<!--                                            </t>-->
-<!--                                            <t t-if="len(payments_vals) > 0">-->
-<!--                                                <tr class="border-black">-->
-<!--                                                    <td><strong>Amount Due</strong></td>-->
-<!--                                                    <td class="text-right">-->
-<!--                                                        <span t-field="o.amount_residual"/>-->
-<!--                                                    </td>-->
-<!--                                                </tr>-->
-<!--                                            </t>-->
-<!--                                        </t>-->
-<!--                                    </t>-->
+                                    <!--                                    <t t-if="print_with_payments">-->
+                                    <!--                                        <t t-if="o.payment_state != 'invoicing_legacy'">-->
+                                    <!--                                            <t t-set="payments_vals" t-value="o.sudo()._get_reconciled_info_JSON_values()"/>-->
+                                    <!--                                            <t t-foreach="payments_vals" t-as="payment_vals">-->
+                                    <!--                                                <tr>-->
+                                    <!--                                                    <td>-->
+                                    <!--                                                        <i class="oe_form_field text-right oe_payment_label">Paid on <t t-esc="payment_vals['date']" t-options='{"widget": "date"}'/></i>-->
+                                    <!--                                                    </td>-->
+                                    <!--                                                    <td class="text-right">-->
+                                    <!--                                                        <span t-esc="payment_vals['amount']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>-->
+                                    <!--                                                    </td>-->
+                                    <!--                                                </tr>-->
+                                    <!--                                            </t>-->
+                                    <!--                                            <t t-if="len(payments_vals) > 0">-->
+                                    <!--                                                <tr class="border-black">-->
+                                    <!--                                                    <td><strong>Amount Due</strong></td>-->
+                                    <!--                                                    <td class="text-right">-->
+                                    <!--                                                        <span t-field="o.amount_residual"/>-->
+                                    <!--                                                    </td>-->
+                                    <!--                                                </tr>-->
+                                    <!--                                            </t>-->
+                                    <!--                                        </t>-->
+                                    <!--                                    </t>-->
                                     <t t-if="print_with_payments">
                                         <t t-if="o.payment_state != 'invoicing_legacy'">
                                             <t t-set="payments_vals" t-value="o.sudo().invoice_payments_widget and o.sudo().invoice_payments_widget['content'] or []"/>
                                             <t t-foreach="payments_vals" t-as="payment_vals">
                                                 <tr t-if="payment_vals['is_exchange'] == 0">
-                                                    <td>
+                                                    <td style="text-align:left;">
                                                         <i class="oe_form_field text-end oe_payment_label">Paid on <t t-esc="payment_vals['date']" t-options='{"widget": "date"}'/></i>
                                                     </td>
                                                     <td class="text-end">
@@ -313,14 +322,14 @@
                                             </t>
                                             <t t-if="len(payments_vals) > 0">
                                                 <tr class="border-black">
-                                                    <td><strong>Amount Due</strong></td>
+                                                    <td style="text-align:left;"><strong>Amount Due</strong></td>
                                                     <td class="text-end">
                                                         <span t-field="o.amount_residual"/>
                                                     </td>
                                                 </tr>
-                                                </t>
                                             </t>
                                         </t>
+                                    </t>
                                 </table>
                             </div>
                             <!--                                                      </div>-->
@@ -329,52 +338,20 @@
                     </tr>
                 </table>
 
-                <div class="container row" style="margin-top:5em;margin-left:1em;float:right; font-size:15px;">
-                    <div class="col-12">
+                <div class="container row" style="margin-left:1em;float:right; font-size:15px; ">
+                    <div class="col-4" >
                         <strong><span >Received By:</span> </strong>
                         <!--                                <strong><span>Mobile:</span> </strong><span >_________________________  &#160; &#160;</span>-->
                         <!--                                <strong>Date: </strong><span>____________________________   </span>-->
                     </div>
                 </div>
-                <div class="container row" style="margin-top:1em;margin-left:1em;float:right; font-size:15px;">
+                <div class="container row" style="margin-left:1em;float:right; font-size:15px;text-align:center;">
                     <div class="col-12">
-                        <strong><span >Name:</span> </strong><span>________________________  &#160; &#160;</span>
+                        <strong><span>Name:</span> </strong><span>________________________  &#160; &#160;</span>
                         <strong><span>Mobile:</span> </strong><span >_________________________  &#160; &#160;</span>
                         <strong>Date: </strong><span>____________________________   </span>
                     </div>
                 </div>
-
-
-
-                <!--                <p t-if="o.move_type in ('out_invoice', 'in_refund') and o.payment_reference" name="payment_communication">-->
-                <!--                    Please use the following communication for your payment : <b><span t-field="o.payment_reference"/></b>-->
-                <!--                </p>-->
-                <!--                <p t-if="o.invoice_payment_term_id" name="payment_term">-->
-                <!--                    <span t-field="o.invoice_payment_term_id.note"/>-->
-                <!--                </p>-->
-                <!--                <p t-if="o.narration" name="comment">-->
-                <!--                    <span t-field="o.narration"/>-->
-                <!--                </p>-->
-                <!--                <p t-if="o.fiscal_position_id.note" name="note">-->
-                <!--                    <span t-field="o.fiscal_position_id.note"/>-->
-                <!--                </p>-->
-                <!--                <p t-if="o.invoice_incoterm_id" name="incoterm">-->
-                <!--                    <strong>Incoterm: </strong><span t-field="o.invoice_incoterm_id.code"/> - <span t-field="o.invoice_incoterm_id.name"/>-->
-                <!--                </p>-->
-                <!--                <div id="qrcode" t-if="o.display_qr_code">-->
-                <!--                    <p t-if="qr_code_urls.get(o.id)">-->
-                <!--                        <strong class="text-center">Scan me with your banking app.</strong><br/><br/>-->
-                <!--                        <img class="border border-dark rounded" t-att-src="qr_code_urls[o.id]"/>-->
-                <!--                    </p>-->
-                <!--                </div>-->
-
-                <!--                <div class="container row" style="margin-top:4em;margin-left:1em;float:right; font-size:15px;">-->
-                <!--                    <div class="col-12">-->
-                <!--                        <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">________________________</span>-->
-                <!--                        <strong><span style="color:white;">Signature:</span> </strong><span style="color:white;">_________________________</span>-->
-                <!--                        <strong>Signature: </strong><span style="color:black;">____________________________</span>-->
-                <!--                    </div>-->
-                <!--                </div>-->
             </div>
 
         </xpath>
