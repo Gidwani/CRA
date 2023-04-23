@@ -19,8 +19,8 @@
             <field name="arch" type="xml">
 
 <!--               <xpath expr="//field[@name='available_qty']" position="attributes">-->
-<!--&lt;!&ndash;                    <attribute name="class">available-class</attribute>&ndash;&gt;-->
-<!--                   <attribute name="optional">hide</attribute>-->
+<!--                    <attribute name="class">available-class</attribute>-->
+<!--&lt;!&ndash;                   <attribute name="optional">hide</attribute>&ndash;&gt;-->
 <!--                </xpath>-->
                 <xpath expr="//field[@name='incoming_quantity']" position="attributes">
                    <attribute name="optional">hide</attribute>
@@ -29,7 +29,7 @@
                    <attribute name="optional">hide</attribute>
                 </xpath>
               <xpath expr="//field[@name='list_price']" position="replace">
-                    <field name="list_price" string="Sale Price" class="sale-class"/>
+                    <field name="list_price" string="Sales Price" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show" decoration-muted="not sale_ok"/>
                 </xpath>
 
             </field>

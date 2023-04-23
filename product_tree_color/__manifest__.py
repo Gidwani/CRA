@@ -30,7 +30,7 @@
     ],
     'assets': {
         'web.assets_backend': [
-            '/product_tree_color/static/src/css/*',
+            '/product_tree_color/static/src/css/sticky_header.css',
         ],
 
     },
