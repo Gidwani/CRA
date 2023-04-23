@@ -32,9 +32,9 @@
         <field name="inherit_id" ref="product.product_template_tree_view"/>
 <!--        <field name="groups_id" eval="[(4, ref('approval_so_po.group_product_remove_edit_user'))]"/>-->
         <field name="arch" type="xml">
-            <xpath expr="//tree" position="attributes">
-                <attribute name="multi_edit">0</attribute>
-            </xpath>
+<!--            <xpath expr="//tree" position="attributes">-->
+<!--                <attribute name="multi_edit">0</attribute>-->
+<!--            </xpath>-->
             <xpath expr="//tree/field[@name='virtual_available']" position="after">
                 <field name="x_css" invisible="0"/>
             </xpath>

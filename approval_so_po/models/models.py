@@ -182,22 +182,45 @@ class ResPartnerInh(models.Model):
             else:
                 application.x_css_set = '<style>.o_cp_action_menus {display: none !important;}</style>'
 
+    # @api.model
+    # def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+    #     result = super(ResPartnerInh, self).fields_view_get(
+    #         view_id=view_id, view_type=view_type, toolbar=toolbar,
+    #         submenu=submenu)
+    #     if self.env.user.has_group('approval_so_po.group_remove_customer_create_user'):
+    #         temp = etree.fromstring(result['arch'])
+    #         temp.set('create', '0')
+    #         result['arch'] = etree.tostring(temp)
+    #     if self.env.user.has_group('approval_so_po.group_contact_user'):
+    #         temp = etree.fromstring(result['arch'])
+    #         temp.set('delete', '0')
+    #         temp.set('edit', '0')
+    #         temp.set('duplicate', '0')
+    #         result['arch'] = etree.tostring(temp)
+    #     return result
+
+    # @api.model
+    # def get_view(self, view_id=None, view_type='form', **options):
+    #     res = super().get_view(view_id, view_type, **options)
+    #     print('------------------', self.env.user.has_group('approval_so_po.group_contact_user'))
+    #
+    #     if view_type == 'form' and self.env.user.has_group('approval_so_po.group_contact_user'):
+    #         print(res)
+    #         temp = etree.fromstring(res['arch'])
+    #         for node in temp.xpath("//form"):
+    #             node.set('edit', 'False')
+    #         print(res)
+    #     return res
+
     @api.model
-    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
-        result = super(ResPartnerInh, self).fields_view_get(
-            view_id=view_id, view_type=view_type, toolbar=toolbar,
-            submenu=submenu)
-        if self.env.user.has_group('approval_so_po.group_remove_customer_create_user'):
-            temp = etree.fromstring(result['arch'])
-            temp.set('create', '0')
-            result['arch'] = etree.tostring(temp)
-        if self.env.user.has_group('approval_so_po.group_contact_user'):
-            temp = etree.fromstring(result['arch'])
-            temp.set('delete', '0')
-            temp.set('edit', '0')
-            temp.set('duplicate', '0')
-            result['arch'] = etree.tostring(temp)
-        return result
+    def _get_view(self, view_id=None, view_type='form', **options):
+        arch, view = super()._get_view(view_id, view_type, **options)
+        if view_type == 'form' and self.env.user.has_group('approval_so_po.group_contact_user'):
+            print(arch)
+            for node in arch.xpath("//form"):
+                node.set('edit', '0')
+            print(arch)
+        return arch, view
 
     @api.model
     def create(self, vals):
