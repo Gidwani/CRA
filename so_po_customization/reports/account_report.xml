@@ -253,7 +253,7 @@
                                         </td>
                                     </tr>
                                     <t t-if="not o.perc_discount == 0">
-                                        <t t-if="o.move_type == 'out_invoice' or o.move_type == 'out_refund'">
+<!--                                        <t t-if="o.move_type == 'out_invoice' or o.move_type == 'out_refund'">-->
                                             <tr class="border-black o_subtotal" style="">
                                                 <!--                                    <td name="td_perc_discount_label"><strong>Discount( <span t-esc="o.perc" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%)</strong></td>-->
                                                 <td name="td_perc_discount" style="text-align:left;"><strong>Discount</strong></td>
@@ -261,7 +261,7 @@
                                                     <span t-field="o.perc_discount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                                 </td>
                                             </tr>
-                                        </t>
+<!--                                        </t>-->
 
                                         <tr class="border-black o_subtotal" style="">
                                             <td name="td_net_total_label" style="text-align:left;"><strong>Net Total</strong></td>

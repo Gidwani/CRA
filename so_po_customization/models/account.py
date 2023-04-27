@@ -20,10 +20,9 @@ class AccountMoveInh(models.Model):
     @api.onchange('discount_rate', 'discount_type')
     def _onchange_sale_discount(self):
         for move in self:
-            print(move.invoice_line_ids[0].sale_line_ids)
-            print(move.invoice_line_ids[0].purchase_order_id)
-            if move.invoice_line_ids[0].sale_line_ids or move.invoice_line_ids[0].purchase_order_id:
-                raise UserError('You cannot change invoice values.')
+            if move.invoice_line_ids:
+                if move.invoice_line_ids[0].sale_line_ids or move.invoice_line_ids[0].purchase_order_id:
+                    raise UserError('You cannot change invoice values.')
 
     def get_total(self):
         # for rec in self:

@@ -269,7 +269,7 @@
                                 <table class="table table-sm">
                                     <tr class="o_subtotal" style="">
                                         <td name="td_amount_untaxed_label"><strong>Subtotal</strong></td>
-                                        <td name="td_amount_untaxed" class="text-right">
+                                        <td name="td_amount_untaxed" style="text-align:right;" class="text-right">
                                             <span t-field="doc.subtotal_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
                                         </td>
                                     </tr>
@@ -277,21 +277,21 @@
                                         <tr class="border-black o_subtotal" style="">
                                             <!--                                    <td name="td_perc_discount_label"><strong>Discount(<span t-field="doc.perc" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%)</strong></td>-->
                                             <td name="td_perc_discount"><strong>Discount</strong></td>
-                                            <td name="td_perc_discount" class="text-right">
+                                            <td name="td_perc_discount" style="text-align:right;" class="text-right">
                                                 <span t-field="doc.perc_discount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
                                             </td>
                                         </tr>
 
                                         <tr class="border-black o_subtotal" style="">
                                             <td name="td_net_total_label"><strong>Net Total</strong></td>
-                                            <td name="td_net_total" class="text-right">
+                                            <td name="td_net_total" style="text-align:right;" class="text-right">
                                                 <span t-field="doc.net_total" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
                                             </td>
                                         </tr>
                                     </t>
                                     <tr class="border-black o_subtotal" style="">
                                         <td name="td_net_total_label"><strong>Tax</strong></td>
-                                        <td name="td_net_total" class="text-right">
+                                        <td name="td_net_total" style="text-align:right;" class="text-right">
                                             <span t-field="doc.amount_tax" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
                                         </td>
                                     </tr>
@@ -320,7 +320,7 @@
                                     <!--                                </t>-->
                                     <tr class="border-black o_total">
                                         <td name="td_amount_total_label"><strong>Total</strong></td>
-                                        <td name="td_amount_total" class="text-right">
+                                        <td name="td_amount_total" style="text-align:right;" class="text-right">
                                             <span t-field="doc.amount_total"/>
                                         </td>
                                     </tr>

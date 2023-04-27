@@ -133,7 +133,7 @@ class AccountFollowupInh(models.AbstractModel):
 class StockMoveInh(models.Model):
     _inherit = 'stock.move'
 
-    is_backorder = fields.Boolean()
+    is_backorder = fields.Boolean(copy=False)
 
 
 class StockMoveLineInh(models.Model):

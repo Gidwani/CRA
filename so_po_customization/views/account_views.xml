@@ -48,9 +48,9 @@
 				<xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='tax_ids']" position="attributes">
 					<attribute name="string">VAT(%)</attribute>
 				</xpath>
-				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='tax_ids']" position="after">
-					<field name="vat_amount"/>
-				</xpath>
+<!--				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='tax_ids']" position="after">-->
+<!--					<field name="vat_amount"/>-->
+<!--				</xpath>-->
 <!--				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='price_subtotal']" position="attributes">-->
 <!--					<attribute name="invisible">1</attribute>-->
 <!--				</xpath>-->

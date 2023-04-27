@@ -182,6 +182,28 @@ class ResPartnerInh(models.Model):
             else:
                 application.x_css_set = '<style>.o_cp_action_menus {display: none !important;}</style>'
 
+    # @api.model_create_multi
+    # def create(self, vals):
+    #     print('fffffff')
+    #     res = super().create(vals)
+    #     print(res._context)
+    #     # print(vals)
+    #     # if vals and self.env.user.has_group('approval_so_po.group_contact_user'):
+    #     #     raise UserError('You cannot edit this form.')
+    #     return res
+
+    def write(self, vals):
+        res = super().write(vals)
+        # print(self._context)
+        # print(vals)
+        if vals and self.env.user.has_group('approval_so_po.group_contact_user'):
+            create = False
+            if 'credit_limit' in vals and vals['credit_limit'] == 0 or 'active' in vals or 'state' in vals:
+                create = True
+            if not create:
+                raise UserError('You cannot edit this form.')
+        return res
+
     # @api.model
     # def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
     #     result = super(ResPartnerInh, self).fields_view_get(
@@ -212,21 +234,32 @@ class ResPartnerInh(models.Model):
     #         print(res)
     #     return res
 
-    @api.model
-    def _get_view(self, view_id=None, view_type='form', **options):
-        arch, view = super()._get_view(view_id, view_type, **options)
-        if view_type == 'form' and self.env.user.has_group('approval_so_po.group_contact_user'):
-            print(arch)
-            for node in arch.xpath("//form"):
-                node.set('edit', '0')
-            print(arch)
-        return arch, view
+    # @api.model
+    # def _get_view(self, view_id=None, view_type='form', **options):
+    #     arch, view = super()._get_view(view_id, view_type, **options)
+    #     if view_type == 'form' and self.env.user.has_group('approval_so_po.group_contact_user'):
+    #         print('User')
+    #         print(arch)
+    #         for node in arch.xpath("//form"):
+    #             node.set('edit', '0')
+    #         print(arch)
+    #     if view_type == 'form' and self.env.user.has_group('approval_so_po.group_contact_manager'):
+    #         print('Manager')
+    #         print(arch)
+    #         for node in arch.xpath("//form"):
+    #             node.set('edit', '1')
+    #         print(arch)
+    #     return arch, view
 
     @api.model
     def create(self, vals):
-        record = super(ResPartnerInh, self).create(vals)
-        record.active = False
-        record.state = 'manager'
+        record = super().create(vals)
+        # record.active = False
+        # record.state = 'manager'
+        record.update({
+            'active': False,
+            'state': 'manager',
+        })
         return record
 
     def action_reject(self):
@@ -733,17 +766,23 @@ class ProductTemplateInh(models.Model):
             if len(record) > 1:
                 raise UserError('Product Already Exists')
 
-    @api.model
-    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
-        result = super(ProductTemplateInh, self).fields_view_get(
-            view_id=view_id, view_type=view_type, toolbar=toolbar,
-            submenu=submenu)
-        if self.env.user.has_group('approval_so_po.group_product_remove_edit_user'):
-            temp = etree.fromstring(result['arch'])
-            temp.set('edit', '0')
-            temp.set('create', '0')
-            result['arch'] = etree.tostring(temp)
-        return result
+    # @api.model
+    # def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+    #     result = super(ProductTemplateInh, self).fields_view_get(
+    #         view_id=view_id, view_type=view_type, toolbar=toolbar,
+    #         submenu=submenu)
+    #     if self.env.user.has_group('approval_so_po.group_product_remove_edit_user'):
+    #         temp = etree.fromstring(result['arch'])
+    #         temp.set('edit', '0')
+    #         temp.set('create', '0')
+    #         result['arch'] = etree.tostring(temp)
+    #     return result
+
+    def write(self, vals):
+        res = super().write(vals)
+        if 'available_qty' not in vals and self.env.user.has_group('approval_so_po.group_product_remove_edit_user'):
+            raise UserError('You cannot edit this form.')
+        return res
 
 
 class StockPickingInh(models.Model):
@@ -829,6 +868,8 @@ class StockPickingInh(models.Model):
                     'is_done_added': False,
                 })
                 for res in backorder.move_line_ids_without_package:
+                    res.is_backorder = False
+                for res in backorder.move_ids_without_package:
                     res.is_backorder = False
 
             # if self.picking_type_id.code == 'incoming':
