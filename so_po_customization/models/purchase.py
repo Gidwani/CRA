@@ -21,18 +21,20 @@ class PurchaseOrderInh(models.Model):
     @api.depends('order_line')
     def compute_taxes(self):
         for order in self:
-            amount_tax = 0.0
-            for line in order.order_line:
-                amount_tax += line.price_tax
-            order.net_tax = amount_tax
-        # flag = False
-        # for rec in self.order_line:
-        #     if rec.taxes_id:
-        #         flag = True
-        # if flag:
-        #     self.net_tax = (5 / 100) * self.net_total
-        # else:
-        #     self.net_tax = 0
+            # amount_tax = 0.0
+            # for line in order.order_line:
+            #     print(line.price_tax)
+            #     amount_tax += line.price_tax
+            # order.net_tax = amount_tax
+            flag = False
+            for rec in order.order_line:
+                if rec.taxes_id:
+                    flag = True
+            # print(self.net_total)
+            if flag:
+                order.net_tax = (5 / 100) * self.net_total
+            else:
+                order.net_tax = 0
 
     @api.depends('discount_rate', 'discount_type')
     def compute_percentage(self):
@@ -44,7 +46,7 @@ class PurchaseOrderInh(models.Model):
                 disc = (rec.discount_rate / rec.subtotal_amount) * 100
             rec.perc = disc
 
-    @api.depends('order_line', 'discount_rate', 'discount_type')
+    @api.depends('order_line', 'discount_rate', 'discount_type', 'order_line.price_unit', 'order_line.product_qty', 'order_line.taxes_id')
     def _compute_net_total(self):
         for rec in self:
             subtotal = 0

@@ -99,6 +99,11 @@ class PurchaseOrder(models.Model):
         self.supply_rate()
         return True
 
+    def action_view_invoice(self, invoices=False):
+        if invoices:
+            invoices.filtered(lambda i:i.state == 'draft').supply_rate()
+        return super().action_view_invoice()
+
 
 class SaleOrderLine(models.Model):
     _inherit = "purchase.order.line"
