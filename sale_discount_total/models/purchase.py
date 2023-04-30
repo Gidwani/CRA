@@ -35,24 +35,24 @@ class DiscountConfigSetting(models.TransientModel):
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
 
-    @api.depends('order_line.price_total')
-    def _amount_all(self):
-        """
-        Compute the total amounts of the SO.
-        """
-        for order in self:
-            amount_untaxed = amount_tax = amount_discount = 0.0
-            for line in order.order_line:
-                amount_untaxed += line.price_subtotal
-                amount_tax += line.price_tax
-                amount_discount += (line.product_qty * line.price_unit * line.discount) / 100
-                amount_discount += (line.product_qty * line.price_unit) / 100
-            order.update({
-                'amount_untaxed': amount_untaxed,
-                'amount_tax': amount_tax,
-                'amount_discount': amount_discount,
-                'amount_total': amount_untaxed + amount_tax,
-            })
+    # @api.depends('order_line.price_total')
+    # def _amount_all(self):
+    #     """
+    #     Compute the total amounts of the SO.
+    #     """
+    #     for order in self:
+    #         amount_untaxed = amount_tax = amount_discount = 0.0
+    #         for line in order.order_line:
+    #             amount_untaxed += line.price_subtotal
+    #             amount_tax += line.price_tax
+    #             amount_discount += (line.product_qty * line.price_unit * line.discount) / 100
+    #             amount_discount += (line.product_qty * line.price_unit) / 100
+    #         order.update({
+    #             'amount_untaxed': amount_untaxed,
+    #             'amount_tax': amount_tax,
+    #             'amount_discount': amount_discount,
+    #             'amount_total': amount_untaxed + amount_tax,
+    #         })
 
     discount_type = fields.Selection([('percent', 'Percentage'), ('amount', 'Amount')], string='Discount type',
                                      readonly=True,
