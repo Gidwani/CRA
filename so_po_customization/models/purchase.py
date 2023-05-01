@@ -9,32 +9,47 @@ class PurchaseOrderInh(models.Model):
     perc = fields.Float(compute='compute_percentage')
     net_tax = fields.Float('Tax', compute='compute_taxes')
     note_picklist = fields.Char('Note')
-    subtotal_amount = fields.Float('Subtotal Amount', comput='_compute_net_total')
+    subtotal_amount = fields.Float('Subtotal Amount')
 
-    # def action_po_update_subtotal(self):
-    #     for rec in self:
-    #         subtotal = 0
-    #         for line in rec.order_line:
-    #             subtotal = subtotal + line.subtotal
-    #         rec.subtotal_amount = subtotal
+    @api.model
+    def create(self, vals_list):
+        rec = super().create(vals_list)
+        rec.action_po_update_subtotal()
+        return rec
+
+    # def write(self, vals_list):
+    #     rec = super().write(vals_list)
+    #     if
+    #     self.action_po_update_subtotal()
+    #     return rec
+
+    def action_po_update_subtotal(self):
+        for rec in self:
+            subtotal = 0
+            for line in rec.order_line:
+                subtotal = subtotal + line.subtotal
+            rec.subtotal_amount = subtotal
 
     @api.depends('order_line')
     def compute_taxes(self):
         for order in self:
-            amount_tax = 0.0
-            for line in order.order_line:
-                amount_tax += line.price_tax
-            order.net_tax = amount_tax
-        # flag = False
-        # for rec in self.order_line:
-        #     if rec.taxes_id:
-        #         flag = True
-        # if flag:
-        #     self.net_tax = (5 / 100) * self.net_total
-        # else:
-        #     self.net_tax = 0
+            # amount_tax = 0.0
+            # for line in order.order_line:
+            #     print(line.price_tax)
+            #     amount_tax += line.price_tax
+            # order.net_tax = amount_tax
+            flag = False
+            for rec in order.order_line:
+                if rec.taxes_id:
+                    if rec.taxes_id.filtered(lambda i:i.name != 'Reverse Charge Provision'):
+                        flag = True
+            # print(self.net_total)
+            if flag:
+                order.net_tax = (5 / 100) * self.net_total
+            else:
+                order.net_tax = 0
 
-    @api.depends('discount_rate', 'discount_type')
+    @api.depends('discount_rate', 'discount_type', 'subtotal_amount')
     def compute_percentage(self):
         for rec in self:
             disc = 0
@@ -44,13 +59,36 @@ class PurchaseOrderInh(models.Model):
                 disc = (rec.discount_rate / rec.subtotal_amount) * 100
             rec.perc = disc
 
-    @api.depends('order_line', 'discount_rate', 'discount_type')
+    @api.depends('order_line.price_total', 'order_line.subtotal', 'discount_rate', 'discount_type',)
+    def _amount_all(self):
+        """
+        Compute the total amounts of the SO.
+        """
+        for order in self:
+            amount_untaxed = amount_tax = amount_discount = subtotal = 0.0
+            for line in order.order_line:
+                # amount_untaxed += line.price_subtotal
+                # amount_tax += line.price_tax
+                # amount_discount += (line.product_qty * line.price_unit * line.discount) / 100
+                # amount_discount += (line.product_qty * line.price_unit) / 100
+                subtotal = subtotal + line.subtotal
+
+            order.update({
+                'amount_untaxed': amount_untaxed,
+                'amount_tax': amount_tax,
+                'amount_discount': amount_discount,
+                'amount_total': amount_untaxed + amount_tax,
+                'subtotal_amount': subtotal,
+                # 'net_total': subtotal - disc
+            })
+
+    @api.depends('order_line', 'discount_rate', 'discount_type', 'order_line.subtotal')
     def _compute_net_total(self):
         for rec in self:
-            subtotal = 0
-            for line in rec.order_line:
-                subtotal = subtotal + line.subtotal
-            rec.subtotal_amount = subtotal
+            # subtotal = 0
+            # for line in rec.order_line:
+            #     subtotal = subtotal + line.subtotal
+            # rec.subtotal_amount = subtotal
             rec.net_total = rec.subtotal_amount - rec.perc_discount
             rec.amount_tax = rec.net_tax
             rec.amount_total = rec.net_total + rec.amount_tax
