@@ -41,7 +41,8 @@ class PurchaseOrderInh(models.Model):
             flag = False
             for rec in order.order_line:
                 if rec.taxes_id:
-                    flag = True
+                    if rec.taxes_id.filtered(lambda i:i.name != 'Reverse Charge Provision'):
+                        flag = True
             # print(self.net_total)
             if flag:
                 order.net_tax = (5 / 100) * self.net_total

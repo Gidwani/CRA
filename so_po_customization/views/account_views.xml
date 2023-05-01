@@ -1,6 +1,8 @@
 <odoo>
 	<data>
 
+
+
 		<record id="view_account_move_form_inh_nn" model="ir.ui.view">
 			<field name="name">account.move.form.inh</field>
 			<field name="model">account.move</field>
@@ -8,31 +10,31 @@
 			<field name="arch" type="xml">
 
 				<xpath expr="//field[@name='invoice_date']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
-                </xpath>
+					<attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+				</xpath>
 
 				<xpath expr="//field[@name='payment_reference']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
-                </xpath>
+					<attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+				</xpath>
 
 				<xpath expr="//field[@name='invoice_user_id']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
-                </xpath>
+					<attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+				</xpath>
 
-                <xpath expr="//field[@name='invoice_line_ids']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
-                </xpath>
+				<xpath expr="//field[@name='invoice_line_ids']" position="attributes">
+					<attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+				</xpath>
 
-				 <xpath expr="//field[@name='invoice_payment_term_id']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
-                </xpath>
+				<xpath expr="//field[@name='invoice_payment_term_id']" position="attributes">
+					<attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+				</xpath>
 
-				 <xpath expr="//field[@name='partner_id']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
-                </xpath>
+				<xpath expr="//field[@name='partner_id']" position="attributes">
+					<attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+				</xpath>
 				<xpath expr="//field[@name='journal_id']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
-                </xpath>
+					<attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+				</xpath>
 				<xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='name']" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
@@ -48,24 +50,24 @@
 				<xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='tax_ids']" position="attributes">
 					<attribute name="string">VAT(%)</attribute>
 				</xpath>
-<!--				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='tax_ids']" position="after">-->
-<!--					<field name="vat_amount"/>-->
-<!--				</xpath>-->
-<!--				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='price_subtotal']" position="attributes">-->
-<!--					<attribute name="invisible">1</attribute>-->
-<!--				</xpath>-->
-<!--				<xpath expr="//field[@name='amount_discount']" position="attributes">-->
-<!--					<attribute name="invisible">1</attribute>-->
-<!--				</xpath>-->
+				<!--				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='tax_ids']" position="after">-->
+				<!--					<field name="vat_amount"/>-->
+				<!--				</xpath>-->
+				<!--				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='price_subtotal']" position="attributes">-->
+				<!--					<attribute name="invisible">1</attribute>-->
+				<!--				</xpath>-->
+				<!--				<xpath expr="//field[@name='amount_discount']" position="attributes">-->
+				<!--					<attribute name="invisible">1</attribute>-->
+				<!--				</xpath>-->
 				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='price_subtotal']" position="after">
 					<field name="subtotal"/>
 				</xpath>
 				<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='price_subtotal']" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
-<!--				<xpath expr="//group[1]group[2]" position="attributes">-->
-<!--					<attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>-->
-<!--				</xpath>-->
+				<!--				<xpath expr="//group[1]group[2]" position="attributes">-->
+				<!--					<attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>-->
+				<!--				</xpath>-->
 				<xpath expr="//group[1]/group[2]/div[@name='journal_div']/field[@name='journal_id']" position="attributes">
 					<attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
 				</xpath>
@@ -78,9 +80,9 @@
 				<xpath expr="//field[@name='amount_residual']" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
-<!--				<xpath expr="//field[@class='oe_subtotal_footer_separator']" position="attributes">-->
-<!--					<attribute name="invisible">1</attribute>-->
-<!--				</xpath>-->
+				<!--				<xpath expr="//field[@class='oe_subtotal_footer_separator']" position="attributes">-->
+				<!--					<attribute name="invisible">1</attribute>-->
+				<!--				</xpath>-->
 				<xpath expr="//field[@name='tax_totals']" position="after">
 					<label for="total_amount_net" string="Total"/>
 					<div>
