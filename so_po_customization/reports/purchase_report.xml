@@ -121,7 +121,7 @@
                             <tr class="border-black">
                                 <td name="td_subtotal_label"><strong>Subtotal</strong></td>
                                 <td class="text-right" style="text-align:right;">
-                                    <span t-field="o.amount_untaxed"
+                                    <span t-field="o.subtotal_amount"
                                           t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                 </td>
                             </tr>
