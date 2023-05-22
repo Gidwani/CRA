@@ -49,9 +49,10 @@ class ReportXlsxInh(models.AbstractModel):
             sheet.write(row, 1, 'Invoice No', style)
             sheet.write(row, 2, 'LPO No', style)
             sheet.write(row, 3, 'Due Date', style)
-            sheet.write(row, 4, 'Amount', style)
-            sheet.write(row, 5, 'Cum Balance', style)
-            sheet.write(row, 6, 'Overdue Days', style)
+            sheet.write(row, 4, 'Invoice Balance Amount', style)
+            sheet.write(row, 5, 'Invoice Total Amount', style)
+            sheet.write(row, 6, 'Cumulative Due Amount', style)
+            sheet.write(row, 7, 'Overdue Days', style)
 
             total_due = 0
             payments_list = []
@@ -68,8 +69,9 @@ class ReportXlsxInh(models.AbstractModel):
                 sheet.write(row, 3, p.invoice_date_due, date_style)
                 # print(p.total_amount_due)
                 sheet.write(row, 4, -p.amount_residual if p.move_type == 'out_refund' else p.amount_residual, center)
-                sheet.write(row, 5, total_due, center)
-                sheet.write(row, 6, date.today() - p.invoice_date_due, center)
+                sheet.write(row, 5, p.amount_total_signed, center)
+                sheet.write(row, 6, total_due, center)
+                sheet.write(row, 7, date.today() - p.invoice_date_due, center)
                 cr_list.append(p.id)
 
                 # payments = self.env['account.payment'].search([('ref', '=', p.name), ('state', '=', 'posted')])
@@ -100,7 +102,7 @@ class ReportXlsxInh(models.AbstractModel):
                                         sheet.write(row, 1, payment_name.name, center)
                                         sheet.write(row, 4, -b['amount'], center)
                                         total_due = total_due - b['amount']
-                                        sheet.write(row, 5, total_due, center)
+                                        sheet.write(row, 6, total_due, center)
             if not invoices:
                 for c in partner.unreconciled_aml_ids:
                     row += 1
@@ -108,7 +110,7 @@ class ReportXlsxInh(models.AbstractModel):
                     sheet.write(row, 1, c.name, center)
                     sheet.write(row, 4, c.balance, center)
                     total_due = total_due - c.balance
-                    sheet.write(row, 5, total_due, center)
+                    sheet.write(row, 6, total_due, center)
             sheet.write(row+1, 0, 'Total', style)
             sheet.write(row+1, 4, total_due, style)
         except Exception as e:
