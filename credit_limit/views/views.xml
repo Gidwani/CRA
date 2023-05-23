@@ -9,6 +9,9 @@
             <xpath expr="//field[@name='product_uom_id']" position="after">
                 <field name="yom"/>
             </xpath>
+            <xpath expr="//field[@name='lot_id']" position="attributes">
+                <attribute name="options">{ 'no_open': True}</attribute>
+            </xpath>
         </field>
     </record>
 
