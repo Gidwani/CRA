@@ -17,7 +17,7 @@ class StockProductionInh(models.Model):
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    credit_limit = fields.Integer('Credit Limit')
+    credit_limit = fields.Integer('Credit Limit', default=0)
 
 
 class AccountMoveInh(models.Model):
