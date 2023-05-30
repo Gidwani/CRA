@@ -185,23 +185,26 @@ class ResPartnerInh(models.Model):
     # @api.model_create_multi
     # def create(self, vals):
     #     print('fffffff')
-    #     res = super().create(vals)
-    #     print(res._context)
-    #     # print(vals)
-    #     # if vals and self.env.user.has_group('approval_so_po.group_contact_user'):
-    #     #     raise UserError('You cannot edit this form.')
+    #     res = super(ResPartnerInh, self.with_context(Iscreated=True)).create(vals)
+    #
+    # #     print(res._context)
+    # #     # print(vals)
+    # #     # if vals and self.env.user.has_group('approval_so_po.group_contact_user'):
+    # #     #     raise UserError('You cannot edit this form.')
     #     return res
 
     def write(self, vals):
         res = super().write(vals)
         # print(self._context)
         # print(vals)
-        if vals and self.env.user.has_group('approval_so_po.group_contact_user'):
-            create = False
-            if 'credit_limit' in vals and vals['credit_limit'] == 0 or 'active' in vals or 'state' in vals:
-                create = True
-            if not create:
-                raise UserError('You cannot edit this form.')
+        if 'Iscreated' not in self._context and self.env.user.has_group('approval_so_po.group_contact_user'):
+            # if 'credit_limit' in vals:
+            #     del vals['credit_limit']
+            # create = False
+            # if 'active' in vals or 'state' in vals:
+            #     create = True
+            # if not create:
+            raise UserError('You cannot edit this form.')
         return res
 
     # @api.model
@@ -253,9 +256,11 @@ class ResPartnerInh(models.Model):
 
     @api.model
     def create(self, vals):
-        record = super().create(vals)
+        # record = super().create(vals)
+        record = super(ResPartnerInh, self.with_context(Iscreated=True)).create(vals)
         # record.active = False
         # record.state = 'manager'
+        print('ffff')
         record.update({
             'active': False,
             'state': 'manager',
