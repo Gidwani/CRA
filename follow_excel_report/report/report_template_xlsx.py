@@ -36,7 +36,7 @@ class ReportXlsxInh(models.AbstractModel):
             sheet.set_column('J:J', 15)
             partner = self.env['res.partner'].search([('id', '=', report.id)])
             # print(partner)
-            invoices = self.env['account.move'].search([('id', 'in', partner.unpaid_invoice_ids.ids)], order='id asc')
+            # invoices = self.env['account.move'].search([('id', 'in', partner.unpaid_invoice_ids.ids)], order='id asc')
             # print(invoices)
             row = 12
             sheet.write(6, 1, 'Customer Name', style)
@@ -56,61 +56,63 @@ class ReportXlsxInh(models.AbstractModel):
 
             total_due = 0
             payments_list = []
-            cr_list = []
-            for p in invoices:
-                row += 1
-                if p.move_type == 'out_refund':
-                    total_due = total_due - p.amount_residual
-                else:
-                    total_due = total_due + p.amount_residual
-                sheet.write(row, 0, p.invoice_date, date_style)
-                sheet.write(row, 1, p.name, center)
-                sheet.write(row, 2, self.get_ref(p), center)
-                sheet.write(row, 3, p.invoice_date_due, date_style)
-                # print(p.total_amount_due)
-                sheet.write(row, 4, -p.amount_residual if p.move_type == 'out_refund' else p.amount_residual, center)
-                sheet.write(row, 5, p.amount_total_signed, center)
-                sheet.write(row, 6, total_due, center)
-                sheet.write(row, 7, date.today() - p.invoice_date_due, center)
-                cr_list.append(p.id)
-
-                # payments = self.env['account.payment'].search([('ref', '=', p.name), ('state', '=', 'posted')])
-                # for x in payments:
-                #     payments_list.append(x.move_id.id)
-                #     for payment in x.move_id.line_ids:
-                #         # if payment.id in p.unreconciled_aml_ids:
-                #             row += 1
-                #             sheet.write(row, 0, x.date, date_style)
-                #             sheet.write(row, 1, x.name, center)
-                #             sheet.write(row, 4, -x.amount, center)
-                #             total_due = total_due - x.amount
-                #             sheet.write(row, 5, total_due, center)
+            # cr_list = []
+            # for p in invoices:
+            #     row += 1
+            #     if p.move_type == 'out_refund':
+            #         total_due = total_due - p.amount_residual
+            #     else:
+            #         total_due = total_due + p.amount_residual
+            #     sheet.write(row, 0, p.invoice_date, date_style)
+            #     sheet.write(row, 1, p.name, center)
+            #     sheet.write(row, 2, self.get_ref(p), center)
+            #     sheet.write(row, 3, p.invoice_date_due, date_style)
+            #     # print(p.total_amount_due)
+            #     sheet.write(row, 4, -p.amount_residual if p.move_type == 'out_refund' else p.amount_residual, center)
+            #     sheet.write(row, 5, p.amount_total_signed, center)
+            #     sheet.write(row, 6, total_due, center)
+            #     sheet.write(row, 7, date.today() - p.invoice_date_due, center)
+            #     cr_list.append(p.id)
+            #
+            #     payments = self.env['account.payment'].search([('ref', '=', p.name), ('state', '=', 'posted')])
+            #     for x in payments:
+            #         payments_list.append(x.move_id.id)
+            #         for payment in x.move_id.line_ids:
+            #             # if payment.id in p.unreconciled_aml_ids:
+            #                 row += 1
+            #                 sheet.write(row, 0, x.date, date_style)
+            #                 sheet.write(row, 1, x.name, center)
+            #                 sheet.write(row, 4, -x.amount, center)
+            #                 total_due = total_due - x.amount
+            #                 sheet.write(row, 5, total_due, center)
             # print('dd',invoices)
-            if invoices:
+            # if invoices:
+            #
+            #     if invoices[0].invoice_outstanding_credits_debits_widget:
+            #         print(invoices[0].invoice_outstanding_credits_debits_widget)
+            #         # res = json.loads(invoices[0].invoice_outstanding_credits_debits_widget)
+            #         res = invoices[0].invoice_outstanding_credits_debits_widget
+            #         for b in res['content']:
+            #             if b['move_id'] not in payments_list:
+            #                 payment_name = self.env['account.move'].browse([b['move_id']])
+            #                 if payment_name.id not in cr_list:
+            #                     for r in payment_name.line_ids:
+            #                         if r.id in partner.unreconciled_aml_ids.ids:
+            #                             row += 1
+            #                             sheet.write(row, 0, payment_name.date, date_style)
+            #                             sheet.write(row, 1, payment_name.name, center)
+            #                             sheet.write(row, 4, -b['amount'], center)
+            #                             total_due = total_due - b['amount']
+            #                             sheet.write(row, 6, total_due, center)
+            # if not invoices:
+            for c in partner.unreconciled_aml_ids:
+                row += 1
+                sheet.write(row, 0, c.date, date_style)
+                sheet.write(row, 1, c.move_id.name, center)
+                sheet.write(row, 4, c.balance, center)
 
-                if invoices[0].invoice_outstanding_credits_debits_widget:
-                    print(invoices[0].invoice_outstanding_credits_debits_widget)
-                    res = json.loads(invoices[0].invoice_outstanding_credits_debits_widget)
-                    for b in res['content']:
-                        if b['move_id'] not in payments_list:
-                            payment_name = self.env['account.move'].browse([b['move_id']])
-                            if payment_name.id not in cr_list:
-                                for r in payment_name.line_ids:
-                                    if r.id in partner.unreconciled_aml_ids.ids:
-                                        row += 1
-                                        sheet.write(row, 0, payment_name.date, date_style)
-                                        sheet.write(row, 1, payment_name.name, center)
-                                        sheet.write(row, 4, -b['amount'], center)
-                                        total_due = total_due - b['amount']
-                                        sheet.write(row, 6, total_due, center)
-            if not invoices:
-                for c in partner.unreconciled_aml_ids:
-                    row += 1
-                    sheet.write(row, 0, c.date, date_style)
-                    sheet.write(row, 1, c.name, center)
-                    sheet.write(row, 4, c.balance, center)
-                    total_due = total_due - c.balance
-                    sheet.write(row, 6, total_due, center)
+                total_due = total_due + c.balance
+                sheet.write(row, 6, total_due, center)
             sheet.write(row+1, 0, 'Total', style)
             sheet.write(row+1, 4, total_due, style)
         except Exception as e:
