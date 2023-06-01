@@ -28,7 +28,5 @@
         'views/views.xml',
         'report/report.xml',
     ],
-    # only loaded in demonstration mode
-    'demo': [
-    ],
+
 }

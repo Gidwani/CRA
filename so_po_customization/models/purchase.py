@@ -17,12 +17,6 @@ class PurchaseOrderInh(models.Model):
         rec.action_po_update_subtotal()
         return rec
 
-    # def write(self, vals_list):
-    #     rec = super().write(vals_list)
-    #     if
-    #     self.action_po_update_subtotal()
-    #     return rec
-
     def action_po_update_subtotal(self):
         for rec in self:
             subtotal = 0
@@ -38,16 +32,13 @@ class PurchaseOrderInh(models.Model):
             #     print(line.price_tax)
             #     amount_tax += line.price_tax
             # order.net_tax = amount_tax
-            flag = False
+            amount = 0
             for rec in order.order_line:
                 if rec.taxes_id:
                     if rec.taxes_id.filtered(lambda i:i.name != 'Reverse Charge Provision'):
-                        flag = True
-            # print(self.net_total)
-            if flag:
-                order.net_tax = (5 / 100) * self.net_total
-            else:
-                order.net_tax = 0
+                        amount += rec.vat_amount
+
+            order.net_tax = amount
 
     @api.depends('discount_rate', 'discount_type', 'subtotal_amount')
     def compute_percentage(self):
@@ -134,7 +125,7 @@ class PurchaseOrderLineInh(models.Model):
             amount = 0
             for tax in rec.taxes_id:
                 amount = amount + tax.amount
-            rec.vat_amount = (amount / 100) * rec.price_unit
+            rec.vat_amount = (amount * rec.product_qty / 100) * rec.price_unit
 
     @api.depends('sequence', 'order_id')
     def _compute_get_number(self):
