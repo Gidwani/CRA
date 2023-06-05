@@ -182,85 +182,16 @@ class ResPartnerInh(models.Model):
             else:
                 application.x_css_set = '<style>.o_cp_action_menus {display: none !important;}</style>'
 
-    # @api.model_create_multi
-    # def create(self, vals):
-    #     print('fffffff')
-    #     res = super(ResPartnerInh, self.with_context(Iscreated=True)).create(vals)
-    #
-    # #     print(res._context)
-    # #     # print(vals)
-    # #     # if vals and self.env.user.has_group('approval_so_po.group_contact_user'):
-    # #     #     raise UserError('You cannot edit this form.')
-    #     return res
-
     def write(self, vals):
+        pre_name = self.name
         res = super().write(vals)
-        # print(self._context)
-        # print(vals)
-        if 'Iscreated' not in self._context and self.env.user.has_group('approval_so_po.group_contact_user'):
-            # if 'credit_limit' in vals:
-            #     del vals['credit_limit']
-            # create = False
-            # if 'active' in vals or 'state' in vals:
-            #     create = True
-            # if not create:
+        if 'Iscreated' not in self._context and self.env.user.has_group('approval_so_po.group_contact_user') and 'copy' not in pre_name:
             raise UserError('You cannot edit this form.')
         return res
 
-    # @api.model
-    # def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
-    #     result = super(ResPartnerInh, self).fields_view_get(
-    #         view_id=view_id, view_type=view_type, toolbar=toolbar,
-    #         submenu=submenu)
-    #     if self.env.user.has_group('approval_so_po.group_remove_customer_create_user'):
-    #         temp = etree.fromstring(result['arch'])
-    #         temp.set('create', '0')
-    #         result['arch'] = etree.tostring(temp)
-    #     if self.env.user.has_group('approval_so_po.group_contact_user'):
-    #         temp = etree.fromstring(result['arch'])
-    #         temp.set('delete', '0')
-    #         temp.set('edit', '0')
-    #         temp.set('duplicate', '0')
-    #         result['arch'] = etree.tostring(temp)
-    #     return result
-
-    # @api.model
-    # def get_view(self, view_id=None, view_type='form', **options):
-    #     res = super().get_view(view_id, view_type, **options)
-    #     print('------------------', self.env.user.has_group('approval_so_po.group_contact_user'))
-    #
-    #     if view_type == 'form' and self.env.user.has_group('approval_so_po.group_contact_user'):
-    #         print(res)
-    #         temp = etree.fromstring(res['arch'])
-    #         for node in temp.xpath("//form"):
-    #             node.set('edit', 'False')
-    #         print(res)
-    #     return res
-
-    # @api.model
-    # def _get_view(self, view_id=None, view_type='form', **options):
-    #     arch, view = super()._get_view(view_id, view_type, **options)
-    #     if view_type == 'form' and self.env.user.has_group('approval_so_po.group_contact_user'):
-    #         print('User')
-    #         print(arch)
-    #         for node in arch.xpath("//form"):
-    #             node.set('edit', '0')
-    #         print(arch)
-    #     if view_type == 'form' and self.env.user.has_group('approval_so_po.group_contact_manager'):
-    #         print('Manager')
-    #         print(arch)
-    #         for node in arch.xpath("//form"):
-    #             node.set('edit', '1')
-    #         print(arch)
-    #     return arch, view
-
     @api.model
     def create(self, vals):
-        # record = super().create(vals)
         record = super(ResPartnerInh, self.with_context(Iscreated=True)).create(vals)
-        # record.active = False
-        # record.state = 'manager'
-        print('ffff')
         record.update({
             'active': False,
             'state': 'manager',
