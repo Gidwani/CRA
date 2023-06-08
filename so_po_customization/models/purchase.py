@@ -125,7 +125,14 @@ class PurchaseOrderLineInh(models.Model):
             amount = 0
             for tax in rec.taxes_id:
                 amount = amount + tax.amount
-            rec.vat_amount = (amount * rec.product_qty / 100) * rec.price_unit
+            if rec.order_id.discount_type == 'percent':
+                subtotal_amount = rec.subtotal
+                discount = (rec.order_id.discount_rate / 100) * subtotal_amount
+            else:
+                discount = rec.order_id.discount_rate
+            print(discount)
+            # rec.vat_amount = ((amount * rec.product_qty / 100) * rec.price_unit) - discount
+            rec.vat_amount = ((rec.subtotal - discount)/100) * amount
 
     @api.depends('sequence', 'order_id')
     def _compute_get_number(self):
