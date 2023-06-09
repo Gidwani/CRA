@@ -119,6 +119,11 @@ class PurchaseOrderLineInh(models.Model):
         for rec in self:
             rec.subtotal = rec.product_qty * rec.price_unit
 
+    # @api.depends('price_subtotal', 'price_total')
+    # def _compute_vat_amount(self):
+    #     for record in self:
+    #         record.l10n_ae_vat_amount = record.price_total - record.price_subtotal
+
     @api.depends('taxes_id', 'price_unit', 'product_qty')
     def _compute_vat_amount(self):
         for rec in self:
@@ -128,11 +133,15 @@ class PurchaseOrderLineInh(models.Model):
             if rec.order_id.discount_type == 'percent':
                 subtotal_amount = rec.subtotal
                 discount = (rec.order_id.discount_rate / 100) * subtotal_amount
+                rec.vat_amount = ((rec.subtotal - discount) / 100) * amount
             else:
-                discount = rec.order_id.discount_rate
+                discount = ((rec.price_total - rec.price_subtotal)/100) * rec.order_id.perc
+                # rec.vat_amount = ((rec.subtotal - discount) / 100) * amount
+                rec.vat_amount = (rec.price_total - rec.price_subtotal) - discount
             print(discount)
+            print(rec.price_total, rec.price_subtotal, rec.subtotal)
             # rec.vat_amount = ((amount * rec.product_qty / 100) * rec.price_unit) - discount
-            rec.vat_amount = ((rec.subtotal - discount)/100) * amount
+
 
     @api.depends('sequence', 'order_id')
     def _compute_get_number(self):
