@@ -105,7 +105,7 @@ class ReportXlsxInh(models.AbstractModel):
             #                             total_due = total_due - b['amount']
             #                             sheet.write(row, 6, total_due, center)
             # if not invoices:
-            for c in partner.unreconciled_aml_ids:
+            for c in partner.unreconciled_aml_ids.sorted('date'):
                 row += 1
                 print(c.move_id.name, c.balance if c.payment_id else c.amount_residual)
                 sheet.write(row, 0, c.date, date_style)
