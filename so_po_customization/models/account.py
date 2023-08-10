@@ -45,7 +45,8 @@ class AccountMoveInh(models.Model):
             for rec in res.invoice_line_ids:
                 if rec.tax_ids:
                     for tax in rec.tax_ids:
-                        if tax.name == 'VAT 5% (Dubai)':
+                        # if tax.name == 'VAT 5% (Dubai)':
+                        if tax.id == 1:
                             if res.move_type == 'out_invoice' or res.move_type == 'out_refund':
                                 flag = True
                                 total = total + rec.subtotal
