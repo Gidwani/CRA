@@ -172,8 +172,6 @@ class AccountMoveLineInh(models.Model):
     @api.onchange('tax_ids', 'price', 'quantity')
     def _onchange_sale_taxes(self):
         for line in self:
-            print(line.sale_line_ids)
-            print(line.purchase_order_id)
             if line.sale_line_ids or line.purchase_order_id:
                 raise UserError('You cannot change invoice/bill values.')
 
@@ -188,10 +186,10 @@ class AccountMoveLineInh(models.Model):
             amount = 0
             for tax in rec.tax_ids:
                 if rec.move_id.move_type == 'out_invoice' or rec.move_id.move_type == 'out_refund':
-                    if tax.name == 'VAT 5% (Dubai)':
+                    if tax.id == 1:
                         amount = amount + tax.amount
                 else:
-                    if tax.name == 'VAT 5%':
+                    if tax.id == 19:
                         amount = amount + tax.amount
             rec.vat_amount = ((amount/100) * rec.price_unit) * rec.quantity
 
