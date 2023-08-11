@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'account', 'sale', 'purchase', 'stock', 'sale_margin',  'sale_stock', 'approval_so_po', 'product', 'web', 'sale_discount_total'],
+    'depends': ['base', 'account', 'sale', 'purchase', 'stock', 'sale_margin',  'sale_stock', 'approval_so_po', 'product', 'web', 'sale_discount_total', 'l10n_ae'],
 
     # always loaded
     'data': [
