@@ -35,7 +35,7 @@ class SaleOrderWizard(models.TransientModel):
     def action_get_products(self):
         model = self.env.context.get('active_model')
         rec = self.env[model].browse(self.env.context.get('active_id'))
-        tax_id = self.env['account.tax'].search([('name', '=', 'VAT 5%'), ('amount', '=', 5),('type_tax_use', '=', 'purchase')])
+        # tax_id = self.env['account.tax'].search([('name', '=', 'VAT 5%'), ('amount', '=', 5), ('type_tax_use', '=', 'purchase')])
         val_list = []
         for line in self.product_lines:
             if line.is_selected:
@@ -49,7 +49,7 @@ class SaleOrderWizard(models.TransientModel):
                     'price_unit': line.product_id.list_price,
                     'so_ref': line.sr_no,
                     'sale_order': line.sale_order,
-                    'taxes_id': [tax_id.id],
+                    'taxes_id': [19],
                 }
                 val_list.append(val)
         products = self.env['purchase.order.line'].create(val_list)

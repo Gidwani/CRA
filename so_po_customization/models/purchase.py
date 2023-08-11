@@ -35,7 +35,8 @@ class PurchaseOrderInh(models.Model):
             amount = 0
             for rec in order.order_line:
                 if rec.taxes_id:
-                    if rec.taxes_id.filtered(lambda i:i.name != 'Reverse Charge Provision'):
+                    # if rec.taxes_id.filtered(lambda i:i.name != 'Reverse Charge Provision'):
+                    if rec.taxes_id.filtered(lambda i:i.id != 2):
                         amount += rec.vat_amount
 
             order.net_tax = amount
