@@ -172,7 +172,7 @@
                                         <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_ids))" id="line_tax_ids"/>
                                     </td>
                                     <td class="text-center">
-                                            <span class="text-nowrap"  t-field="line.l10n_ae_vat_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                            <span class="text-nowrap"  t-field="line.vat_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
                                     </td>
                                     <td class="text-center o_price_total">
                                         <span class="text-nowrap" t-field="line.subtotal" t-options='{"widget": "monetary", "display_currency": o.currency_id}' groups="account.group_show_line_subtotals_tax_excluded"/>

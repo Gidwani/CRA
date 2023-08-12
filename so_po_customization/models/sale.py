@@ -146,7 +146,7 @@ class SaleOrderInh(models.Model):
     def compute_taxes(self):
         flag = False
         for rec in self.order_line:
-            if rec.tax_id:
+            if rec.tax_id and rec.tax_id.amount != 0:
                 flag = True
         if flag:
             self.net_tax = (5 / 100) * self.net_total

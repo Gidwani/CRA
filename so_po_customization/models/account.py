@@ -39,35 +39,40 @@ class AccountMoveInh(models.Model):
         return net_total - discount
 
     def get_tax(self):
-        flag = False
-        total = 0
         for res in self:
+            amount_tax = 0.0
             for rec in res.invoice_line_ids:
-                if rec.tax_ids:
-                    for tax in rec.tax_ids:
-                        # if tax.name == 'VAT 5% (Dubai)':
-                        if tax.id == 1:
-                            if res.move_type == 'out_invoice' or res.move_type == 'out_refund':
-                                flag = True
-                                total = total + rec.subtotal
-                        else:
-                            if tax.name == 'VAT 5%':
-                                flag = True
-                                total = total + rec.subtotal
-            if flag:
-                if res.discount_type == 'percent':
-                    subtotal = 0
-                    for line in res.invoice_line_ids:
-                        subtotal = subtotal + line.subtotal
-                    subtotal_amount = subtotal
-                    discount = (res.discount_rate / 100) * subtotal_amount
-                else:
-                    discount = res.discount_rate
-                tax = (5 / 100) * (total - discount)
-                return tax
-            else:
-                tax = 0
-                return tax
+                amount_tax += rec.l10n_ae_vat_amount
+            return amount_tax
+        # flag = False
+        # total = 0
+        # for res in self:
+        #     for rec in res.invoice_line_ids:
+        #         if rec.tax_ids:
+        #             for tax in rec.tax_ids:
+        #                 # if tax.name == 'VAT 5% (Dubai)':
+        #                 if tax.id == 1:
+        #                     if res.move_type == 'out_invoice' or res.move_type == 'out_refund':
+        #                         flag = True
+        #                         total = total + rec.subtotal
+        #                 else:
+        #                     if tax.name == 'VAT 5%':
+        #                         flag = True
+        #                         total = total + rec.subtotal
+        #     if flag:
+        #         if res.discount_type == 'percent':
+        #             subtotal = 0
+        #             for line in res.invoice_line_ids:
+        #                 subtotal = subtotal + line.subtotal
+        #             subtotal_amount = subtotal
+        #             discount = (res.discount_rate / 100) * subtotal_amount
+        #         else:
+        #             discount = res.discount_rate
+        #         tax = (5 / 100) * (total - discount)
+        #         return tax
+        #     else:
+        #         tax = 0
+        #         return tax
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -103,25 +108,30 @@ class AccountMoveInh(models.Model):
 
     @api.depends('invoice_line_ids', 'perc_discount', 'invoice_line_ids.tax_ids', 'invoice_line_ids.subtotal')
     def compute_taxes(self):
-        flag = False
-        total = 0
         for res in self:
+            amount_tax = 0.0
             for rec in res.invoice_line_ids:
-                if rec.tax_ids:
-                    for tax in rec.tax_ids:
-                        # if tax.name == 'VAT 5% (Dubai)':
-                        if tax.id == 1:
-                            if res.move_type == 'out_invoice' or res.move_type == 'out_refund':
-                                flag = True
-                                total = total + rec.subtotal
-                        else:
-                            if tax.name == 'VAT 5%':
-                                flag = True
-                                total = total + rec.subtotal
-            if flag:
-                res.net_tax = (5 / 100) * (total - res.perc_discount)
-            else:
-                res.net_tax = 0
+                amount_tax += rec.l10n_ae_vat_amount
+            res.net_tax = amount_tax
+        # flag = False
+        # total = 0
+        # for res in self:
+        #     for rec in res.invoice_line_ids:
+        #         if rec.tax_ids:
+        #             for tax in rec.tax_ids:
+        #                 # if tax.name == 'VAT 5% (Dubai)':
+        #                 if tax.id == 1:
+        #                     if res.move_type == 'out_invoice' or res.move_type == 'out_refund':
+        #                         flag = True
+        #                         total = total + rec.subtotal
+        #                 else:
+        #                     if tax.name == 'VAT 5%':
+        #                         flag = True
+        #                         total = total + rec.subtotal
+        #     if flag:
+        #         res.net_tax = (5 / 100) * (total - res.perc_discount)
+        #     else:
+        #         res.net_tax = 0
 
     @api.depends('discount_rate', 'discount_type')
     def compute_percentage(self):
@@ -162,8 +172,6 @@ class AccountMoveLineInh(models.Model):
     @api.onchange('tax_ids', 'price', 'quantity')
     def _onchange_sale_taxes(self):
         for line in self:
-            print(line.sale_line_ids)
-            print(line.purchase_order_id)
             if line.sale_line_ids or line.purchase_order_id:
                 raise UserError('You cannot change invoice/bill values.')
 
@@ -178,10 +186,10 @@ class AccountMoveLineInh(models.Model):
             amount = 0
             for tax in rec.tax_ids:
                 if rec.move_id.move_type == 'out_invoice' or rec.move_id.move_type == 'out_refund':
-                    if tax.name == 'VAT 5% (Dubai)':
+                    if tax.id == 1:
                         amount = amount + tax.amount
                 else:
-                    if tax.name == 'VAT 5%':
+                    if tax.id == 19:
                         amount = amount + tax.amount
             rec.vat_amount = ((amount/100) * rec.price_unit) * rec.quantity
 

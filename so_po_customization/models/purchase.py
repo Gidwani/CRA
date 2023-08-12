@@ -32,14 +32,23 @@ class PurchaseOrderInh(models.Model):
             #     print(line.price_tax)
             #     amount_tax += line.price_tax
             # order.net_tax = amount_tax
-            amount = 0
-            for rec in order.order_line:
-                if rec.taxes_id:
-                    # if rec.taxes_id.filtered(lambda i:i.name != 'Reverse Charge Provision'):
-                    if rec.taxes_id.filtered(lambda i:i.id != 2):
-                        amount += rec.vat_amount
+            # amount = 0
+            # for rec in order.order_line:
+            #     if rec.taxes_id:
+            #         # if rec.taxes_id.filtered(lambda i:i.name != 'Reverse Charge Provision'):
+            #         if rec.taxes_id.filtered(lambda i:i.id != 2):
+            #             amount += rec.vat_amount
 
-            order.net_tax = amount
+            # order.net_tax = amount
+            flag = False
+            for rec in order.order_line:
+                if rec.taxes_id and rec.taxes_id.filtered(lambda i: i.id != 23) and rec.taxes_id.filtered(
+                        lambda i: i.amount != 0):
+                    flag = True
+            if flag:
+                order.net_tax = (5 / 100) * order.net_total
+            else:
+                order.net_tax = 0
 
     @api.depends('discount_rate', 'discount_type', 'subtotal_amount')
     def compute_percentage(self):
@@ -51,7 +60,7 @@ class PurchaseOrderInh(models.Model):
                 disc = (rec.discount_rate / rec.subtotal_amount) * 100
             rec.perc = disc
 
-    @api.depends('order_line.price_total', 'order_line.subtotal', 'discount_rate', 'discount_type',)
+    @api.depends('order_line.price_total', 'order_line.subtotal', 'discount_rate', 'discount_type', )
     def _amount_all(self):
         """
         Compute the total amounts of the SO.
@@ -125,7 +134,8 @@ class PurchaseOrderLineInh(models.Model):
         for rec in self:
             amount = 0
             for tax in rec.taxes_id:
-                amount = amount + tax.amount
+                if tax.id == 19:
+                    amount = amount + tax.amount
             rec.vat_amount = (amount * rec.product_qty / 100) * rec.price_unit
 
     @api.depends('sequence', 'order_id')
@@ -138,7 +148,8 @@ class PurchaseOrderLineInh(models.Model):
 
     @api.onchange('product_id')
     def onchange_get_tax(self):
-        tax = self.env['account.tax'].search([('type_tax_use', '=', 'purchase'), ('amount', '=', 5), ('name', '=', 'VAT 5%')])
+        tax = self.env['account.tax'].search(
+            [('type_tax_use', '=', 'purchase'), ('amount', '=', 5), ('name', '=', 'VAT 5%')])
         for rec in self:
             rec.taxes_id = tax
 
@@ -146,9 +157,9 @@ class PurchaseOrderLineInh(models.Model):
     #     for line in self:
     #         line = line.with_company(line.company_id)
     #         fpos = line.order_id.fiscal_position_id or line.order_id.fiscal_position_id.get_fiscal_position(line.order_id.partner_id.id)
-            # filter taxes by company
-            # taxes = line.product_id.supplier_taxes_id.filtered(lambda r: r.company_id == line.env.company)
-            # line.taxes_id = fpos.map_tax(taxes, line.product_id, line.order_id.partner_id)
+    # filter taxes by company
+    # taxes = line.product_id.supplier_taxes_id.filtered(lambda r: r.company_id == line.env.company)
+    # line.taxes_id = fpos.map_tax(taxes, line.product_id, line.order_id.partner_id)
 
     def unlink(self):
         for res in self:
