@@ -32,23 +32,25 @@ class PurchaseOrderInh(models.Model):
             #     print(line.price_tax)
             #     amount_tax += line.price_tax
             # order.net_tax = amount_tax
+            amount = 0
+            for rec in order.order_line:
+                if rec.taxes_id:
+                    # if rec.taxes_id.filtered(lambda i:i.name != 'Reverse Charge Provision'):
+                    if rec.taxes_id.filtered(lambda i:i.id == 19):
+                        amount += rec.vat_amount
+
+            order.net_tax = amount - ((order.discount_rate / 100) * amount)
+            # flag = False
             # amount = 0
             # for rec in order.order_line:
-            #     if rec.taxes_id:
-            #         # if rec.taxes_id.filtered(lambda i:i.name != 'Reverse Charge Provision'):
-            #         if rec.taxes_id.filtered(lambda i:i.id != 2):
-            #             amount += rec.vat_amount
-
-            # order.net_tax = amount
-            flag = False
-            for rec in order.order_line:
-                if rec.taxes_id and rec.taxes_id.filtered(lambda i: i.id != 23) and rec.taxes_id.filtered(
-                        lambda i: i.amount != 0):
-                    flag = True
-            if flag:
-                order.net_tax = (5 / 100) * order.net_total
-            else:
-                order.net_tax = 0
+            #     if rec.taxes_id and rec.taxes_id.filtered(lambda i: i.id != 23) and rec.taxes_id.filtered(
+            #             lambda i: i.amount != 0):
+            #         flag = True
+            #         amount = True
+            # if flag:
+            #     order.net_tax = (5 / 100) * order.net_total
+            # else:
+            #     order.net_tax = 0
 
     @api.depends('discount_rate', 'discount_type', 'subtotal_amount')
     def compute_percentage(self):

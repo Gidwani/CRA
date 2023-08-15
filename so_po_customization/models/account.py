@@ -191,6 +191,7 @@ class AccountMoveLineInh(models.Model):
                 else:
                     if tax.id == 19:
                         amount = amount + tax.amount
+            print(((amount/100) * rec.price_unit) * rec.quantity)
             rec.vat_amount = ((amount/100) * rec.price_unit) * rec.quantity
 
     @api.depends('sequence', 'move_id')
