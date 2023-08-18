@@ -108,21 +108,35 @@ class ReportXlsxInh(models.AbstractModel):
             for c in partner.unreconciled_aml_ids.sorted('date'):
                 if not c.blocked:
                     row += 1
-                    print(c.move_id.name, c.balance if c.payment_id else c.amount_residual)
+                    # print(c.move_id.name, c.balance if c.payment_id else c.amount_residual)
+                    print(c.move_id.name,  c.amount_residual if partner.currency_id.id == c.currency_id.id else c.amount_residual_currency)
+                    due_amt = ''
+                    if not c.payment_id:
+                        if partner.currency_id.id == c.currency_id.id:
+                            due_amt = c.move_id.amount_total_signed
+                        else:
+                            due_amt = c.move_id.amount_total
+                    print(c.move_id.name,  due_amt)
+                    print('------------------------')
+                    # if c.move_id.name == 'PDCR/2023/07/0018':
+                    #     print('gg')
                     sheet.write(row, 0, c.date, date_style)
                     sheet.write(row, 1, c.move_id.name, center)
                     sheet.write(row, 2, self.get_ref(c.move_id) if not c.payment_id else '', center)
                     sheet.write(row, 3, c.move_id.invoice_date_due if not c.payment_id else '', date_style)
-                    sheet.write(row, 4, c.balance if c.payment_id else c.amount_residual, center)
-                    sheet.write(row, 5, c.move_id.amount_total_signed if not c.payment_id else '', center)
-                    amt = 0
-                    if c.payment_id:
-                        amt = c.balance
-                    else:
+                    # sheet.write(row, 4, c.balance if c.payment_id else c.amount_residual, center)
+                    sheet.write(row, 4, c.amount_residual if partner.currency_id.id == c.currency_id.id else c.amount_residual_currency, center)
+
+
+                    sheet.write(row, 5, due_amt, center)
+                    # amt = 0
+                    # if c.payment_id:
+                    #     amt = c.balance
+                    # else:
                         # if c.move_id.move_type == 'out_refund':
                         #     amt = -c.amount_residual
                         # else:
-                        amt = c.amount_residual
+                    amt = c.amount_residual if partner.currency_id.id == c.currency_id.id else c.amount_residual_currency
                     total_due = total_due + amt
                     sheet.write(row, 6, total_due, center)
                     sheet.write(row, 7, date.today() - c.move_id.invoice_date_due if not c.payment_id else '', center)
