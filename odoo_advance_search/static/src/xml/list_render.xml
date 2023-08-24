@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="odoo_advance_search.ListRenderer" t-inherit="web.ListRenderer" t-inherit-mode="extension" owl="1">
+        <xpath expr="//table/thead" position="inside">
+            <tr t-if="hasSelectors">
+                <th></th>
+                <t t-foreach="state.columns" t-as="column" t-key="column.id">
+                    <th t-if="fields[column.name] and props.list.fields and props.list.fields[column.name].searchable and (fields[column.name].type === 'integer' or fields[column.name].type === 'float' or fields[column.name].type === 'monetary') and column.noLabel !== true">
+                        <input type="number" t-att-name="column.name"
+                               class="number_search from_int"
+                               t-att-style="'text-align:'+ 'right' + ';' + '!important' "
+                               t-on-focusout="_onChangeSelection"
+                               t-on-keydown="_onClickEnter"
+                               t-att-value="window.advance_search[column.name + '_from']"
+                               t-att-field_type="fields[column.name].type" style="width:100%;"/>
+                        <input type="number" t-att-name="column.name"
+                               class="number_search to_int"
+                               t-att-style="'text-align:'+ 'right' + ';' + '!important' "
+                               t-on-keydown="_onClickEnter"
+                               t-on-focusout="_onChangeSelection"
+                               t-att-value="window.advance_search[column.name + '_to']"
+                               t-att-field_type="fields[column.name].type" style="width:100%;"/>
+                    </th>
+                    <th t-elif="fields[column.name] and props.list.fields and props.list.fields[column.name].searchable and (fields[column.name].type === 'one2many' or fields[column.name].type === 'many2many' or fields[column.name].type === 'char' or fields[column.name].type === 'text') and column.noLabel !== true">
+                        <input type="text" class="number_search" t-att-name="column.name"
+                               t-on-focusout="_onChangeSelection"
+                               t-on-keydown="_onClickEnter"
+                               t-att-value="window.advance_search[column.name]"
+                               t-att-field_type="fields[column.name].type" style="width:100%;"/>
+                    </th>
+                    <th t-elif="fields[column.name] and props.list.fields and props.list.fields[column.name].searchable and fields[column.name].type === 'many2one' and column.noLabel !== true"
+                        class="many2one_field" t-on-click="_onChangeSelection">
+                        <input type="text" class="number_search many2one_input" t-att-name="column.name"
+                               t-att-search_model="column.propsFromAttrs.relation"
+                               placeholder="Select"
+                               t-on-focusout="_onChangeSelection"
+                               t-on-keydown="_onClickEnter"
+
+                               t-att-field_type="fields[column.name].type" style="width:100%;"/>
+                    </th>
+                    <th t-elif="fields[column.name] and props.list.fields and props.list.fields[column.name].searchable and (fields[column.name].type==='date' or fields[column.name].type==='datetime') and column.noLabel !== true"
+                        t-on-focusout="_onChangeSelection">
+                        <input type="date"
+                               t-on-focusout="_onChangeSelection"
+                               style="float:left;width:100%;line-height: inherit;"
+                               placeholder="From:" t-att-name="column.name"
+                               class="number_search from_date_search"
+                               t-att-field_type="fields[column.name].type"/>
+                        <input type="date" t-on-focusout="_onChangeSelection"
+                               class="number_search to_date_search"
+                               style="float:left;width:100%;line-height: inherit;"
+                               placeholder="To:" t-att-name="column.name"
+                               t-att-field_type="fields[column.name].type"/>
+                    </th>
+                    <th t-elif="fields[column.name] and props.list.fields and props.list.fields[column.name].searchable and fields[column.name].type==='selection' and column.hasLabel">
+                        <select placeholder="Select" t-att-field_type="fields[column.name].type"
+                                t-att-name="column.name" t-on-change="_onChangeSelection"
+                                style="width:100%; " class='number_search' t-on-click="_onChangeSelection">
+                            <t t-esc="fields[column.name].selection"/>
+                            <option value="no_select"/>
+                            <t t-foreach="fields[column.name].selection" t-as="option" t-key="option[0]">
+                                <t t-set="selected" t-value="window.advance_search[column.name] === option[0]"/>
+                                <option t-if="selected"
+                                        t-attf-selected="selected"
+                                        t-att-value="option[0]">
+                                    <t t-esc="option[1]"/>
+                                </option>
+                                <option t-if="!selected" t-att-value="option[0]">
+                                    <t t-esc="option[1]"/>
+                                </option>
+                            </t>
+                        </select>
+                    </th>
+                    <th t-elif="fields[column.name] and props.list.fields and props.list.fields[column.name].searchable and fields[column.name].type==='boolean' and column.noLabel !== true">
+                        <select placeholder="Select" class='number_search' t-att-name="column.name"
+                                t-on-click="_onChangeSelection"
+                                t-att-value="window.advance_search[column.name]"
+                                t-att-field_type="fields[column.name].type" style="width:100%;">
+                            <option value="no_select"/>
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                        </select>
+                    </th>
+                    <th t-else=""></th>
+                </t>
+                <th t-if="displayOptionalFields"></th>
+            </tr>
+        </xpath>
+    </t>
+    <t t-name="odoo_advance_search.ListViewButtons" t-inherit="web.ListView.Buttons" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div" position="inside">
+            <button style="margin-left: 5px;" type="button" class="btn btn-primary" t-on-click="onClickRefreshSearch">
+                <i class="fa fa-lg fa fa-refresh"/>
+            </button>
+        </xpath>
+    </t>
+</templates>
