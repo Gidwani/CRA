@@ -136,6 +136,21 @@ class StockMoveInh(models.Model):
     is_backorder = fields.Boolean(copy=False)
 
 
+class AccountMoveLineInh(models.Model):
+    _inherit = 'account.move.line'
+
+    so_no = fields.Integer()
+
+
+class SaleOrderLineInh(models.Model):
+    _inherit = 'sale.order.line'
+
+    def _prepare_invoice_line(self, **optional_values):
+        values = super(SaleOrderLineInh, self)._prepare_invoice_line(**optional_values)
+        values['so_no'] = self.number
+        return values
+
+
 class StockMoveLineInh(models.Model):
     _inherit = 'stock.move.line'
 
