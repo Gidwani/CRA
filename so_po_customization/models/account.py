@@ -2,6 +2,7 @@
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+from odoo.tools import float_is_zero
 
 
 class AccountMoveInh(models.Model):
@@ -25,7 +26,6 @@ class AccountMoveInh(models.Model):
                     raise UserError('You cannot change invoice values.')
 
     def get_total(self):
-        # for rec in self:
         subtotal = 0
         for line in self.invoice_line_ids:
             subtotal = subtotal + line.subtotal
@@ -157,7 +157,8 @@ class AccountMoveInh(models.Model):
                 subtotal = subtotal + line.subtotal
             rec.subtotal_amount = subtotal
             rec.net_total = rec.subtotal_amount - rec.perc_discount
-            rec.total_amount_net = rec.net_total + rec.net_tax
+            # rec.total_amount_net = rec.net_total + rec.net_tax
+            rec.total_amount_net = rec.amount_total
             rec.total_amount_due = rec.amount_residual
 
 
@@ -191,7 +192,6 @@ class AccountMoveLineInh(models.Model):
                 else:
                     if tax.id == 19:
                         amount = amount + tax.amount
-            print(((amount/100) * rec.price_unit) * rec.quantity)
             rec.vat_amount = ((amount/100) * rec.price_unit) * rec.quantity
 
     @api.depends('sequence', 'move_id')
