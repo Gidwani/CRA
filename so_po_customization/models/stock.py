@@ -4,6 +4,7 @@ from datetime import datetime
 from pytz import timezone
 from odoo import models, fields, api
 from odoo.http import request
+from odoo.osv import expression
 
 
 class ProductProductInh(models.Model):
@@ -378,6 +379,33 @@ class StockMoveInh(models.Model):
 
     remarks = fields.Char("Remarks", compute='_compute_remarks')
     number = fields.Integer(compute='_compute_get_number', store=True)
+
+    def _trigger_assign(self):
+        """ Check for and trigger action_assign for confirmed/partially_available moves related to done moves.
+            Disable auto reservation if user configured to do so.
+        """
+        if not self or self.env['ir.config_parameter'].sudo().get_param('stock.picking_no_auto_reserve'):
+            return
+
+        domains = []
+        for move in self:
+            domains.append([('product_id', '=', move.product_id.id), ('location_id', '=', move.location_dest_id.id)])
+        static_domain = [('state', 'in', ['confirmed', 'partially_available']),
+                         ('procure_method', '=', 'make_to_stock'),
+                         ('reservation_date', '<=', fields.Date.today())]
+        moves_to_reserve = self.env['stock.move'].search(expression.AND([static_domain, expression.OR(domains)]),
+                                                         order='reservation_date, priority desc, date asc, id asc')
+
+        if move.purchase_line_id and move.purchase_line_id.sale_order:
+            new_moves_list = []
+            for r in moves_to_reserve:
+                if move.purchase_line_id.sale_order == r.sale_line_id.order_id.name:
+                    new_moves_list.append(r.id)
+            if new_moves_list:
+                new_moves_to_reserve = self.env['stock.move'].browse(new_moves_list)
+                new_moves_to_reserve._action_assign()
+        else:
+            moves_to_reserve._action_assign()
 
     def get_lot(self):
         lot_list = []

@@ -97,9 +97,9 @@
 				</xpath>
 				<xpath expr="//field[@name='tax_totals']" position="after">
 					<field name="subtotal_amount" widget='monetary' options="{'currency_field': 'currency_id'}" readonly="1"/>
-					<label for="perc_discount"  attrs="{'invisible': [('move_type','not in', ['out_invoice', 'in_invoice'])]}"/>
-					<div class="text-nowrap" attrs="{'invisible': [('move_type','not in', ['out_invoice', 'in_invoice'])]}">
-						<field name="perc_discount" class="oe_inline" widget='monetary' options="{'currency_field': 'currency_id'}" readonly="1" attrs="{'invisible': [('move_type','not in', ['out_invoice', 'in_invoice'])]}"/>
+					<label for="perc_discount"  attrs="{'invisible': [('move_type','not in', ['out_invoice', 'in_invoice', 'out_refund'])]}"/>
+					<div class="text-nowrap" attrs="{'invisible': [('move_type','not in', ['out_invoice', 'in_invoice', 'out_refund'])]}">
+						<field name="perc_discount" class="oe_inline" widget='monetary' options="{'currency_field': 'currency_id'}" readonly="1" attrs="{'invisible': [('move_type','not in', ['out_invoice', 'in_invoice',  'out_refund'])]}"/>
 						<span class="oe_inline">
 							(<field name="perc" nolabel="1" class="oe_inline" readonly="1"/>%)
 						</span>
