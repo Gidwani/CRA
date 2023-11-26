@@ -185,7 +185,7 @@ class ResPartnerInh(models.Model):
     def write(self, vals):
         pre_name = self.name
         res = super().write(vals)
-        if 'Iscreated' not in self._context and self.env.user.has_group('approval_so_po.group_contact_user') and 'copy' not in pre_name:
+        if 'fromso' not in self._context and 'Iscreated' not in self._context and self.env.user.has_group('approval_so_po.group_contact_user') and 'copy' not in pre_name:
             raise UserError('You cannot edit this form.')
         return res
 
@@ -228,6 +228,11 @@ class SaleOrderInh(models.Model):
                 application.x_css = '<style>.o_form_button_edit {display: none !important;}</style>'
             else:
                 application.x_css = False
+
+    @api.model
+    def create(self, vals):
+        record = super(SaleOrderInh, self.with_context(fromso=True)).create(vals)
+        return record
 
     def action_reject(self):
         self.state = 'draft'
