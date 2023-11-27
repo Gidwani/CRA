@@ -431,7 +431,7 @@
 
                 <div class="oe_structure"/>
 
-                <p t-field="doc.note" />
+<!--                <p t-field="doc.note" />-->
                 <!--                <p t-if="doc.payment_term_id.note">-->
                 <!--                    <span t-field="doc.payment_term_id.note"/>-->
                 <!--                </p>-->
