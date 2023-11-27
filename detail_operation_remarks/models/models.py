@@ -134,6 +134,38 @@ class StockMoveInh(models.Model):
     _inherit = 'stock.move'
 
     is_backorder = fields.Boolean(copy=False)
+    so_no = fields.Integer(compute='compute_so_no_sale')
+
+    # @api.depends('sale_line_id')
+    def compute_so_no_sale(self):
+        for rec in self:
+            rec.so_no = rec.sale_line_id.number
+            # rec.move_id.so_no = rec.sale_line_id.number
+
+
+class AccountMoveInh(models.Model):
+    _inherit = 'account.move'
+
+    def action_update_so_no(self):
+        for rec in self:
+            for line in rec.invoice_line_ids:
+                if line.sale_line_ids:
+                    line.so_no = line.sale_line_ids[0].number
+
+
+class AccountMoveLineInh(models.Model):
+    _inherit = 'account.move.line'
+
+    so_no = fields.Integer()
+
+
+class SaleOrderLineInh(models.Model):
+    _inherit = 'sale.order.line'
+
+    def _prepare_invoice_line(self, **optional_values):
+        values = super(SaleOrderLineInh, self)._prepare_invoice_line(**optional_values)
+        values['so_no'] = self.number
+        return values
 
 
 class StockMoveLineInh(models.Model):
@@ -141,36 +173,36 @@ class StockMoveLineInh(models.Model):
 
     remarks = fields.Char("Remarks", compute='_compute_remarks')
     number = fields.Integer(compute='_compute_get_number', store=True)
-    so_no = fields.Integer(compute='compute_so_sr_no')
+    so_no = fields.Integer(related='move_id.so_no')
     is_backorder = fields.Boolean()
 
-    def compute_so_sr_no(self):
-        for rec in self:
-            if not rec.picking_id.backorder_id:
-                if rec.picking_id.sale_id:
-                    for line in rec.picking_id.sale_id.order_line:
-                        if rec.move_id.sale_line_id.id == line.id:
-                            rec.so_no = line.number
-                if rec.picking_id.purchase_id:
-                    for line in rec.picking_id.purchase_id.order_line:
-                        if rec.move_id.purchase_line_id.id == line.id:
-                            rec.so_no = line.number
-            else:
-                if rec.picking_id.backorder_id.sale_id:
-                    for line in rec.picking_id.backorder_id.sale_id.order_line:
-                        if rec.move_id.sale_line_id.id == line.id:
-                            rec.so_no = line.number
-                if rec.picking_id.backorder_id.purchase_id:
-                    for line in rec.picking_id.backorder_id.purchase_id.order_line:
-                        if rec.move_id.purchase_line_id.id == line.id:
-                            rec.so_no = line.number
-            if rec.picking_id.sale_id:
-                for line in rec.picking_id.sale_id.order_line:
-                    if line.product_id.id == rec.product_id.id and line.number == rec.number:
-                        rec.so_no = line.number
-
-            else:
-                rec.so_no = 0
+    # def compute_so_sr_no(self):
+    #     for rec in self:
+    #         if not rec.picking_id.backorder_id:
+    #             if rec.picking_id.sale_id:
+    #                 for line in rec.picking_id.sale_id.order_line:
+    #                     if rec.move_id.sale_line_id.id == line.id:
+    #                         rec.so_no = line.number
+    #             if rec.picking_id.purchase_id:
+    #                 for line in rec.picking_id.purchase_id.order_line:
+    #                     if rec.move_id.purchase_line_id.id == line.id:
+    #                         rec.so_no = line.number
+    #         else:
+    #             if rec.picking_id.backorder_id.sale_id:
+    #                 for line in rec.picking_id.backorder_id.sale_id.order_line:
+    #                     if rec.move_id.sale_line_id.id == line.id:
+    #                         rec.so_no = line.number
+    #             if rec.picking_id.backorder_id.purchase_id:
+    #                 for line in rec.picking_id.backorder_id.purchase_id.order_line:
+    #                     if rec.move_id.purchase_line_id.id == line.id:
+    #                         rec.so_no = line.number
+    #         if rec.picking_id.sale_id:
+    #             for line in rec.picking_id.sale_id.order_line:
+    #                 if line.product_id.id == rec.product_id.id and line.number == rec.number:
+    #                     rec.so_no = line.number
+    #
+    #         else:
+    #             rec.so_no = 0
 
     @api.depends('picking_id')
     def _compute_get_number(self):

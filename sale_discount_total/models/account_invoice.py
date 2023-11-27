@@ -74,31 +74,31 @@ class AccountInvoice(models.Model):
     #         move.amount_residual_signed = total_residual
     #         move.amount_total_in_currency_signed = abs(move.amount_total) if move.move_type == 'entry' else -(
     #                     sign * move.amount_total)
-            # currency = len(currencies) == 1 and currencies.pop() or move.company_id.currency_id
-
-            # new_pmt_state = 'not_paid' if move.move_type != 'entry' else False
-            #
-            # if move.is_invoice(include_receipts=True) and move.state == 'posted':
-            #     if currency.is_zero(move.amount_residual):
-            #         if all(payment.is_matched for payment in move._get_reconciled_payments()):
-            #             new_pmt_state = 'paid'
-            #         else:
-            #             new_pmt_state = move._get_invoice_in_payment_state()
-            #     elif currency.compare_amounts(total_to_pay, total_residual) != 0:
-            #         new_pmt_state = 'partial'
-            #
-            # if new_pmt_state == 'paid' and move.move_type in ('in_invoice', 'out_invoice', 'entry'):
-            #     reverse_type = move.move_type == 'in_invoice' and 'in_refund' or move.move_type == 'out_invoice' and 'out_refund' or 'entry'
-            #     reverse_moves = self.env['account.move'].search(
-            #         [('reversed_entry_id', '=', move.id), ('state', '=', 'posted'), ('move_type', '=', reverse_type)])
-            #
-            #     # We only set 'reversed' state in cas of 1 to 1 full reconciliation with a reverse entry; otherwise, we use the regular 'paid' state
-            #     reverse_moves_full_recs = reverse_moves.mapped('line_ids.full_reconcile_id')
-            #     if reverse_moves_full_recs.mapped('reconciled_line_ids.move_id').filtered(lambda x: x not in (
-            #             reverse_moves + reverse_moves_full_recs.mapped('exchange_move_id'))) == move:
-            #         new_pmt_state = 'reversed'
-            #
-            # move.payment_state = new_pmt_state
+    #         currency = len(currencies) == 1 and currencies.pop() or move.company_id.currency_id
+    #
+    #         new_pmt_state = 'not_paid' if move.move_type != 'entry' else False
+    #
+    #         if move.is_invoice(include_receipts=True) and move.state == 'posted':
+    #             if currency.is_zero(move.amount_residual):
+    #                 if all(payment.is_matched for payment in move._get_reconciled_payments()):
+    #                     new_pmt_state = 'paid'
+    #                 else:
+    #                     new_pmt_state = move._get_invoice_in_payment_state()
+    #             elif currency.compare_amounts(total_to_pay, total_residual) != 0:
+    #                 new_pmt_state = 'partial'
+    #
+    #         if new_pmt_state == 'paid' and move.move_type in ('in_invoice', 'out_invoice', 'entry'):
+    #             reverse_type = move.move_type == 'in_invoice' and 'in_refund' or move.move_type == 'out_invoice' and 'out_refund' or 'entry'
+    #             reverse_moves = self.env['account.move'].search(
+    #                 [('reversed_entry_id', '=', move.id), ('state', '=', 'posted'), ('move_type', '=', reverse_type)])
+    #
+    #             # We only set 'reversed' state in cas of 1 to 1 full reconciliation with a reverse entry; otherwise, we use the regular 'paid' state
+    #             reverse_moves_full_recs = reverse_moves.mapped('line_ids.full_reconcile_id')
+    #             if reverse_moves_full_recs.mapped('reconciled_line_ids.move_id').filtered(lambda x: x not in (
+    #                     reverse_moves + reverse_moves_full_recs.mapped('exchange_move_id'))) == move:
+    #                 new_pmt_state = 'reversed'
+    #
+    #         move.payment_state = new_pmt_state
 
     @api.onchange('discount_type', 'discount_rate', 'invoice_line_ids')
     def supply_rate(self):
@@ -130,6 +130,8 @@ class AccountInvoice(models.Model):
     def button_dummy(self):
         self.supply_rate()
         return True
+
+
 
     # def action_manager_approve(self):
     #     for move in self:

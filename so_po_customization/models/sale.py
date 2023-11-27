@@ -223,8 +223,6 @@ class SaleOrderInh(models.Model):
         return qty
 
 
-
-
 class SaleOrderLineInh(models.Model):
     _inherit = 'sale.order.line'
 

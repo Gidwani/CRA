@@ -1,6 +1,17 @@
 <odoo>
     <data>
 
+        <record id="action_update_so_no" model="ir.actions.server">
+            <field name="name">Update SO NO</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                action = records.action_update_so_no()
+            </field>
+        </record>
+
         <record id="view_account_move_form_inherit" model="ir.ui.view">
             <field name="name">account.move.form.inh</field>
             <field name="model">account.move</field>
@@ -9,6 +20,9 @@
 
                 <xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='product_id']" position="attributes">
                     <attribute name="class">text-wrap</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='product_id']" position="before">
+                    <field name="so_no" string="SO No" readonly="1"/>
                 </xpath>
 
             </field>
@@ -51,6 +65,7 @@
             <field name="arch" type="xml">
 
                 <xpath expr="//field[@name='move_ids_without_package']//field[@name='product_uom_qty']" position="after">
+<!--                    <field name="so_no"/>-->
                     <field name="is_backorder"/>
                 </xpath>
 
@@ -70,7 +85,7 @@
                     <field name="is_backorder"/>
                 </xpath>
                 <xpath expr="//field[@name='reserved_uom_qty']" position="attributes">
-                   <attribute name="readonly">0</attribute>
+                    <attribute name="readonly">0</attribute>
                 </xpath>
             </field>
         </record>
@@ -81,9 +96,9 @@
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
 
-<!--                <xpath expr="//field[@name='move_ids_without_package']//field[@name='product_uom_qty']" position="after">-->
-<!--                    <field name="is_backorder"/>-->
-<!--                </xpath>-->
+                <!--                <xpath expr="//field[@name='move_ids_without_package']//field[@name='product_uom_qty']" position="after">-->
+                <!--                    <field name="is_backorder"/>-->
+                <!--                </xpath>-->
 
                 <xpath expr="//header/button[@name='do_print_picking']" position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -95,10 +110,10 @@
                 </xpath>
 
 
-<!--                <xpath expr="//header/button[@name='action_cancel']" position="after">-->
-<!--                    <button string="Add Done Quantities" type="object" name="action_add_done_qty" attrs="{'invisible': ['|','|',('state', 'not in', ['assigned','confirmed']), ('is_done_added', '=', True), ('is_delivery', '=', False)]}"/>-->
-<!--                    <button string="Remove Done Quantities" type="object" name="action_remove_done_qty" attrs="{'invisible': ['|','|', ('state', 'not in', ['assigned','confirmed']), ('is_done_added', '=', False), ('is_delivery', '=', False)]}"/>-->
-<!--                </xpath>-->
+                <!--                <xpath expr="//header/button[@name='action_cancel']" position="after">-->
+                <!--                    <button string="Add Done Quantities" type="object" name="action_add_done_qty" attrs="{'invisible': ['|','|',('state', 'not in', ['assigned','confirmed']), ('is_done_added', '=', True), ('is_delivery', '=', False)]}"/>-->
+                <!--                    <button string="Remove Done Quantities" type="object" name="action_remove_done_qty" attrs="{'invisible': ['|','|', ('state', 'not in', ['assigned','confirmed']), ('is_done_added', '=', False), ('is_delivery', '=', False)]}"/>-->
+                <!--                </xpath>-->
 
             </field>
         </record>

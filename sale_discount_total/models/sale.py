@@ -95,6 +95,14 @@ class SaleOrder(models.Model):
         self.supply_rate()
         return True
 
+    def _create_invoices(self, grouped=False, final=False, date=None):
+        """Link timesheets to the created invoices. Date interval is injected in the
+        context in sale_make_invoice_advance_inv wizard.
+        """
+        moves = super()._create_invoices(grouped=grouped, final=final, date=date)
+        moves.button_dummy()
+        return moves
+
     # def write(self, vals):
     #     print(self)
     #     print(self.order_line)
