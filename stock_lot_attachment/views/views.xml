@@ -20,7 +20,18 @@
                 <xpath expr="//field[@name='product_id']" position="after">
                     <field name="attachment_ids" string="Attach a file" widget="many2many_binary" invisible="1"/>
                     <button icon="fa-download" type="object" name="action_download" title="g" attrs="{'invisible': [('attachment_ids', '=', [])]}"/>
+                </xpath>
+            </field>
+        </record>
 
+        <record id="view_stock_quant_tree_inventory_editable_inh" model="ir.ui.view">
+            <field name="name">stock.quant.lot.inh.tree</field>
+            <field name="model">stock.quant</field>
+            <field name="inherit_id" ref="stock.view_stock_quant_tree_inventory_editable"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='lot_id']" position="after">
+                    <field name="attachment_ids" string="Attach a file" widget="many2many_binary" invisible="1"/>
+                    <button icon="fa-download" type="object" name="action_download" title="g" attrs="{'invisible': [('attachment_ids', '=', [])]}"/>
                 </xpath>
             </field>
         </record>
@@ -33,6 +44,17 @@
                 <xpath expr="//field[@name='lot_id']" position="after">
                     <field name="attachment_ids" invisible="1" filename="lot_attachment" widget="many2many_binary"/>
                    <button icon="fa-download" title="g" type="object" name="action_download" attrs="{'invisible': [('attachment_ids', '=', [])]}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_picking_form_inh" model="ir.ui.view">
+            <field name="name">stock.picking.inh</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                   <button string="Download" type="object" name="action_download_attachment"/>
                 </xpath>
             </field>
         </record>

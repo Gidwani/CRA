@@ -4,6 +4,22 @@ from odoo import models, fields, api
 from odoo.exceptions import UserError
 
 
+class StockQuantInh(models.Model):
+    _inherit = 'stock.quant'
+
+    attachment_ids = fields.Many2many('ir.attachment', string="Add File", related='lot_id.attachment_ids')
+
+    def action_download(self):
+        for r in self:
+            for rec in r.attachment_ids:
+                return {
+                    "type": "ir.actions.act_url",
+                    "target": "new",
+                    "url": "/web/content?model=ir.attachment&download=true&field=datas&id={}".format(
+                        rec.id),
+                }
+
+
 class StockLotInh(models.Model):
     _inherit = 'stock.lot'
 
@@ -38,4 +54,18 @@ class StockMoveLineInh(models.Model):
                 "url": "/web/content?model=ir.attachment&download=true&field=datas&id={}".format(
                     rec.id),
             }
+
+
+class StockPickingInh(models.Model):
+    _inherit = 'stock.picking'
+
+    def action_download_attachment(self):
+        """Method to Download the attachment"""
+
+        url = '/web/binary/download_document?tab_id=%s' % self.move_line_ids_without_package.mapped('attachment_ids').ids
+        return {
+            'type': 'ir.actions.act_url',
+            'url': url,
+            'target': 'new',
+        }
 
