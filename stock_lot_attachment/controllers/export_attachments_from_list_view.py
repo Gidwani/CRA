@@ -16,17 +16,18 @@ _logger = logging.getLogger(__name__)
 
 class Binary(http.Controller):
 
-    @http.route('/web/binary/download_document', type='http',
-                auth="public")
+    @http.route('/web/binary/download_document', type='http', auth="public")
     def download_document(self, tab_id):
         """Download attachment method"""
         new_tab = ast.literal_eval(tab_id)
         attachment_ids = request.env['ir.attachment'].browse(new_tab)
         file_dict = {}
+        i = 0
         for attachment_id in attachment_ids:
+            i += 1
             file_store = attachment_id.store_fname
             if file_store:
-                file_name = attachment_id.name
+                file_name = str(i) + '-' + attachment_id.name
                 file_path = attachment_id._full_path(file_store)
                 file_dict["%s:%s" % (file_store, file_name)] = dict(
                     path=file_path, name=file_name)
