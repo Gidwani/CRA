@@ -27,7 +27,7 @@ class Binary(http.Controller):
             i += 1
             file_store = attachment_id.store_fname
             if file_store:
-                file_name = str(i) + '-' + attachment_id.name
+                file_name = attachment_id.temp_file_name
                 file_path = attachment_id._full_path(file_store)
                 file_dict["%s:%s" % (file_store, file_name)] = dict(
                     path=file_path, name=file_name)

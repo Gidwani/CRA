@@ -4,6 +4,12 @@ from odoo import models, fields, api
 from odoo.exceptions import UserError
 
 
+class IrAttachmentInh(models.Model):
+    _inherit = 'ir.attachment'
+
+    temp_file_name = fields.Char()
+
+
 class StockQuantInh(models.Model):
     _inherit = 'stock.quant'
 
@@ -60,9 +66,11 @@ class StockPickingInh(models.Model):
     _inherit = 'stock.picking'
 
     def action_download_attachment(self):
-        """Method to Download the attachment"""
-
         url = '/web/binary/download_document?tab_id=%s' % self.move_line_ids_without_package.mapped('attachment_ids').ids
+        for rec in self.move_line_ids_without_package:
+            if rec.attachment_ids:
+                for r in rec.attachment_ids:
+                    r.temp_file_name = str(rec.so_no) + ' - ' + r.name + ' - ' + str(rec.reserved_uom_qty) + ' ' + (rec.product_uom_id.name)
         return {
             'type': 'ir.actions.act_url',
             'url': url,
