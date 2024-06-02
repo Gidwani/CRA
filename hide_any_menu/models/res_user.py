@@ -64,11 +64,11 @@ class IrUiMenu(models.Model):
         return super(IrUiMenu, self).write(values)
 
     @api.model
-    def search(self, args, offset=0, limit=None, order=None, count=False):
+    def search(self, args, offset=0, limit=None, order=None):
         if self.env.user == self.env.ref('base.user_root'):
-            return super(IrUiMenu, self).search(args, offset=0, limit=None, order=order, count=False)
+            return super(IrUiMenu, self).search(args, offset=0, limit=None, order=order)
         else:
-            menus = super(IrUiMenu, self).search(args, offset=0, limit=None, order=order, count=False)
+            menus = super(IrUiMenu, self).search(args, offset=0, limit=None, order=order)
             if menus:
                 menu_ids = [menu for menu in self.env.user.menu_ids]
                 menu_ids2 = [menu for group in self.env.user.groups_id for menu in group.menu_ids]
@@ -79,7 +79,7 @@ class IrUiMenu(models.Model):
                     menus = menus[offset:]
                 if limit:
                     menus = menus[:limit]
-            return len(menus) if count else menus
+            return menus
 
 
 class IrModel(models.Model):

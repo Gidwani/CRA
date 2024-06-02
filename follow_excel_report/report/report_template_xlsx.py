@@ -35,9 +35,6 @@ class ReportXlsxInh(models.AbstractModel):
             sheet.set_column('I:I', 15)
             sheet.set_column('J:J', 15)
             partner = self.env['res.partner'].search([('id', '=', report.id)])
-            # print(partner)
-            # invoices = self.env['account.move'].search([('id', 'in', partner.unpaid_invoice_ids.ids)], order='id asc')
-            # print(invoices)
             row = 12
             sheet.write(6, 1, 'Customer Name', style)
             sheet.write(6, 2, partner.name, center)

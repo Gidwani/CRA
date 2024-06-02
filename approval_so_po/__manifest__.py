@@ -32,5 +32,5 @@
         'views/sale_order_views.xml',
 
     ],
-'license': 'AGPL-3',
+    'license': 'AGPL-3',
 }

@@ -92,7 +92,7 @@ class StockReturnPickingInh(models.TransientModel):
             total_return = 0
             for do_line in returns_do:
                 for rec_line in do_line.move_ids_without_package:
-                    total_return = total_return + rec_line.quantity_done
+                    total_return = total_return + rec_line.quantity
             for return_line in self.product_return_moves:
                 for pro_line in rec.sale_id.order_line:
                     if pro_line.product_uom.id == return_line.uom_id.id:
@@ -127,7 +127,7 @@ class StockReturnPickingInh(models.TransientModel):
             total_return = 0
             for do_line in returns_do:
                 for rec_line in do_line.move_ids_without_package:
-                    total_return = total_return + rec_line.quantity_done
+                    total_return = total_return + rec_line.quantity
 
             for return_line in self.product_return_moves:
                 for pro_line in rec.purchase_id.order_line:
@@ -255,6 +255,10 @@ class SaleOrderInh(models.Model):
                 if q_line.product_tmpl_id.id == res_line.product_id.product_tmpl_id.id:
                     total = total + q_line.available_quantity
             res_line.product_id.product_tmpl_id.available_qty = total
+
+    def _can_be_confirmed(self):
+        self.ensure_one()
+        return self.state in {'draft', 'sent', 'manager'}
 
 
 class PurchaseOrderInh(models.Model):
@@ -765,7 +769,7 @@ class StockPickingInh(models.Model):
     def button_validate(self):
         flag = False
         for line in self.move_ids_without_package:
-            if round(line.quantity_done, 2) <= round(line.product_uom_qty, 2):
+            if round(line.quantity, 2) <= round(line.product_uom_qty, 2):
                 flag = True
             else:
                 raise UserError('Done Quantity Cannot be greater than Demand')
@@ -774,7 +778,7 @@ class StockPickingInh(models.Model):
                 if self.picking_type_id.code == 'outgoing':
                     check = False
                     for rec in self.move_line_ids_without_package:
-                        if rec.qty_done == 0 and not rec.is_backorder:
+                        if rec.quantity == 0 and not rec.is_backorder:
                             check = True
                     if check:
                         raise UserError('Kindly Add Done Quantities Before Validate')
@@ -787,7 +791,7 @@ class StockPickingInh(models.Model):
                 else:
                     check = False
                     for rec in self.move_ids_without_package:
-                        if rec.quantity_done == 0 and not rec.is_backorder:
+                        if rec.quantity == 0 and not rec.is_backorder:
                             check = True
                     if check:
                         raise UserError('Kindly Add Done Quantities Before Validate')
@@ -797,7 +801,7 @@ class StockPickingInh(models.Model):
     def action_manager_approve(self):
         flag = False
         for line in self.move_ids_without_package:
-            if round(line.quantity_done, 2) <= round(line.product_uom_qty, 2):
+            if round(line.quantity, 2) <= round(line.product_uom_qty, 2):
                 flag = True
             else:
                 raise UserError('Done Quantity Cannot be greater than Demand')
@@ -911,9 +915,9 @@ class StockBackorderConfirmationInh(models.TransientModel):
             moves_to_log = {}
             for move in pick_id.move_lines:
                 if float_compare(move.product_uom_qty,
-                                 move.quantity_done,
+                                 move.quantity,
                                  precision_rounding=move.product_uom.rounding) > 0:
-                    moves_to_log[move] = (move.quantity_done, move.product_uom_qty)
+                    moves_to_log[move] = (move.quantity, move.product_uom_qty)
             pick_id._log_less_quantities_than_expected(moves_to_log)
 
         pickings_to_validate = self.env.context.get('button_validate_picking_ids')
@@ -937,34 +941,34 @@ class StockBackorderConfirmationInh(models.TransientModel):
         return True
 
 
-class StockImmediateTransferInh(models.TransientModel):
-    _inherit = 'stock.immediate.transfer'
-
-    def process(self):
-        pickings_to_do = self.env['stock.picking']
-        pickings_not_to_do = self.env['stock.picking']
-        for line in self.immediate_transfer_line_ids:
-            if line.to_immediate is True:
-                pickings_to_do |= line.picking_id
-            else:
-                pickings_not_to_do |= line.picking_id
-
-        for picking in pickings_to_do:
-            # If still in draft => confirm and assign
-            if picking.state == 'draft':
-                picking.action_confirm()
-                if picking.state != 'assigned':
-                    picking.action_assign()
-                    if picking.state != 'assigned':
-                        raise UserError(
-                            _("Could not reserve all requested products. Please use the \'Mark as Todo\' button to handle the reservation manually."))
-            for move in picking.move_lines.filtered(lambda m: m.state not in ['done', 'cancel']):
-                for move_line in move.move_line_ids:
-                    move_line.qty_done = move_line.product_uom_qty
-
-        pickings_to_validate = self.env.context.get('button_validate_picking_ids')
-        if pickings_to_validate:
-            pickings_to_validate = self.env['stock.picking'].browse(pickings_to_validate)
-            pickings_to_validate = pickings_to_validate - pickings_not_to_do
-            return pickings_to_validate.with_context(skip_immediate=True).action_manager_approve()
-        return True
+# class StockImmediateTransferInh(models.TransientModel):
+#     _inherit = 'stock.immediate.transfer'
+#
+#     def process(self):
+#         pickings_to_do = self.env['stock.picking']
+#         pickings_not_to_do = self.env['stock.picking']
+#         for line in self.immediate_transfer_line_ids:
+#             if line.to_immediate is True:
+#                 pickings_to_do |= line.picking_id
+#             else:
+#                 pickings_not_to_do |= line.picking_id
+#
+#         for picking in pickings_to_do:
+#             # If still in draft => confirm and assign
+#             if picking.state == 'draft':
+#                 picking.action_confirm()
+#                 if picking.state != 'assigned':
+#                     picking.action_assign()
+#                     if picking.state != 'assigned':
+#                         raise UserError(
+#                             _("Could not reserve all requested products. Please use the \'Mark as Todo\' button to handle the reservation manually."))
+#             for move in picking.move_lines.filtered(lambda m: m.state not in ['done', 'cancel']):
+#                 for move_line in move.move_line_ids:
+#                     move_line.qty_done = move_line.product_uom_qty
+#
+#         pickings_to_validate = self.env.context.get('button_validate_picking_ids')
+#         if pickings_to_validate:
+#             pickings_to_validate = self.env['stock.picking'].browse(pickings_to_validate)
+#             pickings_to_validate = pickings_to_validate - pickings_not_to_do
+#             return pickings_to_validate.with_context(skip_immediate=True).action_manager_approve()
+#         return True

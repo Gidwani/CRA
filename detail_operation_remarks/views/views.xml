@@ -84,7 +84,7 @@
                 <xpath expr="//field[@name='lot_id']" position="before">
                     <field name="is_backorder"/>
                 </xpath>
-                <xpath expr="//field[@name='reserved_uom_qty']" position="attributes">
+                <xpath expr="//field[@name='quantity']" position="attributes">
                     <attribute name="readonly">0</attribute>
                 </xpath>
             </field>

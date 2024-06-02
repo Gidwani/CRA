@@ -10,7 +10,7 @@
 
 {
     "name": "All in one Mass/bulk Export Excel",
-    'version': '14.0.1.0',
+    'version': '17.0.1.0',
     "sequence": 1,
     "category": 'Sales',
     "summary": """
