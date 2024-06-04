@@ -33,7 +33,8 @@
             <!--            </xpath>-->
             <xpath expr="//tree/field[@name='virtual_available']" position="after">
                 <field invisible="0" name="x_css"/>
-            </xpath></field>
+            </xpath>
+        </field>
     </record>
     <record id="view_stock_quant_tree_edit_inh" model="ir.ui.view">
         <field name="name">stock.quant.inh</field>
@@ -49,7 +50,7 @@
             </xpath>
         </field>
     </record>
-    <record id="view_stock_picking_form_inh" model="ir.ui.view">
+    <record id="view_stock_picking_form_inherit" model="ir.ui.view">
         <field name="name">stock.picking.form.inh</field>
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="stock.view_picking_form"/>
@@ -59,8 +60,13 @@
                 <button groups="stock.group_stock_manager" invisible="state != 'manager'" name="action_reject" string="Reject" type="object"/>
             </xpath>
             <xpath expr="//header/button[@name='action_cancel']" position="attributes">
-                <attribute name="groups">
-                    stock.group_stock_manager</attribute>
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='button_validate']" position="attributes">
+                <attribute name="invisible">state in ('draft', 'confirmed', 'done', 'cancel', 'manager')</attribute>
+            </xpath>
+            <xpath expr="//header/button[4]" position="attributes">
+                <attribute name="invisible">state in ('draft', 'confirmed', 'done', 'cancel', 'manager')</attribute>
             </xpath>
 <!--            <xpath expr="//header/button[@name='button_scrap']" position="attributes">-->
 <!--                <attribute name="groups">-->
