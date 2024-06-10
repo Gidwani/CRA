@@ -126,7 +126,7 @@ class StockPickingInh(models.Model):
                     if rec.lot_id:
                         lot_list.append({
                             'lot_name': rec.lot_id.name,
-                            'lot_qty': rec.reserved_uom_qty/6 if rec.product_uom_id.name == 'Mtr' else rec.reserved_uom_qty,
+                            'lot_qty': rec.quantity/6 if rec.product_uom_id.name == 'Mtr' else rec.quantity,
                         })
                 lot_str = ''
                 if lot_list:

@@ -53,7 +53,7 @@ Odoo excel report export
     'installable': True,
     'application': True,
     'auto_install': False,
-    'price':22.0,
+    'price': 22.0,
     'currency':'EUR',
     #'live_test_url':'https://youtu.be/A5kEBboAh_k',
 }

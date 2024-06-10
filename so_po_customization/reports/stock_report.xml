@@ -66,7 +66,7 @@
                                     </td>
                                     <td class="text-center">
                                         <!--                                    <span t-field="move.product_uom_qty"/>-->
-                                        <span t-esc="move.qty_done"/>
+                                        <span t-esc="move.quantity"/>
                                     </td>
                                     <td class="text-center" name="move_line_lot_qty_done">
                                         <span t-esc="move.get_product_uom_lot(move)"/>
@@ -314,7 +314,7 @@
                                 </td>
                                 <td class="text-center">
                                     <!--                                    <span t-field="move.product_uom_qty"/>-->
-                                    <span t-esc="move.qty_done"/>
+                                    <span t-esc="move.quantity"/>
                                 </td>
                                 <td class="text-center" name="move_line_lot_qty_done">
                                     <span t-esc="move.get_product_uom_lot(move)"/>
@@ -492,7 +492,7 @@
         </t>
         <td class="text-center" name="move_line_lot_qty_done">
             <!--            <span t-field="move_line.get_product_qty_lot(move_line)"/>-->
-            <span t-field="move_line.qty_done"/>
+            <span t-field="move_line.quantity"/>
             <!--            <span t-field="move_line.product_uom_id"/>-->
         </td>
         <td class="text-center" name="move_line_lot_qty_done">
@@ -610,8 +610,8 @@
                                         <span t-esc="ml.get_onhand_qty(ml)"/>
                                     </td>
                                     <td class="text-center">
-                                        <span t-if="o.state != 'done'" t-field="ml.reserved_uom_qty"/>
-                                        <span t-if="o.state == 'done'" t-field="ml.qty_done"/>
+                                        <span t-if="o.state != 'done'" t-field="ml.quantity"/>
+                                        <span t-if="o.state == 'done'" t-field="ml.quantity"/>
                                         <!--                                                    <span t-field="ml.product_uom_id" groups="uom.group_uom"/>-->
                                         <span t-esc="ml.get_product_uom_id(ml, ml.picking_id)"/>
                                     </td>
@@ -789,14 +789,14 @@
                                                 <span t-field="move.remarks"/>
                                             </td>
                                             <td>
-                                                <span t-esc="ml.qty_done"/>
+                                                <span t-esc="ml.quantity"/>
                                             </td>
                                             <td>
                                                 <span t-esc="ml.get_onhand_qty(ml)"/>
                                             </td>
                                             <td>
-                                                <span t-if="o.state != 'done'" t-field="ml.reserved_uom_qty"/>
-                                                <span t-if="o.state == 'done'" t-field="ml.qty_done"/>
+                                                <span t-if="o.state != 'done'" t-field="ml.quantity"/>
+                                                <span t-if="o.state == 'done'" t-field="ml.quantity"/>
                                                 <!--                                                    <span t-field="ml.product_uom_id" groups="uom.group_uom"/>-->
                                                 <span t-esc="ml.get_product_uom_id(ml, ml.picking_id)"/>
                                             </td>

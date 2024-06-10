@@ -20,15 +20,26 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
         </form>
         </field>
     </record>
+
+
+
+     <record id="action_sale_menu" model="ir.actions.act_window">
+            <field name="name">Export Sale Order</field>
+            <field name="res_model">bulk.export</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_view_types">list</field>
+        </record>
     
     
-     <act_window id="act_sale_menu"
-                name="Export Sale Order"
-                res_model="bulk.export" 
-                binding_model="sale.order"
-                view_mode="form" 
-                target="new"	
-        />
+<!--     <act_window id="act_sale_menu"-->
+<!--                name="Export Sale Order"-->
+<!--                res_model="bulk.export" -->
+<!--                binding_model="sale.order"-->
+<!--                view_mode="form" -->
+<!--                target="new"	-->
+<!--        />-->
     
 
     <record id="view_bulk_export_purchase_form" model="ir.ui.view">
@@ -45,15 +56,23 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
         </form>
         </field>
     </record>
-    
-    <act_window id="act_purchase_menu"
-                name="Export Purchase Order"
-                res_model="bulk.export" 
-                binding_model="purchase.order"
-                view_mode="form" 
-                target="new"	
-        />
 
+    <record id="act_purchase_menu" model="ir.actions.act_window">
+            <field name="name">Export Purchase Order</field>
+            <field name="res_model">bulk.export</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+            <field name="binding_view_types">list</field>
+        </record>
+    
+<!--    <act_window id="act_purchase_menu"-->
+<!--                name="Export Purchase Order"-->
+<!--                res_model="bulk.export" -->
+<!--                binding_model="purchase.order"-->
+<!--                view_mode="form" -->
+<!--                target="new"	-->
+<!--        />-->
 
     <record id="view_bulk_export_invoice_form" model="ir.ui.view">
         <field name="name">view.bulk.export.invoice.form</field>
@@ -69,18 +88,24 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
         </form>
         </field>
     </record>
+
+    <record id="act_account_invoice_menu" model="ir.actions.act_window">
+            <field name="name">Export Account Invoice</field>
+            <field name="res_model">bulk.export</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="binding_view_types">list</field>
+        </record>
     
-    <act_window id="act_account_invoice_menu"
-                name="Export Account Invoice"
-                res_model="bulk.export" 
-                binding_model="account.move"
-                view_mode="form" 
-                target="new"	
-        />
+<!--    <act_window id="act_account_invoice_menu"-->
+<!--                name="Export Account Invoice"-->
+<!--                res_model="bulk.export" -->
+<!--                binding_model="account.move"-->
+<!--                view_mode="form" -->
+<!--                target="new"	-->
+<!--        />-->
 
-
-        
-		
     <record id="view_bulk_export_excel_form" model="ir.ui.view">
         <field name="name">bulk.export.excel.form</field>
         <field name="model">bulk.export.excel</field>
