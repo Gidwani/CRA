@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+
         <record id="view_production_lot_form_inh" model="ir.ui.view">
             <field name="name">stock.production.lot.inh.form</field>
             <field name="model">stock.lot</field>
@@ -8,8 +9,10 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='ref']" position="after">
                     <field name="attachment_ids" string="Attach a file" widget="many2many_binary"/>
-                </xpath></field>
+                </xpath>
+            </field>
         </record>
+
         <record id="view_production_lot_tree_inh" model="ir.ui.view">
             <field name="name">stock.production.lot.inh.tree</field>
             <field name="model">stock.lot</field>
@@ -18,8 +21,10 @@
                 <xpath expr="//field[@name='product_id']" position="after">
                     <field invisible="1" name="attachment_ids" string="Attach a file" widget="many2many_binary"/>
                     <button icon="fa-download" invisible="attachment_ids == []" name="action_download" title="g" type="object"/>
-                </xpath></field>
+                </xpath>
+            </field>
         </record>
+
         <record id="view_stock_quant_tree_inventory_editable_inh" model="ir.ui.view">
             <field name="name">stock.quant.lot.inh.tree</field>
             <field name="model">stock.quant</field>
@@ -28,8 +33,10 @@
                 <xpath expr="//field[@name='lot_id']" position="after">
                     <field invisible="1" name="attachment_ids" string="Attach a file" widget="many2many_binary"/>
                     <button icon="fa-download" invisible="attachment_ids == []" name="action_download" title="g" type="object"/>
-                </xpath></field>
+                </xpath>
+            </field>
         </record>
+
         <record id="view_stock_move_line_detailed_operation_tree_inh" model="ir.ui.view">
             <field name="name">stock.move.line.operations.tree.inherit</field>
             <field name="model">stock.move.line</field>
@@ -38,8 +45,13 @@
                 <xpath expr="//field[@name='lot_id']" position="after">
                     <field filename="lot_attachment" invisible="1" name="attachment_ids" widget="many2many_binary"/>
                     <button icon="fa-download" invisible="attachment_ids == []" name="action_download" title="g" type="object"/>
-                </xpath></field>
+                </xpath>
+                <xpath expr="//tree/header" position="inside">
+                    <button string="Download" name="action_download_tree" title="g" type="object"/>
+                </xpath>
+            </field>
         </record>
+
         <record id="view_picking_form_inh" model="ir.ui.view">
             <field name="name">stock.picking.inh</field>
             <field name="model">stock.picking</field>
@@ -47,7 +59,9 @@
             <field name="arch" type="xml">
                 <xpath expr="//header" position="inside">
                     <button name="action_download_attachment" string="Download" type="object"/>
-                </xpath></field>
+                </xpath>
+            </field>
         </record>
+
     </data>
 </odoo>
