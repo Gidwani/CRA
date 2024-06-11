@@ -5,7 +5,6 @@ from odoo import models, fields, api
 
 
 class SelectProducts(models.TransientModel):
-
     _name = 'select.products'
     _description = 'Select Products'
 

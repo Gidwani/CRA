@@ -19,18 +19,30 @@ class SaleOrderWizard(models.TransientModel):
             for order in res.sale_id:
                 if order.name not in my_list:
                     for line in order._origin.order_line:
-                        val = {
-                            'sale_id': res.id,
-                            'sale_order': order.name,
-                            'sr_no': line.number,
-                            'qty': line.product_uom_qty,
-                            'product_id': line.product_id.id,
-                            'uom_id': line.product_uom.id,
-                            'price': line.price_unit,
-                            # 'so_ref': line.so_no,
-                        }
-                        val_list.append(val)
-            move = self.env['sale.order.wizard.line'].create(val_list)
+                        # val = {
+                        #     'sale_id': res.id,
+                        #     'sale_order': order.name,
+                        #     'sr_no': line.number,
+                        #     'qty': line.product_uom_qty,
+                        #     'product_id': line.product_id.id,
+                        #     'uom_id': line.product_uom.id,
+                        #     'price': line.price_unit,
+                        #     # 'so_ref': line.so_no,
+                        # }
+                        # val_list.append(val)
+                        val_list.append((0, 0,
+                                         {'sale_id': res.id,
+                                             'sale_order': order.name,
+                                             'sr_no': line.number,
+                                             'qty': line.product_uom_qty,
+                                             'product_id': line.product_id.id,
+                                             'uom_id': line.product_uom.id,
+                                             'price': line.price_unit,
+                                             # 'so_ref': line.so_no,
+                                             }))
+
+            # move = self.env['sale.order.wizard.line'].create(val_list)
+            res.product_lines = val_list
 
     def action_get_products(self):
         model = self.env.context.get('active_model')
@@ -71,6 +83,7 @@ class SaleOrderLineWizard(models.TransientModel):
 
     def get_product_qty(self):
         for rec in self:
+            qty = 0
             product_qty = self.env['product.template'].search([('name', '=', rec.product_id.name)])
             sale_id = self.env['sale.order'].search([('name', '=', rec.sale_order)])
             for line in sale_id.order_line:
@@ -85,6 +98,7 @@ class SaleOrderLineWizard(models.TransientModel):
 
     def get_onhand_qty(self):
         for rec in self:
+            qty = 0
             product_qty = self.env['product.template'].search([('name', '=', rec.product_id.name)])
             sale_id = self.env['sale.order'].search([('name', '=', rec.sale_order)])
             for line in sale_id.order_line:

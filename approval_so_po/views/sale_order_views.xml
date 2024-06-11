@@ -13,13 +13,12 @@
                 <field name="x_css"/>
             </xpath>
             <xpath expr="//header/button[@name='action_cancel']" position="attributes">
-                <attribute name="groups">
-                    sales_team.group_sale_manager</attribute>
+                <attribute name="groups">sales_team.group_sale_manager</attribute>
             </xpath>
             <xpath expr="//header/button[@name='action_draft']" position="attributes">
-                <attribute name="groups">
-                    sales_team.group_sale_manager</attribute>
-            </xpath></field>
+                <attribute name="groups">sales_team.group_sale_manager</attribute>
+            </xpath>
+        </field>
     </record>
     <!--    <record id="view_sales_order_group_form_inh" model="ir.ui.view">-->
     <!--        <field name="name">sales.order.form.inh</field>-->
@@ -32,6 +31,7 @@
     <!--            </xpath>-->
     <!--</field>-->
     <!--    </record>-->
+
     <record id="view_sale_order_form_price_inh" model="ir.ui.view">
         <field name="name">sale.order.form.inh</field>
         <field name="model">sale.order</field>
@@ -39,11 +39,13 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='order_line']//tree//field[@name='product_id']" position="attributes">
                 <attribute name="options">
-                    {'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
+                    {'no_create_edit': True,  'no_create':True}</attribute>
             </xpath>
             <xpath expr="//field[@name='partner_id']" position="attributes">
                 <attribute name="options">
                     {'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
-            </xpath></field>
+            </xpath>
+        </field>
     </record>
+
 </odoo>

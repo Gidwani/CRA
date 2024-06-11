@@ -29,7 +29,7 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="binding_model_id" ref="sale.model_sale_order"/>
-            <field name="binding_view_types">list</field>
+            <field name="binding_view_types">form,list</field>
         </record>
     
     
@@ -63,7 +63,7 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="binding_model_id" ref="purchase.model_purchase_order"/>
-            <field name="binding_view_types">list</field>
+            <field name="binding_view_types">form,list</field>
         </record>
     
 <!--    <act_window id="act_purchase_menu"-->
@@ -95,7 +95,7 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="binding_model_id" ref="account.model_account_move"/>
-            <field name="binding_view_types">list</field>
+           <field name="binding_view_types">form,list</field>
         </record>
     
 <!--    <act_window id="act_account_invoice_menu"-->
