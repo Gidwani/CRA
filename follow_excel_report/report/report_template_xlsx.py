@@ -3,7 +3,6 @@ import io
 
 from odoo import models
 from datetime import date
-import json
 import logging
 _logger = logging.getLogger(__name__)
 

@@ -12,12 +12,12 @@
 
     <record id="invoice_report_excel" model="ir.actions.report">
             <field name="name">Excel Report</field>
-            <field name="model">account.move</field>
-            <field name="report_type">qweb-pdf</field>
+            <field name="model">res.partner</field>
+            <field name="report_type">xlsx</field>
             <field name="report_name">follow_excel_report.report_print_xlsx</field>
             <field name="report_file">follow_excel_report.report_print_xlsx</field>
             <field name="print_report_name">'Excel Report'</field>
-            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
             <field name="binding_type">report</field>
         </record>
 
