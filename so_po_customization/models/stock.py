@@ -126,7 +126,7 @@ class StockPickingInh(models.Model):
                     if rec.lot_id:
                         lot_list.append({
                             'lot_name': rec.lot_id.name,
-                            'lot_qty': rec.reserved_uom_qty/6 if rec.product_uom_id.name == 'Mtr' else rec.reserved_uom_qty,
+                            'lot_qty': rec.quantity/6 if rec.product_uom_id.name == 'Mtr' else rec.quantity,
                         })
                 lot_str = ''
                 if lot_list:
@@ -158,7 +158,7 @@ class StockPickingInh(models.Model):
     def get_total_qty(self):
         total = 0
         for rec in self.move_line_ids_without_package:
-            total = total + rec.qty_done
+            total = total + rec.quantity
         return round(total, 2)
 
     def get_delivery(self):
@@ -174,8 +174,8 @@ class StockPickingInh(models.Model):
         return now_dubai.strftime('%d/%m/%Y %H:%M:%S')
 
     def get_seq(self, picking):
-        return 'Picklist/'+picking.name.split('/')[1]+"/"+picking.name.split('/')[2] + "/"+picking.name.split('/')[3]
-        # return 'Picklist/'+picking.name.split('/')[1]+"/"+picking.name.split('/')[2]
+        # return 'Picklist/'+picking.name.split('/')[1]+"/"+picking.name.split('/')[2] + "/"+picking.name.split('/')[3]
+        return 'Picklist/'+picking.name.split('/')[1]+"/"+picking.name.split('/')[2]
 
     def compute_is_receipt(self):
         for rec in self:

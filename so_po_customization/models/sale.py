@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api, tools
+from odoo import models, fields, api, tools, _
 
 
 class SaleReportInh(models.Model):
@@ -231,6 +231,14 @@ class SaleOrderLineInh(models.Model):
     vat_amount = fields.Float('VAT Amount', compute='_compute_vat_amount')
     subtotal = fields.Float('Subtotal', compute='_compute_subtotal')
 
+    def write(self, vals):
+        old = self.price_unit
+        record = super().write(vals)
+        if 'price_unit' in vals:
+            self.order_id.message_post(body=_("Unit Price of product %s changed from:%s to %s.", self.product_id.name,
+                                     old, self.price_unit)
+                              )
+        return record
     def unlink(self):
         for res in self:
             i = 1

@@ -1,43 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
         <record id="action_contact_approve_all" model="ir.actions.server">
             <field name="name">Approve Contacts</field>
             <field name="model_id" ref="model_res_partner"/>
             <field name="binding_model_id" ref="model_res_partner"/>
-            <field name='groups_id' eval="[(4, ref('approval_so_po.group_contact_manager'))]"/>
+            <field eval="[(4, ref('approval_so_po.group_contact_manager'))]" name="groups_id"/>
             <field name="state">code</field>
-            <field name="code">
-                if records:
-                action = records.action_manager_approve()
-            </field>
+            <field name="code">if records:
+                action = records.action_manager_approve()</field>
         </record>
-
         <record id="view_res_partner_tree_edit_inh" model="ir.ui.view">
             <field name="name">res.partner.tree.inh</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_tree"/>
-<!--            <field name="groups_id" eval="[(4, ref('approval_so_po.group_contact_user'))]"/>-->
+            <!--            <field name="groups_id" eval="[(4, ref('approval_so_po.group_contact_user'))]"/>-->
             <field name="arch" type="xml">
                 <xpath expr="//tree" position="attributes">
-                        <attribute name="multi_edit">0</attribute>
-                </xpath>
-            </field>
+                    <attribute name="multi_edit">
+                        0</attribute>
+                </xpath></field>
         </record>
-
         <record id="view_res_partner_tree_inh" model="ir.ui.view">
             <field name="name">res.partner.tree.inh</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_tree"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='company_id']" position="after">
-                    <field name="active" invisible="1"/>
+                    <field invisible="1" name="active"/>
                     <field name="x_css_set"/>
                     <field name="state" widget="badge"/>
-                </xpath>
-            </field>
+                </xpath></field>
         </record>
-
         <record id="action_archived" model="ir.actions.act_window">
             <field name="name">Contacts</field>
             <field name="type">ir.actions.act_window</field>
@@ -50,18 +44,12 @@
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Create a contact in your address book
-                </p><p>
-                Odoo helps you to easily track all activities related to a customer.
-            </p>
-            </field>
+                </p>
+                <p>
+                    Odoo helps you to easily track all activities related to a customer.
+                </p></field>
         </record>
-
-        <menuitem id="res_archive_menu_contacts"
-                  name="Waiting For Approval"
-                  action="action_archived"
-                  parent="contacts.menu_contacts"
-                  sequence="2"/>
-
+        <menuitem action="action_archived" id="res_archive_menu_contacts" name="Waiting For Approval" parent="contacts.menu_contacts" sequence="2"/>
         <record id="view_res_partner_form_inh" model="ir.ui.view">
             <field name="name">res.partner.form.inh</field>
             <field name="model">res.partner</field>
@@ -69,16 +57,14 @@
             <field name="arch" type="xml">
                 <xpath expr="//form/sheet" position="before">
                     <header>
-                        <button string="Approve" groups="approval_so_po.group_contact_manager" class="oe_highlight" type="object" name="action_manager_approve" attrs="{'invisible': [('state','!=', 'manager')]}"/>
-                        <button string="Reject" type="object" groups="approval_so_po.group_contact_manager" name="action_reject" attrs="{'invisible': [('state','!=', 'manager')]}"/>
-                        <field name="state"  widget="statusbar"/>
+                        <button class="oe_highlight" groups="approval_so_po.group_contact_manager" invisible="state != 'manager'" name="action_manager_approve" string="Approve" type="object"/>
+                        <button groups="approval_so_po.group_contact_manager" invisible="state != 'manager'" name="action_reject" string="Reject" type="object"/>
+                        <field name="state" widget="statusbar"/>
                     </header>
                 </xpath>
                 <xpath expr="//field[@name='category_id']" position="after">
                     <field name="x_css_set"/>
-                </xpath>
-            </field>
+                </xpath></field>
         </record>
-
     </data>
 </odoo>

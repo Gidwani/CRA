@@ -54,7 +54,7 @@ class StockMoveInh(models.Model):
     _inherit = 'stock.move'
 
     def _quantity_done_set(self):
-        quantity_done = self[0].quantity_done  # any call to create will invalidate `move.quantity_done`
+        quantity_done = self[0].quantity  # any call to create will invalidate `move.quantity_done`
         for move in self:
             move_lines = move._get_move_lines()
             if not move_lines:

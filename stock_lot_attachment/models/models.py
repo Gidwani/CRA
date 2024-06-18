@@ -61,6 +61,20 @@ class StockMoveLineInh(models.Model):
                     rec.id),
             }
 
+    def action_download_tree(self):
+        url = '/web/binary/download_document?tab_id=%s' % self.picking_id.move_line_ids_without_package.mapped(
+            'attachment_ids').ids
+        for rec in self.picking_id.move_line_ids_without_package:
+            if rec.attachment_ids:
+                for r in rec.attachment_ids:
+                    r.temp_file_name = str(rec.so_no) + ' - ' + r.name + ' - ' + str(rec.quantity) + ' ' + (
+                        rec.product_uom_id.name)
+        return {
+            'type': 'ir.actions.act_url',
+            'url': url,
+            'target': 'new',
+        }
+
 
 class StockPickingInh(models.Model):
     _inherit = 'stock.picking'
@@ -70,7 +84,7 @@ class StockPickingInh(models.Model):
         for rec in self.move_line_ids_without_package:
             if rec.attachment_ids:
                 for r in rec.attachment_ids:
-                    r.temp_file_name = str(rec.so_no) + ' - ' + r.name + ' - ' + str(rec.reserved_uom_qty) + ' ' + (rec.product_uom_id.name)
+                    r.temp_file_name = str(rec.so_no) + ' - ' + r.name + ' - ' + str(rec.quantity) + ' ' + (rec.product_uom_id.name)
         return {
             'type': 'ir.actions.act_url',
             'url': url,

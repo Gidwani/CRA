@@ -90,7 +90,7 @@ class AccountMoveInh(models.Model):
                             for j in l.move_line_ids_without_package:
                                 if j.picking_id.invoice_link != True:
                                     if j.product_id == k.product_id:
-                                        if j.qty_done == k.quantity:
+                                        if j.quantity == k.quantity:
                                             r.do_link = l.name
                                             j.picking_id.invoice_link = True
 

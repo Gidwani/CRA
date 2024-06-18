@@ -10,7 +10,7 @@
 
 {
     "name": "All in one Mass/bulk Export Excel",
-    'version': '14.0.1.0',
+    'version': '17.0.1.0',
     "sequence": 1,
     "category": 'Sales',
     "summary": """
@@ -53,7 +53,7 @@ Odoo excel report export
     'installable': True,
     'application': True,
     'auto_install': False,
-    'price':22.0,
+    'price': 22.0,
     'currency':'EUR',
     #'live_test_url':'https://youtu.be/A5kEBboAh_k',
 }

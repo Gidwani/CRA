@@ -4,9 +4,8 @@
 
 {
     "name": "Use AND conditions on omnibar search",
-    "version": "16.0.1.0.0",
-    "author": """Sandip SCS, Versada UAB, ACSONE SA/NV, Serincloud,
-    Odoo Community Association (OCA)""",
+    "version": "17.0",
+    "author": """TAMJEED A MUHAMMAD""",
     "license": "AGPL-3",
     "category": "web",
     "website": "https://github.com/OCA/web",

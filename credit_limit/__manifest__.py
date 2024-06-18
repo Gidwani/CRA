@@ -10,9 +10,8 @@
     'author': "Atif",
     'website': "www.abc.com",
     'category': 'Sales',
-    'version': '14.0.0.0.0',
-    'depends': ['base','sale_management', 'approval_so_po',
-                'account'],
+    'version': '17.0.0.0.0',
+    'depends': ['base', 'sale_management', 'approval_so_po', 'account'],
     'data': [
         'security/ir.model.access.csv',
         'wizard/message_box.xml',

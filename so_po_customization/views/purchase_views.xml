@@ -1,153 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<data>
-
-<!--		<record id="action_purchase_order_server" model="ir.actions.server">-->
-<!--            <field name="name">Update PO Subtotal</field>-->
-<!--            <field name="model_id" ref="purchase.model_purchase_order"/>-->
-<!--            <field name="binding_model_id" ref="purchase.model_purchase_order"/>-->
-<!--            &lt;!&ndash;         <field name='groups_id' eval="[(4, ref('account.group_account_invoice'))]"/> &ndash;&gt;-->
-<!--            <field name="state">code</field>-->
-<!--            <field name="code">-->
-<!--                if records:-->
-<!--                action = records.action_po_update_subtotal()-->
-<!--            </field>-->
-<!--        </record>-->
-
-		<record id="purchase.action_purchase_order_report_all" model="ir.actions.act_window">
-			<field name="name">Purchase Analysis</field>
-			<field name="res_model">purchase.report</field>
-			<field name="view_mode">pivot,graph</field>
-			<field name="view_id"></field>  <!-- force empty -->
-			<field name="help">Purchase Analysis allows you to easily check and analyse your company purchase history and performance. From this menu you can track your negotiation performance, the delivery performance of your vendors, etc.</field>
-			<field name="target">current</field>
-		</record>
-
-		<record id="view_purchase_order_form_inh" model="ir.ui.view">
-			<field name="name">purchase.order.form.inh</field>
-			<field name="model">purchase.order</field>
-			<field name="inherit_id" ref="purchase.purchase_order_form"/>
-			<field name="arch" type="xml">
-
-				<xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']" position="after">
-					<field name="vat_amount"/>
-					<field name="subtotal"/>
-				</xpath>
-
-				<xpath expr="//button[@name='button_confirm']" position="after">
-					<button string="Pull Products" type="object" class="oe_highlight" name="action_show_sale_products" attrs="{'invisible': [('state','not in', 'draft')]}"/>
-				</xpath>
-
-				<!--				<xpath expr="//field[@name='order_line']//tree//field[@name='product_id']" position="attributes">-->
-				<!--					<attribute name="class">text-wrap</attribute>-->
-				<!--				</xpath>-->
-
-				<xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="after">
-					<field name="remarks"/>
-				</xpath>
-
-				<xpath expr="//field[@name='order_line']/tree//field[@name='sequence']" position="after">
-					<field name="number" string="Sr No"/>
-					<field name="so_ref"/>
-					<field name="sale_order"/>
-				</xpath>
-
-				<xpath expr="//div[@name='reminder']" position="after">
-					<field name="payment_term_id"/>
-				</xpath>
-
-				<xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="attributes">
-					<attribute name="invisible">1</attribute>
-				</xpath>
-
-				<xpath expr="//field[@name='order_line']//tree//field[@name='price_subtotal']" position="attributes">
-					<attribute name="invisible">1</attribute>
-				</xpath>
-
-<!--				<xpath expr="//button[@name='button_unlock']" position="attributes">-->
-<!--					<attribute name="invisible">1</attribute>-->
-<!--				</xpath>-->
-
-				 <xpath expr="//field[@name='user_id']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+    <data>
+        <!--		<record id="action_purchase_order_server" model="ir.actions.server">-->
+        <!--            <field name="name">Update PO Subtotal</field>-->
+        <!--            <field name="model_id" ref="purchase.model_purchase_order"/>-->
+        <!--            <field name="binding_model_id" ref="purchase.model_purchase_order"/>-->
+        <!--            &lt;!&ndash;         <field name='groups_id' eval="[(4, ref('account.group_account_invoice'))]"/> &ndash;&gt;-->
+        <!--            <field name="state">code</field>-->
+        <!--            <field name="code">-->
+        <!--                if records:-->
+        <!--                action = records.action_po_update_subtotal()-->
+        <!--</field>-->
+        <!--        </record>-->
+        <record id="purchase.action_purchase_order_report_all" model="ir.actions.act_window">
+            <field name="name">Purchase Analysis</field>
+            <field name="res_model">purchase.report</field>
+            <field name="view_mode">pivot,graph</field>
+            <field name="view_id"/>
+            <!-- force empty -->
+            <field name="help">Purchase Analysis allows you to easily check and analyse your company purchase history and performance. From this menu you can track your negotiation performance, the delivery performance of your vendors, etc.</field>
+            <field name="target">current</field>
+        </record>
+        <record id="view_purchase_order_form_inh" model="ir.ui.view">
+            <field name="name">purchase.order.form.inh</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']" position="after">
+                    <field name="vat_amount"/>
+                    <field name="subtotal"/>
                 </xpath>
-
+                <xpath expr="//button[@name='button_confirm']" position="after">
+                    <button class="oe_highlight" invisible="state not in 'draft'" name="action_show_sale_products" string="Pull Products" type="object"/>
+                </xpath>
+                <!--				<xpath expr="//field[@name='order_line']//tree//field[@name='product_id']" position="attributes">-->
+                <!--					<attribute name="class">text-wrap</attribute>-->
+                <!--				</xpath>-->
+                <xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="after">
+                    <field name="remarks"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree//field[@name='sequence']" position="after">
+                    <field name="number" string="Sr No"/>
+                    <field name="so_ref"/>
+                    <field name="sale_order"/>
+                </xpath>
+                <xpath expr="//div[@name='reminder']" position="after">
+                    <field name="payment_term_id"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='order_line']//tree//field[@name='price_subtotal']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <!--				<xpath expr="//button[@name='button_unlock']" position="attributes">-->
+                <!--					<attribute name="invisible">1</attribute>-->
+                <!--				</xpath>-->
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="readonly">state not in 'draft'</attribute>
+                </xpath>
                 <xpath expr="//field[@name='order_line']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                    <attribute name="readonly">state not in 'draft'</attribute>
                 </xpath>
-
-				 <xpath expr="//field[@name='payment_term_id']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                <xpath expr="//field[@name='payment_term_id']" position="attributes">
+                    <attribute name="readonly">state not in 'draft'</attribute>
                 </xpath>
-
-				 <xpath expr="//field[@name='partner_id']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="readonly">state not in 'draft'</attribute>
                 </xpath>
-
-				<xpath expr="//field[@name='partner_ref']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                <xpath expr="//field[@name='partner_ref']" position="attributes">
+                    <attribute name="readonly">state not in 'draft'</attribute>
                 </xpath>
-
-				<xpath expr="//field[@name='currency_id']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                <xpath expr="//field[@name='currency_id']" position="attributes">
+                    <attribute name="readonly">state not in 'draft'</attribute>
                 </xpath>
-
-<!--				 <xpath expr="//field[@name='note']" position="attributes">-->
-<!--                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>-->
-<!--                </xpath>-->
-
-                 <xpath expr="//field[@name='date_order']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+                <!--				 <xpath expr="//field[@name='note']" position="attributes">-->
+                <!--                    <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>-->
+                <!--                </xpath>-->
+                <xpath expr="//field[@name='date_order']" position="attributes">
+                    <attribute name="readonly">state not in 'draft'</attribute>
                 </xpath>
-
-				<xpath expr="//page/group[1]" position="replace">
-					<!--					<field name="perc_discount" readonly="1"/>-->
-					<group>
-						<group >
-							<field colspan="2" name="discount_type" groups="product.group_discount_per_so_line" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
-							<field colspan="2" name="discount_rate" groups="product.group_discount_per_so_line" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
-
-							<field colspan="2" name="note_picklist" nolabel="1" placeholder="Define your terms and conditions ..." attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
-						</group>
-						<group class="oe_subtotal_footer oe_right">
-							<field name="amount_untaxed" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-							<field colspan="2" name="subtotal_amount" readonly="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-							<label for="perc_discount"/>
-							<div class="text-nowrap">
-								<field name="perc_discount" class="oe_inline" widget='monetary' options="{'currency_field': 'currency_id'}" readonly="1"/>
-								<span class="oe_inline">
-									(<field name="perc" nolabel="1" class="oe_inline" readonly="1"/>%)
-								</span>
-							</div>
-							<field colspan="2" name="net_total" readonly="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-							<field name="net_tax" string="Taxes" widget='monetary'  options="{'currency_field': 'currency_id'}"/>
-							<field name="amount_total" widget='monetary'  options="{'currency_field': 'currency_id'}"/>
-
-						</group>
-					</group>
-				</xpath>
-
-
-
-			</field>
-		</record>
-
-		<record id="purchase.product_normal_action_puchased" model="ir.actions.act_window">
-			<field name="name">Products</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">product.template</field>
-			<field name="view_mode">tree,kanban,form,activity</field>
-			<field name="context">{"search_default_filter_to_purchase":1, "purchase_product_template": 1}</field>
-			<field name="search_view_id" ref="product.product_template_search_view"/>
-			<field name="view_id" eval="False"/> <!-- Force empty -->
-			<field name="help" type="html">
-				<p class="o_view_nocontent_smiling_face">
-					No product found. Let's create one!
-				</p><p>
-				You must define a product for everything you sell or purchase,
+                <xpath expr="//page/group[1]" position="replace">
+                    <!--					<field name="perc_discount" readonly="1"/>-->
+                    <group>
+                        <group>
+                            <field colspan="2" groups="product.group_discount_per_so_line" name="discount_type" readonly="state not in 'draft'"/>
+                            <field colspan="2" groups="product.group_discount_per_so_line" name="discount_rate" readonly="state not in 'draft'"/>
+                            <field colspan="2" name="note_picklist" nolabel="1" placeholder="Define your terms and conditions ..." readonly="state not in 'draft'"/>
+                        </group>
+                        <group class="oe_subtotal_footer oe_right">
+                            <field invisible="1" name="amount_untaxed" options="{'currency_field': 'currency_id'}" widget="monetary"/>
+                            <field colspan="2" name="subtotal_amount" options="{'currency_field': 'currency_id'}" readonly="1" widget="monetary"/>
+                            <label for="perc_discount"/>
+                            <div class="text-nowrap">
+                                <field class="oe_inline" name="perc_discount" options="{'currency_field': 'currency_id'}" readonly="1" widget="monetary"/>
+                                <span class="oe_inline">
+                                    (
+                                    <field class="oe_inline" name="perc" nolabel="1" readonly="1"/>
+                                    %)
+                                </span>
+                            </div>
+                            <field colspan="2" name="net_total" options="{'currency_field': 'currency_id'}" readonly="1" widget="monetary"/>
+                            <field name="net_tax" options="{'currency_field': 'currency_id'}" string="Taxes" widget="monetary"/>
+                            <field name="amount_total" options="{'currency_field': 'currency_id'}" widget="monetary"/>
+                        </group>
+                    </group>
+                </xpath></field>
+        </record>
+        <record id="purchase.product_normal_action_puchased" model="ir.actions.act_window">
+            <field name="name">Products</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">tree,kanban,form,activity</field>
+            <field name="context">{"search_default_filter_to_purchase":1, "purchase_product_template": 1}</field>
+            <field name="search_view_id" ref="product.product_template_search_view"/>
+            <field eval="False" name="view_id"/>
+            <!-- Force empty -->
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No product found. Let's create one!
+                </p>
+                <p>
+                    You must define a product for everything you sell or purchase,
 				whether it's a storable product, a consumable or a service.
-			</p>
-			</field>
-		</record>
-
-	</data>
+                </p></field>
+        </record>
+    </data>
 </odoo>

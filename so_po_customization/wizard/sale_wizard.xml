@@ -8,16 +8,16 @@
 					<field name="sale_id" widget="many2many_tags" string="Sale Order #"/>
 				</group>
 				<field name="product_lines" widget="one2many_list">
-					<tree  create="0" editable="bottom">
+					<tree create="0" editable="bottom" force_save="1">
 						<field name="is_selected" width="5%"/>
-						<field name="sale_order" readonly="1" width="18%"/>
+						<field name="sale_order" readonly="1" width="18%" force_save="1"/>
 						<field name="onhand_qty" readonly="1" width="10%"/>
 						<field name="available_qty" readonly="1" width="10%"/>
-						<field name="sr_no" readonly="1" width="7%"/>
-						<field name="product_id" readonly="1" width="30%"/>
-						<field name="uom_id" readonly="1" width="30%" invisible="1"/>
-						<field name="qty" readonly="1" width="10%"/>
-						<field name="price" readonly="1" width="10%"/>
+						<field name="sr_no" readonly="1" width="7%" force_save="1"/>
+						<field name="product_id" readonly="1" width="30%" force_save="1"/>
+						<field name="uom_id" readonly="1" width="30%" force_save="1" column_invisible="1"/>
+						<field name="qty" readonly="1" width="10%" force_save="1"/>
+						<field name="price" readonly="1" width="10%" force_save="1"/>
 					</tree>
 				</field>
 				<footer>
