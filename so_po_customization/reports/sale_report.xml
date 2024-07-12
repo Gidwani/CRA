@@ -130,7 +130,8 @@
                                     <!--                                        <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_id))"/>-->
                                     <!--                                    </td>-->
                                     <td t-if="not line.is_downpayment" name="td_subtotal" class="text-center o_price_total">
-                                        <span t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <span t-esc="line.subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+<!--                                        <span t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
                                     </td>
                                 </t>
                                 <t t-if="line.display_type == 'line_section'">

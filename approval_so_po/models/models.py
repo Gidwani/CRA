@@ -629,15 +629,15 @@ class SaleAdvancePaymentInh(models.TransientModel):
 class AccountMoveReversalInh(models.TransientModel):
     _inherit = 'account.move.reversal'
 
-    def reverse_moves(self):
+    def reverse_moves(self, is_modify=False):
         if self.env.user.has_group('approval_so_po.group_allow_full_refund'):
-            self.action_reverse_inh()
+            self.action_reverse_inh(is_modify)
         elif not self.env.user.has_group('approval_so_po.group_allow_full_refund') and self.refund_method == 'refund':
-            self.action_reverse_inh()
+            self.action_reverse_inh(is_modify)
         else:
             raise UserError('You cannot Full Refund.')
 
-    def action_reverse_inh(self):
+    def action_reverse_inh(self, is_modify=False):
         self.ensure_one()
         moves = self.move_ids
 
@@ -662,7 +662,7 @@ class AccountMoveReversalInh(models.TransientModel):
         for moves, default_values_list, is_cancel_needed in batches:
             new_moves = moves._reverse_moves(default_values_list, cancel=is_cancel_needed)
 
-            if self.refund_method == 'modify':
+            if is_modify:
                 moves_vals_list = []
                 for move in moves.with_context(include_business_fields=True):
                     moves_vals_list.append(
