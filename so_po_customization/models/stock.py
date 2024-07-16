@@ -110,10 +110,11 @@ class StockPickingInh(models.Model):
     do_no = fields.Char("Supplier Do #")
     is_receipt = fields.Boolean(compute='compute_is_receipt')
     invoice_link = fields.Boolean(string='Invoice link')
-    invoice_status = fields.Selection(
-        selection=INVOICE_STATUS,
-        string="Invoice Status", related="sale_id.invoice_status"
-        )
+    delivery_status = fields.Selection([
+        ('pending', 'Not Delivered'),
+        ('partial', 'Partially Delivered'),
+        ('full', 'Fully Delivered'),
+    ], string='Delivery Status', related="sale_id.delivery_status")
 
     # @api.depends('sale_id')
     # def _compute_invoice_status(self):

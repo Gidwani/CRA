@@ -38,7 +38,7 @@
             <field name="inherit_id" ref="stock.vpicktree"/>
             <field name="arch" type="xml">
                 <field name="state" position="after">
-                    <field name="invoice_status" decoration-success="invoice_status == 'invoiced'" decoration-info="invoice_status == 'to invoice'" decoration-warning="invoice_status == 'upselling'" widget="badge" optional="hide"/>
+                <field name="delivery_status"  widget="badge"/>
                 </field>
             </field>
         </record>
