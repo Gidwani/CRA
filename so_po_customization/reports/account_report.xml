@@ -178,7 +178,7 @@
                                             <span class="text-nowrap"  t-field="line.vat_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
                                     </td>
                                     <td class="text-center o_price_total">
-                                        <span class="text-nowrap" t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <span class="text-nowrap" t-esc="line.subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
                                     </td>
                                 </t>
                                 <t t-if="line.display_type == 'line_section'">

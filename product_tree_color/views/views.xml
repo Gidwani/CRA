@@ -22,6 +22,7 @@
 <!--                    <attribute name="class">available-class</attribute>-->
 <!--&lt;!&ndash;                   <attribute name="optional">hide</attribute>&ndash;&gt;-->
 <!--                </xpath>-->
+
                 <xpath expr="//field[@name='virtual_available']" position="attributes">
                    <attribute name="optional">hide</attribute>
                 </xpath>

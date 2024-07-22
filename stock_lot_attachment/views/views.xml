@@ -20,7 +20,20 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='product_id']" position="after">
                     <field invisible="1" name="attachment_ids" string="Attach a file" widget="many2many_binary"/>
-                    <button icon="fa-download" invisible="attachment_ids == []" name="action_download" title="g" type="object"/>
+                    <button icon="fa-download" invisible="not attachment_ids" name="action_download" title="g" type="object"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_stock_quant_tree_editable_button_inh" model="ir.ui.view">
+            <field name="name">stock.quant.lot.inh.tree</field>
+            <field name="model">stock.quant</field>
+            <field name="inherit_id" ref="stock.view_stock_quant_tree_editable"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='lot_id']" position="after">
+                    <field column_invisible="1" name="attachment_ids" string="Attach a file" widget="many2many_binary"/>
+                    <button icon="fa-download" invisible="not attachment_ids" name="action_download" title="g" type="object"/>
+                    <field name="yom"/>
                 </xpath>
             </field>
         </record>
@@ -31,8 +44,9 @@
             <field name="inherit_id" ref="stock.view_stock_quant_tree_inventory_editable"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='lot_id']" position="after">
-                    <field invisible="1" name="attachment_ids" string="Attach a file" widget="many2many_binary"/>
-                    <button icon="fa-download" invisible="attachment_ids == []" name="action_download" title="g" type="object"/>
+                    <field column_invisible="1" name="attachment_ids" string="Attach a file" widget="many2many_binary"/>
+                    <button icon="fa-download" invisible="not attachment_ids" name="action_download" title="g" type="object"/>
+                    <field name="yom"/>
                 </xpath>
             </field>
         </record>
@@ -44,7 +58,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='lot_id']" position="after">
                     <field filename="lot_attachment" invisible="1" name="attachment_ids" widget="many2many_binary"/>
-                    <button icon="fa-download" invisible="attachment_ids == []" name="action_download" title="g" type="object"/>
+                    <button icon="fa-download" invisible="not attachment_ids" name="action_download" title="g" type="object"/>
                 </xpath>
                 <xpath expr="//tree/header" position="inside">
                     <button string="Download" name="action_download_tree" title="g" type="object"/>

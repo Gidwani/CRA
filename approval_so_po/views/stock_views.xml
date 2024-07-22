@@ -6,8 +6,9 @@
         <field name="inherit_id" ref="product.product_template_tree_view"/>
         <field name="arch" type="xml">
             <xpath expr="//tree/field[@name='virtual_available']" position="after">
-                <field invisible="1" name="x_css"/>
-            </xpath></field>
+                <field invisible="1" name="x_css" optional="hide"/>
+            </xpath>
+        </field>
     </record>
     <record id="view_product_form_inherit" model="ir.ui.view">
         <field name="name">product.template.form.inh</field>
@@ -32,7 +33,7 @@
             <!--                <attribute name="multi_edit">0</attribute>-->
             <!--            </xpath>-->
             <xpath expr="//tree/field[@name='virtual_available']" position="after">
-                <field invisible="0" name="x_css"/>
+                <field invisible="0" name="x_css" optional="hide"/>
             </xpath>
         </field>
     </record>

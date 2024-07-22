@@ -97,6 +97,12 @@ class ProductTemplateInh(models.Model):
         quant_ids = [l['id'] for l in self.env['stock.quant'].search_read(domain_loc, ['id'])]
         return quant_ids
 
+INVOICE_STATUS = [
+    ('upselling', 'Upselling Opportunity'),
+    ('invoiced', 'Fully Invoiced'),
+    ('to invoice', 'To Invoice'),
+    ('no', 'Nothing to Invoice')
+]
 
 class StockPickingInh(models.Model):
     _inherit = 'stock.picking'
@@ -104,6 +110,14 @@ class StockPickingInh(models.Model):
     do_no = fields.Char("Supplier Do #")
     is_receipt = fields.Boolean(compute='compute_is_receipt')
     invoice_link = fields.Boolean(string='Invoice link')
+    delivery_status = fields.Selection([
+        ('pending', 'Not Delivered'),
+        ('partial', 'Partially Delivered'),
+        ('full', 'Fully Delivered'),
+    ], string='Delivery Status', related="sale_id.delivery_status")
+
+    # @api.depends('sale_id')
+    # def _compute_invoice_status(self):
 
     # @api.model
     # def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):

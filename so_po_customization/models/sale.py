@@ -239,6 +239,7 @@ class SaleOrderLineInh(models.Model):
                                      old, self.price_unit)
                               )
         return record
+
     def unlink(self):
         for res in self:
             i = 1

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+
         <record id="view_order_product_pivot_inh" model="ir.ui.view">
             <field name="name">sale.report.pivot</field>
             <field name="model">sale.report</field>
@@ -8,8 +9,10 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='price_subtotal']" position="before">
                     <field name="sale_average" type="measure"/>
-                </xpath></field>
+                </xpath>
+            </field>
         </record>
+
         <record id="view_sale_order_tree_inh" model="ir.ui.view">
             <field name="name">sale.order.tree</field>
             <field name="model">sale.order</field>
@@ -20,8 +23,10 @@
                 </xpath>
                 <xpath expr="//field[@name='activity_ids']" position="after">
                     <field name="client_order_ref" string="PO No"/>
-                </xpath></field>
+                </xpath>
+            </field>
         </record>
+
         <record id="view_order_tree_inh" model="ir.ui.view">
             <field name="name">sale.order.tree</field>
             <field name="model">sale.order</field>
@@ -32,8 +37,10 @@
                 </xpath>
                 <xpath expr="//field[@name='activity_ids']" position="after">
                     <field name="client_order_ref" string="PO No"/>
-                </xpath></field>
+                </xpath>
+            </field>
         </record>
+
         <!--        <record id="view_sale_order_discount_form_inh" model="ir.ui.view">-->
         <!--            <field name="name">sale.order.form.inh</field>-->
         <!--            <field name="model">sale.order</field>-->
@@ -56,23 +63,23 @@
                     <field name="remarks" width="10%"/>
                 </xpath>
                 <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="attributes">
-                    <attribute name="invisible">1</attribute>
+                    <attribute name="column_invisible">1</attribute>
                 </xpath>
                 <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="attributes">
-                    <attribute name="invisible">1</attribute>
+                    <attribute name="column_invisible">1</attribute>
                 </xpath>
-                <!--                <xpath expr="//field[@name='order_line']/tree/field[@name='price_total']" position="after">-->
-                <!--                    <field name="subtotal" widget="monetary"/>-->
-                <!--                </xpath>-->
-                <!--                <xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position="attributes">-->
-                <!--                    <attribute name="invisible">1</attribute>-->
-                <!--                </xpath>-->
+                                <xpath expr="//field[@name='order_line']/tree/field[@name='price_total']" position="after">
+                                    <field name="subtotal" widget="monetary"/>
+                                </xpath>
+                                <xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position="attributes">
+                                    <attribute name="column_invisible">1</attribute>
+                                </xpath>
                 <!--                <xpath expr="//field[@name='order_line']/tree/field[@name='price_total']" position="attributes">-->
                 <!--                    <attribute name="invisible">1</attribute>-->
                 <!--                </xpath>-->
                 <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="replace">
 <!--                    <field class="text-wrap" context="{ 'partner_id': parent.partner_id,'quantity': product_uom_qty, 'pricelist': parent.pricelist_id,'uom':product_uom,'company_id': parent.company_id,'default_lst_price': price_unit,'default_description_sale': name}" domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]" force_save="1" name="product_id"  readonly="not product_updatable" required="not display_type"/>-->
-                     <field class="text-wrap" name="product_id" readonly="not product_updatable" required="not display_type" force_save="1" context="{                                         'partner_id': parent.partner_id,                                         'quantity': product_uom_qty,                                         'pricelist': parent.pricelist_id,                                         'uom':product_uom,                                         'company_id': parent.company_id,                                         'default_lst_price': price_unit,                                         'default_description_sale': name                                     }" options="{                                         'no_open': True,                                     }" domain="[('sale_ok', '=', True)]" widget="sol_product_many2one"/>
+                      <field class="text-wrap" name="product_id" readonly="not product_updatable" required="not display_type" force_save="1" context="{'partner_id': parent.partner_id, 'quantity': product_uom_qty, 'pricelist': parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id, 'default_lst_price': price_unit, 'default_description_sale': name}" options="{'no_open': True, }" domain="[('sale_ok', '=', True)]" widget="sol_product_many2one"/>
                 </xpath>
                 <xpath expr="//field[@name='order_line']/tree/field[@name='tax_id']" position="after">
                     <field name="vat_amount" widget="monetary" width="5%"/>
