@@ -406,9 +406,12 @@ class StockMoveInh(models.Model):
             domains.append([('product_id', '=', move.product_id.id), ('location_id', '=', move.location_dest_id.id)])
         static_domain = [('state', 'in', ['confirmed', 'partially_available']),
                          ('procure_method', '=', 'make_to_stock'),
-                         ('reservation_date', '<=', fields.Date.today())]
+                         '|',
+                         ('reservation_date', '<=', fields.Date.today()),
+                         ('picking_type_id.reservation_method', '=', 'at_confirm')
+                         ]
         moves_to_reserve = self.env['stock.move'].search(expression.AND([static_domain, expression.OR(domains)]),
-                                                         order='reservation_date, priority desc, date asc, id asc')
+                                                         order='priority desc, date asc, id asc')
 
         if move.purchase_line_id and move.purchase_line_id.sale_order:
             new_moves_list = []
