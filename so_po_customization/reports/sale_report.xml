@@ -14,7 +14,7 @@
                     <t t-if="env.context.get('proforma', False) or is_pro_forma">
                         <span>Pro-Forma Invoice # </span>
                     </t>
-                    <span t-field="doc.name"/>
+                    <span t-esc="doc.name.replace('/', '-')"/>
                 </h2><br/>
                 <div class="row col-12 p-2">
                     <div class="col-7">
