@@ -126,6 +126,12 @@ class PurchaseOrderLineInh(models.Model):
     vat_amount = fields.Float('VAT Amount', compute='_compute_vat_amount')
     subtotal = fields.Float('Subtotal', compute='_compute_subtotal')
 
+    def get_so_ref(self):
+        if self.sale_order and self.so_ref:
+            order = self.sale_order.split('/')[-1]
+            return order + '-' + str(self.so_ref)
+        return ''
+
     @api.depends('price_unit', 'product_qty', 'product_uom')
     def _compute_subtotal(self):
         for rec in self:
