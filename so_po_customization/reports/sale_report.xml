@@ -19,64 +19,79 @@
                 <div class="row col-12 p-2">
                     <div class="col-7">
                         <strong>Customer Details:-</strong><br/>
-                        <div t-field="doc.partner_id"
-                             t-options='{"widget": "contact", "fields": ["address", "name", "vat"], "no_marker": True, "phone_icons": False}'/>
+                        <span t-field="doc.partner_id"/>
+                        <br/>
+                        <t t-if="doc.partner_id.street ">
+                            <span t-if="doc.partner_id.street" t-field="doc.partner_id.street"/>
+                            <!--                                <span t-if="doc.partner_id.street2" t-field="doc.partner_id.street2"/>-->
+                        </t>
+                        <t t-if="doc.partner_id.city">
+                            <br/>
+                            <span t-if="doc.partner_id.city" t-field="doc.partner_id.city"/>
+                        </t>
+                        <t t-if="doc.partner_id.country_id">
+                            , <span t-if="doc.partner_id.country_id" t-field="doc.partner_id.country_id"/>
+                        </t>
+                        <t t-if="doc.partner_id.vat">
+                            <br/>
+                            <span t-if="doc.partner_id.vat" t-esc="'TRN: ' + doc.partner_id.vat"/>
+                        </t>
                     </div>
                     <div class="col-5">
                         <div>Order Date: <span t-esc="doc.date_order.date()"/></div>
                         <div>PO #: <span t-field="doc.client_order_ref"/></div>
                         <div>Payment Terms: <span t-field="doc.payment_term_id"/></div>
-                        <div>Salesperson<span t-field="doc.user_id.name"/></div>
+                        <div>Salesperson: <span t-field="doc.user_id.name"/></div>
                     </div>
                 </div>
-<!--                <div class="row mt32 mb32" style="background-color:#E0E0E0;" >-->
-<!--                    <div class="col-auto col-3 mw-100 mb-2">-->
-<!--                        <strong>Customer Name:</strong>-->
-<!--                        <p class="m-0" t-field="doc.partner_id.name"/>-->
-<!--                    </div>-->
+                <!--                <div class="row mt32 mb32" style="background-color:#E0E0E0;" >-->
+                <!--                    <div class="col-auto col-3 mw-100 mb-2">-->
+                <!--                        <strong>Customer Name:</strong>-->
+                <!--                        <p class="m-0" t-field="doc.partner_id.name"/>-->
+                <!--                    </div>-->
 
-<!--                    <div t-if="doc.partner_id.street or doc.partner_id.city or doc.partner_id.country_id.name"  class="col-auto col-3 mw-100 mb-2">-->
-<!--                        <strong>Company Address:</strong>-->
-<!--                        <p t-if="doc.partner_id.street" class="m-0" t-field="doc.partner_id.street"/>-->
-<!--                        <p t-if="doc.partner_id.city" class="m-0" t-field="doc.partner_id.city"/>-->
-<!--                        <p t-if="doc.partner_id.country_id.name" class="m-0" t-field="doc.partner_id.country_id.name"/>-->
-<!--                    </div>-->
-<!--                    <div t-if="doc.partner_id.vat" class="col-auto col-3 mw-100 mb-2">-->
-<!--                        <strong>TRN:</strong>-->
-<!--                        <p class="m-0" t-field="doc.partner_id.vat"/>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                    <div t-if="doc.partner_id.street or doc.partner_id.city or doc.partner_id.country_id.name"  class="col-auto col-3 mw-100 mb-2">-->
+                <!--                        <strong>Company Address:</strong>-->
+                <!--                        <p t-if="doc.partner_id.street" class="m-0" t-field="doc.partner_id.street"/>-->
+                <!--                        <p t-if="doc.partner_id.city" class="m-0" t-field="doc.partner_id.city"/>-->
+                <!--                        <p t-if="doc.partner_id.country_id.name" class="m-0" t-field="doc.partner_id.country_id.name"/>-->
+                <!--                    </div>-->
+                <!--                    <div t-if="doc.partner_id.vat" class="col-auto col-3 mw-100 mb-2">-->
+                <!--                        <strong>TRN:</strong>-->
+                <!--                        <p class="m-0" t-field="doc.partner_id.vat"/>-->
+                <!--                    </div>-->
+                <!--                </div>-->
 
-<!--                <div class="row mt32 mb32" id="informations">-->
-<!--                    <div t-if="doc.client_order_ref" class="col-auto col-3 mw-100 mb-2">-->
-<!--                        <strong>PO #:</strong>-->
-<!--                        <p class="m-0" t-field="doc.client_order_ref"/>-->
-<!--                    </div>-->
-<!--                    <div t-if="doc.date_order and doc.state not in ['draft','sent']" class="col-auto col-3 mw-100 mb-2">-->
-<!--                        <strong>Order Date:</strong>-->
-<!--                        <p class="m-0" t-field="doc.date_order" t-options='{"widget": "date"}'/>-->
-<!--                    </div>-->
-<!--                    <div t-if="doc.date_order and doc.state in ['draft','sent']" class="col-auto col-3 mw-100 mb-2">-->
-<!--                        <strong>Quotation Date:</strong>-->
-<!--                        <p class="m-0" t-field="doc.date_order" t-options='{"widget": "date"}'/>-->
-<!--                    </div>-->
-<!--                    <div t-if="doc.validity_date and doc.state in ['draft', 'sent']" class="col-auto col-3 mw-100 mb-2" name="expiration_date">-->
-<!--                        <strong>Valid Till:</strong>-->
-<!--                        <p class="m-0" t-field="doc.validity_date"/>-->
-<!--                    </div>-->
-<!--                    <div t-if="doc.payment_term_id" class="col-auto col-3 mw-100 mb-2">-->
-<!--                        <strong>Payment Terms:</strong>-->
-<!--                        <p class="m-0" t-field="doc.payment_term_id.name"/>-->
-<!--                    </div>-->
-<!--                    <div t-if="doc.user_id.name" class="col-auto col-3 mw-100 mb-2">-->
-<!--                        <strong>Salesperson:</strong>-->
-<!--                        <p class="m-0" t-field="doc.user_id"/>-->
-<!--                    </div>-->
-<!--                    <div t-if="doc.incoterm" class="col-auto col-3 mw-100 mb-2">-->
-<!--                        <strong>Incoterm:</strong>-->
-<!--                        <p class="m-0" t-field="doc.incoterm"/>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="row mt32 mb32" id="informations">-->
+                <!--                    <div t-if="doc.client_order_ref" class="col-auto col-3 mw-100 mb-2">-->
+                <!--                        <strong>PO #:</strong>-->
+                <!--                        <p class="m-0" t-field="doc.client_order_ref"/>-->
+                <!--                    </div>-->
+                <!--                    <div t-if="doc.date_order and doc.state not in ['draft','sent']" class="col-auto col-3 mw-100 mb-2">-->
+                <!--                        <strong>Order Date:</strong>-->
+                <!--                        <p class="m-0" t-field="doc.date_order" t-options='{"widget": "date"}'/>-->
+                <!--                    </div>-->
+                <!--                    <div t-if="doc.date_order and doc.state in ['draft','sent']" class="col-auto col-3 mw-100 mb-2">-->
+                <!--                        <strong>Quotation Date:</strong>-->
+                <!--                        <p class="m-0" t-field="doc.date_order" t-options='{"widget": "date"}'/>-->
+                <!--                    </div>-->
+                <!--                    <div t-if="doc.validity_date and doc.state in ['draft', 'sent']" class="col-auto col-3 mw-100 mb-2" name="expiration_date">-->
+                <!--                        <strong>Valid Till:</strong>-->
+                <!--                        <p class="m-0" t-field="doc.validity_date"/>-->
+                <!--                    </div>-->
+                <!--                    <div t-if="doc.payment_term_id" class="col-auto col-3 mw-100 mb-2">-->
+                <!--                        <strong>Payment Terms:</strong>-->
+                <!--                        <p class="m-0" t-field="doc.payment_term_id.name"/>-->
+                <!--                    </div>-->
+                <!--                    <div t-if="doc.user_id.name" class="col-auto col-3 mw-100 mb-2">-->
+                <!--                        <strong>Salesperson:</strong>-->
+                <!--                        <p class="m-0" t-field="doc.user_id"/>-->
+                <!--                    </div>-->
+                <!--                    <div t-if="doc.incoterm" class="col-auto col-3 mw-100 mb-2">-->
+                <!--                        <strong>Incoterm:</strong>-->
+                <!--                        <p class="m-0" t-field="doc.incoterm"/>-->
+                <!--                    </div>-->
+                <!--                </div>-->
 
                 <!-- Is there a discount on at least one line? -->
                 <t t-set="display_discount" t-value="any(l.discount for l in doc.order_line)"/>
@@ -101,7 +116,7 @@
                             <!--                            </th>-->
                             <!--                            <th name="th_taxes" class="text-right">Taxes</th>-->
                             <th name="th_subtotal" style="white-space:nowrap;" class="text-center">
-                               <span>Amount</span>
+                                <span>Amount</span>
                             </th>
                         </tr>
                     </thead>
@@ -144,7 +159,7 @@
                                     <!--                                    </td>-->
                                     <td t-if="not line.is_downpayment" name="td_subtotal" class="text-center o_price_total">
                                         <span t-esc="line.subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-<!--                                        <span t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+                                        <!--                                        <span t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
                                     </td>
                                 </t>
                                 <t t-if="line.display_type == 'line_section'">

@@ -55,13 +55,13 @@
                 </div>
             </div>
 
-            <div t-attf-class="article o_report_layout_boxed o_company_#{company.id}_layout" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
-                <div class="pt-5">
-                    <!-- This div ensures that the address is not cropped by the header. -->
-                    <t t-call="web.address_layout"/>
-                </div>
-                <t t-raw="0"/>
-            </div>
+<!--            <div t-attf-class="article o_report_layout_boxed o_company_#{company.id}_layout" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">-->
+<!--                <div class="pt-5">-->
+<!--                    &lt;!&ndash; This div ensures that the address is not cropped by the header. &ndash;&gt;-->
+<!--                    <t t-call="web.address_layout"/>-->
+<!--                </div>-->
+<!--                <t t-raw="0"/>-->
+<!--            </div>-->
 
             <div t-attf-class="footer o_boxed_footer o_company_#{company.id}_layout">
                 <div class="text-center">--This is a system generated document. No Signature required--</div>
@@ -88,8 +88,8 @@
                 <t t-call="web.external_layout">
                     <t t-set="o" t-value="docs.with_context(lang=docs.partner_id.lang)" />
 
-                    <div class="page" style="margin-top:-10px;">
-                        <div class="row text-right" style="margin-top:-52px;">
+                    <div class="page" >
+                        <div class="row text-right" >
                             <div class="col-9"></div>
                             <div class="col-3 text-right">
                                 <strong>Printed Date:</strong>
@@ -104,19 +104,19 @@
                         <div class="row mt32 mb32">
                             <div t-if="o.sale_id.name" class="col-auto" name="div_origin">
                                 <strong>SO #:</strong>
-                                <p t-field="o.sale_id.name"/>
+                                <span t-field="o.sale_id.name"/>
                             </div>
                             <div t-if="o.sale_id.partner_id" class="col-auto" name="div_origin">
                                 <strong>Customer Name:</strong>
-                                <p t-field="o.sale_id.partner_id.name"/>
+                                <span t-field="o.sale_id.partner_id.name"/>
                             </div>
                             <div t-if="o.sale_id.date_order" class="col-auto" name="div_origin">
                                 <strong>Order Date:</strong>
-                                <p t-field="o.sale_id.date_order" t-options='{"widget": "date"}'/>
+                                <span t-field="o.sale_id.date_order" t-options='{"widget": "date"}'/>
                             </div>
                             <div t-if="o.sale_id.client_order_ref" class="col-auto" name="div_origin">
                                 <strong>PO #:</strong>
-                                <p t-field="o.sale_id.client_order_ref"/>
+                                <span t-field="o.sale_id.client_order_ref"/>
                             </div>
                         </div>
                         <table class="table table-sm" name="stock_move_table">
@@ -125,10 +125,10 @@
                                     <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="4%"><strong>SR#</strong></th>
                                     <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="7%"><strong>QTY Onhand</strong></th>
                                     <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="7%"><strong>Available Qty</strong></th>
-                                    <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="35%"><strong>Products</strong></th>
+                                    <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="40%"><strong>Products</strong></th>
                                     <th name="th_sm_quantity" style="white-space:nowrap;" class="text-center" width="7%"><strong>Qty to Pick</strong></th>
                                     <th name="th_sm_serial" style="white-space:nowrap;" class="text-center" width="15%"><strong>Serial #</strong></th>
-                                    <th name="th_sm_note" style="white-space:nowrap;" class="text-center" width="20%"><strong>Note</strong></th>
+                                    <th name="th_sm_note" style="white-space:nowrap;" class="text-center" width="15%"><strong>Note</strong></th>
                                 </tr>
                             </thead>
                             <tbody>

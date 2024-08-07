@@ -36,7 +36,7 @@ class PurchaseOrderInh(models.Model):
             for rec in order.order_line:
                 if rec.taxes_id:
                     # if rec.taxes_id.filtered(lambda i:i.name != 'Reverse Charge Provision'):
-                    if rec.taxes_id.filtered(lambda i: i.id == 42):
+                    if rec.taxes_id.filtered(lambda i: i.id == [19, 21]):
                         amount += rec.vat_amount
 
             if order.discount_type == 'percent':
@@ -146,7 +146,7 @@ class PurchaseOrderLineInh(models.Model):
         for rec in self:
             amount = 0
             for tax in rec.taxes_id:
-                if tax.id == 42:
+                if tax.id in [19, 21]:
                     amount = amount + tax.amount
             rec.vat_amount = (amount * rec.product_qty / 100) * rec.price_unit
 

@@ -42,18 +42,35 @@
                             <div class="row col-12 p-2">
                                 <div class="col-8">
                                     <strong>Customer Details:-</strong><br/>
-                                    <div t-field="o.partner_id"
-                                         t-options='{"widget": "contact", "fields": ["address", "name", "vat"], "no_marker": True, "phone_icons": False}'/>
+                                    <!--                                    <div t-field="o.partner_id"-->
+                                    <!--                                         t-options='{"widget": "contact", "fields": ["address", "name", "vat"], "no_marker": True, "phone_icons": False}'/>-->
+                                    <span t-field="o.partner_id"/>
+                                    <br/>
+                                    <t t-if="o.partner_id.street ">
+                                        <span t-if="o.partner_id.street" t-field="o.partner_id.street"/>
+                                        <!--                                <span t-if="doc.partner_id.street2" t-field="doc.partner_id.street2"/>-->
+                                    </t>
+                                    <t t-if="o.partner_id.city">
+                                        <br/>
+                                        <span t-if="o.partner_id.city" t-field="o.partner_id.city"/>
+                                    </t>
+                                    <t t-if="o.partner_id.country_id">
+                                        , <span t-if="o.partner_id.country_id" t-field="o.partner_id.country_id"/>
+                                    </t>
+                                    <t t-if="o.partner_id.vat">
+                                        <br/>
+                                        <span t-if="o.partner_id.vat" t-esc="'TRN: ' + o.partner_id.vat"/>
+                                    </t>
                                 </div>
                                 <div class="col-4">
                                     <div>SO #: <span t-esc="o.origin"/></div>
                                     <div>PO #: <span t-esc="o.sale_id.client_order_ref"/></div>
                                     <div>DO Date:
                                         <t t-if="o.state == 'done'">
-                                            <p t-field="o.date_done" t-options='{"widget": "date"}'/>
+                                            <span t-field="o.date_done" t-options='{"widget": "date"}'/>
                                         </t>
                                         <t t-if="o.state != 'done'">
-                                            <p t-field="o.scheduled_date" t-options='{"widget": "date"}'/>
+                                            <span t-field="o.scheduled_date" t-options='{"widget": "date"}'/>
                                         </t>
                                     </div>
 
@@ -286,7 +303,7 @@
                                             <!--                                        <table class="table table-sm">-->
                                             <tr class="border-black o_total">
                                                 <td name="td_amount_total_label"><strong>Total Qty</strong></td>
-                                                <td name="td_amount_total" class="text-right">
+                                                <td name="td_amount_total" class="text-center">
                                                     <span t-esc="o.get_total_qty()"/>
                                                 </td>
                                             </tr>
@@ -304,7 +321,7 @@
                             <!--                        </div>-->
                             <div class="row justify-content-end mt-5" style="font-size:15px; margin-top:10px;">
                                 <div class="col-6" >
-                                    <strong><span >Received By (Name/Mobile) : ___________________________________</span> </strong>
+                                    <strong><span >Received By (Name and Mobile) : ________________________________</span> </strong>
                                     <!--                                <strong><span>Mobile:</span> </strong><span >_________________________  &#160; &#160;</span>-->
                                     <!--                                <strong>Date: </strong><span>____________________________   </span>-->
                                 </div>

@@ -16,16 +16,31 @@
                 <div class="row col-12 p-2">
                     <div class="col-8">
                         <strong>Vendor Details:-</strong><br/>
-                        <div t-field="o.partner_id"
-                             t-options='{"widget": "contact", "fields": ["address", "name", "phone", "vat"], "no_marker": True, "phone_icons": True}'/>
+                        <span t-field="o.partner_id"/>
+                        <br/>
+                        <t t-if="o.partner_id.street ">
+                            <span t-if="o.partner_id.street" t-field="o.partner_id.street"/>
+                            <!--                                <span t-if="doc.partner_id.street2" t-field="doc.partner_id.street2"/>-->
+                        </t>
+                        <t t-if="o.partner_id.city">
+                            <br/>
+                            <span t-if="o.partner_id.city" t-field="o.partner_id.city"/>
+                        </t>
+                        <t t-if="o.partner_id.country_id">
+                            , <span t-if="o.partner_id.country_id" t-field="o.partner_id.country_id"/>
+                        </t>
+                        <t t-if="o.partner_id.vat">
+                            <br/>
+                            <span t-if="o.partner_id.vat" t-esc="'TRN: ' + o.partner_id.vat"/>
+                        </t>
                     </div>
                     <div class="col-4">
                         <div>PO Date: <span t-esc="o.date_order.date()"/></div>
                         <div>Expected Date: <span t-esc="o.date_planned.date()"/></div>
-                        <div>Revision: 0</div>
-                        <div><strong>Payment Terms: </strong><span t-field="o.payment_term_id"/></div>
+                        <div>Revision: <span t-field="o.revision"/></div>
+                        <div>Payment Terms: <span t-field="o.payment_term_id"/></div>
                         <div>Prepared By: <span t-field="o.create_uid.name"/></div>
-                        <div>Approved By: <span t-field="o.write_uid.name"/></div>
+                        <div>Approved By: <span t-field="o.approved_by_id.name"/></div>
                     </div>
                 </div>
 
@@ -58,7 +73,7 @@
                                     <!--                                    <td class="text-center"><t t-if="line.so_ref != 0"> <span t-field="line.so_ref"/></t></td>-->
                                     <!--                                    <td class="text-center"><span t-field="line.sale_order"/></td>-->
                                     <td id="product">
-                                        <span t-field="line.product_id.name"/><br/><span t-field="line.remarks"/>
+                                        <span t-field="line.product_id.name"/><br/><u><span t-field="line.remarks"/></u>
                                     </td>
                                     <!--                                    <td class="text-center">-->
                                     <!--                                        <span t-field="line.date_planned"/>-->
@@ -157,9 +172,23 @@
                         </table>
                     </div>
                 </div>
-            <p t-field="o.notes" class="mt-2"/>
+                <p t-field="o.notes" class="mt-2"/>
 
-
+                <div class="row" style="font-size:15px;padding:10px;margin-top:-90px;line-height:20px;">
+                    <strong>Terms and conditions:</strong><br/>
+                    1. Kindly confirm receipt of this Purchase Order as your acceptance.<br/>
+                    2. The Purchase Order number must be referenced on all delivery notes,<br/>
+                       invoices, and related correspondence.<br/>
+                    3. Material test certificates must accompany the material.<br/>
+                    4. All materials must be genuine and of high quality; any items that do not<br/>
+                       meet the specifications will be rejected.<br/>
+                    5. Material test certificates for all products must comply with EN 10204 Type 3.1.<br/>
+                    6. The material must conform to the relevant ASTM/ASME EN1092-1
+                       standards.<br/>
+                    7. Compliance with NACE MR0175 / ISO15156 / NACE MR0103 is
+                       mandatory.<br/>
+                    8. Materials should be free from rust, defects, or any kind of damage.
+                </div>
                 <!--                <p t-field="o.notes"/>-->
                 <!--                <div class="container row" style="margin-top:4em;margin-left:1em;float:right; font-size:15px;">-->
                 <!--                    <div class="col-12">-->
@@ -236,7 +265,7 @@
                         </div>
                     </div>
                     <div class="col-4 text-end" style="text-align:right;">
-                        <img class="text-end" src="/so_po_customization/static/Location.png" alt="Logo" style="max-height:70pt;max-width:90%"/>
+                        <!--                        <img class="text-end" src="/so_po_customization/static/Location.png" alt="Logo" style="max-height:70pt;max-width:90%"/>-->
                     </div>
                 </div>
             </div>
