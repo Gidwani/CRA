@@ -24,7 +24,7 @@ class PurchaseOrderInh(models.Model):
                 subtotal = subtotal + line.subtotal
             rec.subtotal_amount = subtotal
 
-    @api.depends('order_line', 'discount_type', 'discount_rate', 'perc')
+    @api.depends('order_line', 'order_line.taxes_id', 'discount_type', 'discount_rate', 'perc')
     def compute_taxes(self):
         for order in self:
             # amount_tax = 0.0
@@ -36,7 +36,7 @@ class PurchaseOrderInh(models.Model):
             for rec in order.order_line:
                 if rec.taxes_id:
                     # if rec.taxes_id.filtered(lambda i:i.name != 'Reverse Charge Provision'):
-                    if rec.taxes_id.filtered(lambda i: i.id == [19, 21]):
+                    if rec.taxes_id.filtered(lambda i: i.id in [19, 21]):
                         amount += rec.vat_amount
 
             if order.discount_type == 'percent':

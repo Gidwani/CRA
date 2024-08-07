@@ -63,10 +63,13 @@
                 <!--					<attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>-->
                 <!--				</xpath>-->
                 <xpath expr="//group[1]/group[2]/div[@name='journal_div']/field[@name='journal_id']" position="attributes">
-                    <attribute name="readonly">state not in 'draft'</attribute>
+                    <attribute name="readonly">state not in ['draft']</attribute>
                 </xpath>
                 <xpath expr="//field[@name='ref']" position="after">
-                    <field name="do_link" readonly="state not in 'draft'"/>
+                    <field name="do_link" readonly="state not in ['draft']"/>
+                </xpath>
+                <xpath expr="//field[@name='invoice_user_id']" position="before">
+                    <field name="po_no" string="PO #"/>
                 </xpath>
                 <xpath expr="//field[@name='tax_totals']" position="attributes">
                     <attribute name="invisible">1</attribute>

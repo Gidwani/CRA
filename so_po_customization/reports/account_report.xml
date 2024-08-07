@@ -58,7 +58,7 @@
                         <div>SO #: <span t-esc="o.invoice_origin"/></div>
                         <div t-if="o.move_type in ['out_invoice', 'in_invoice']">Invoice Date: <span t-esc="o.invoice_date"/></div>
                         <div t-if="o.move_type in ['out_refund']">Return Date: <span t-esc="o.invoice_date"/></div>
-                        <div>PO #: <span t-field="o.ref"/></div>
+                        <div>PO #: <span t-field="o.po_no"/></div>
                         <div>Payment Terms:<span t-field="o.invoice_payment_term_id"/></div>
                         <div t-if="o.move_type in ['out_refund']">Invoice #: <span t-esc="o.reversed_entry_id.name.replace('/', '-')"/></div>
                         <div t-if="o.move_type in ['out_refund']">Invoice Date: <span t-esc="o.reversed_entry_id.invoice_date"/></div>
@@ -358,8 +358,8 @@
                     </tr>
                 </table>
 
-                <div class="row justify-content-end mt-5" style="font-size:15px; margin-top:10px;">
-                    <div class="col-6" >
+                <div class="row mt-5 justify-content-end" style="font-size:15px; margin-top:10px;">
+                    <div class="col-5 justify-content-end text-nowrap" >
                         <strong><span >Received By (Name and Mobile) : _______________________________</span> </strong>
                         <!--                                <strong><span>Mobile:</span> </strong><span >_________________________  &#160; &#160;</span>-->
                         <!--                                <strong>Date: </strong><span>____________________________   </span>-->
