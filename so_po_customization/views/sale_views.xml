@@ -146,8 +146,10 @@
                 </xpath>
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="client_order_ref" readonly="state not in 'draft'"/>
+                    <field name="po_no" readonly="state not in 'draft'"/>
                     <field name="incoterm" readonly="state not in 'draft'"/>
-                </xpath></field>
+                </xpath>
+            </field>
         </record>
         <record id="sale.product_template_action" model="ir.actions.act_window">
             <field name="name">Products</field>

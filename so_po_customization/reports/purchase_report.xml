@@ -96,7 +96,7 @@
                                         <span t-field="line.vat_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                     </td>
                                     <td class="text-center">
-                                        <span t-field="line.price_subtotal"/>
+                                        <span t-field="line.subtotal"/>
                                     </td>
                                 </t>
                                 <t t-if="line.display_type == 'line_section'">

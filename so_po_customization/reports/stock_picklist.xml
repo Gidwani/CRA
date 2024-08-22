@@ -1,5 +1,6 @@
 <odoo>
     <data>
+
         <record id="paperformat_report_picklist" model="report.paperformat">
             <field name="name">Picklist Papers Format</field>
             <field name="default" eval="True"/>
@@ -20,75 +21,20 @@
             <field name="name">Picklist Landscape</field>
             <field name="model">stock.picking</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">so_po_customization.report_picklist_document</field>
-            <field name="report_file">so_po_customization.report_picklist_document</field>
+            <field name="report_name">so_po_customization.report_picklist</field>
+            <field name="report_file">so_po_customization.report_picklist</field>
             <field name="print_report_name">'Picklist Landscape'</field>
             <field name="binding_model_id" ref="stock.model_stock_picking"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="paperformat_report_picklist"/>
         </record>
 
-        <!--        <report-->
-        <!--                id="report_stock_picklist"-->
-        <!--                model="stock.picking"-->
-        <!--                string="Picklist Landscape"-->
-        <!--                report_type="qweb-pdf"-->
-        <!--                name="so_po_customization.report_picklist_document"-->
-        <!--                file="so_po_customization.report_picklist_document"-->
-        <!--                paperformat="paperformat_report_picklist"/>-->
-
-        <template id="web.external_layout_boxed">
-            <t t-set="company" t-value="company"/>
-            <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
-                <div class="o_boxed_header">
-                    <div class="row mb8">
-                        <div class="col-6">
-                            <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" alt="Logo"/>
-                        </div>
-                        <div style="text-align:right;" class="col-6 text-right mb4">
-                            <h4 class="mt0" t-field="company.report_header"/>
-                            <div name="company_address" class="float-right mb4">
-                                <span class="company_address" t-field="company.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-<!--            <div t-attf-class="article o_report_layout_boxed o_company_#{company.id}_layout" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">-->
-<!--                <div class="pt-5">-->
-<!--                    &lt;!&ndash; This div ensures that the address is not cropped by the header. &ndash;&gt;-->
-<!--                    <t t-call="web.address_layout"/>-->
-<!--                </div>-->
-<!--                <t t-raw="0"/>-->
-<!--            </div>-->
-
-            <div t-attf-class="footer o_boxed_footer o_company_#{company.id}_layout">
-                <div class="text-center">--This is a system generated document. No Signature required--</div>
-
-                <div class="text-center">
-                    <ul class="list-inline">
-                        <li t-if="company.phone" class="list-inline-item"><span class="o_force_ltr" t-field="company.phone"/></li>
-                        <li t-if="company.email" class="list-inline-item"><span t-field="company.email"/></li>
-                        <li t-if="company.website" class="list-inline-item"><span t-field="company.website"/></li>
-                        <li t-if="company.vat" class="list-inline-item"><t t-esc="company.country_id.vat_label or 'Tax ID'"/>: <span t-field="company.vat"/></li>
-                    </ul>
-                    <!--                    <div t-field="company.report_footer"/>-->
-                    <div t-if="report_type == 'pdf'">
-                        Page: <span class="page"/> / <span class="topage"/>
-                    </div>
-                </div>
-            </div>
-            <!--                </t>-->
-            <!--            </t>-->
-        </template>
-
         <template id="report_picklist_document">
-            <t t-call="web.html_container">
-                <t t-call="web.external_layout">
-                    <t t-set="o" t-value="docs.with_context(lang=docs.partner_id.lang)" />
+            <t t-call="web.external_layout">
+                <t t-set="o" t-value="docs.with_context(lang=docs.partner_id.lang)" />
 
-                    <div class="page" >
+                <div class="mt-0 clearfix">
+                    <div class="page">
                         <div class="row text-right" >
                             <div class="col-9"></div>
                             <div class="col-3 text-right">
@@ -241,11 +187,22 @@
                         </div>
 
                     </div>
-                    <div class="oe_structure"/>
+                </div>
+                <!--            </div>-->
+                <!--                <div class="oe_structure"/>-->
 
-                </t>
             </t>
+
             <!--            </t>-->
+            <!--            </t>-->
+        </template>
+        <template id="report_picklist">
+            <t t-call="web.html_container">
+                                <t t-foreach="docs" t-as="o">
+                                    <t t-set="lang" t-value="o.partner_id.lang"/>
+                <t t-call="so_po_customization.report_picklist_document"/>
+                                </t>
+            </t>
         </template>
 
 

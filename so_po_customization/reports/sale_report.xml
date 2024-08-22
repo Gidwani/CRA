@@ -4,6 +4,13 @@
             <span>&#160;</span>
         </xpath>
         <xpath expr="//div[@class='page']" position="replace">
+
+            <div class="watermark" >
+                <!-- Watermark -->
+                <img src="so_po_customization/static/Watermark.png" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; opacity: 0.2;"/>
+            </div>
+
+
             <div class="page" style="margin-top:-50px;">
                 <div class="oe_structure"/>
                 <h2 class="mt16">
@@ -39,7 +46,7 @@
                     </div>
                     <div class="col-5">
                         <div>Order Date: <span t-esc="doc.date_order.date()"/></div>
-                        <div>PO #: <span t-field="doc.client_order_ref"/></div>
+                        <div>PO #: <span t-field="doc.po_no"/></div>
                         <div>Payment Terms: <span t-field="doc.payment_term_id"/></div>
                         <div>Salesperson: <span t-field="doc.user_id.name"/></div>
                     </div>

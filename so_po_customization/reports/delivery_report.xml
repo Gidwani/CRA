@@ -319,9 +319,9 @@
                             <!--                                <strong>Signature: </strong><span style="color:black;">____________________________</span>-->
                             <!--                            </div>-->
                             <!--                        </div>-->
-                            <div class="row justify-content-end mt-5" style="font-size:15px; margin-top:10px;">
-                                <div class="col-6" >
-                                    <strong><span >Received By (Name and Mobile) : ________________________________</span> </strong>
+                            <div class="row mt-5 justify-content-end" style="font-size:15px; margin-top:10px;">
+                                <div class="col-5 justify-content-end text-nowrap" >
+                                    <strong><span >Received By (Name and Mobile) : _______________________________</span> </strong>
                                     <!--                                <strong><span>Mobile:</span> </strong><span >_________________________  &#160; &#160;</span>-->
                                     <!--                                <strong>Date: </strong><span>____________________________   </span>-->
                                 </div>
