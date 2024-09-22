@@ -17,7 +17,7 @@ class AccountMoveInh(models.Model):
     total_amount_due = fields.Float('Amount Due')
 
     do_link = fields.Char(string='DO link')
-    po_no = fields.Char()
+    # po_no = fields.Char()
 
     @api.onchange('discount_rate', 'discount_type')
     def _onchange_sale_discount(self):

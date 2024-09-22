@@ -58,7 +58,7 @@
                         <div>SO #: <span t-esc="o.invoice_origin"/></div>
                         <div t-if="o.move_type in ['out_invoice', 'in_invoice']">Invoice Date: <span t-esc="o.invoice_date"/></div>
                         <div t-if="o.move_type in ['out_refund']">Return Date: <span t-esc="o.invoice_date"/></div>
-                        <div>PO #: <span t-field="o.po_no"/></div>
+                        <div>PO #: <span t-field="o.ref"/></div>
                         <div>Payment Terms:<span t-field="o.invoice_payment_term_id"/></div>
                         <div t-if="o.move_type in ['out_refund']">Invoice #: <span t-if="o.reversed_entry_id" t-esc="o.reversed_entry_id.name.replace('/', '-')"/></div>
                         <div t-if="o.move_type in ['out_refund']">Invoice Date: <span t-if="o.reversed_entry_id" t-esc="o.reversed_entry_id.invoice_date"/></div>

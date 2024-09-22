@@ -141,14 +141,14 @@ class SaleOrderInh(models.Model):
     net_tax = fields.Float('Tax', compute='compute_taxes')
     note_picklist = fields.Char('Note')
     subtotal_amount = fields.Float('Subtotal Amount', compute='_compute_net_total')
-    po_no = fields.Char()
+    # po_no = fields.Char()
 
-    def _prepare_invoice(self, ):
-        invoice_vals = super(SaleOrderInh, self)._prepare_invoice()
-        invoice_vals.update({
-            'po_no': self.po_no,
-        })
-        return invoice_vals
+    # def _prepare_invoice(self, ):
+    #     invoice_vals = super(SaleOrderInh, self)._prepare_invoice()
+    #     invoice_vals.update({
+    #         'po_no': self.po_no,
+    #     })
+    #     return invoice_vals
 
     @api.depends('order_line', 'discount_rate')
     def compute_taxes(self):

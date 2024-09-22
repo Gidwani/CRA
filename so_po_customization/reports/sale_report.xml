@@ -46,7 +46,7 @@
                     </div>
                     <div class="col-5">
                         <div>Order Date: <span t-esc="doc.date_order.date()"/></div>
-                        <div>PO #: <span t-field="doc.po_no"/></div>
+                        <div>PO #: <span t-field="doc.client_order_ref"/></div>
                         <div>Payment Terms: <span t-field="doc.payment_term_id"/></div>
                         <div>Salesperson: <span t-field="doc.user_id.name"/></div>
                     </div>
