@@ -274,6 +274,8 @@ class PurchaseOrderInh(models.Model):
         ('cancel', 'Cancelled')
     ], string='Status', readonly=True, index=True, copy=False, default='draft', tracking=True)
     x_css = fields.Html(string='CSS', sanitize=False, compute='_compute_css', store=False)
+    revision = fields.Integer()
+    approved_by_id = fields.Many2one('res.users')
 
     @api.depends('state')
     def _compute_css(self):
@@ -284,6 +286,11 @@ class PurchaseOrderInh(models.Model):
                 application.x_css = '<style>.o_form_button_edit {display: none !important;}</style>'
             else:
                 application.x_css = False
+
+    def button_cancel(self):
+        rec = super().button_cancel()
+        self.revision += 1
+        return rec
 
     def action_reject(self):
         self.state = 'draft'
@@ -303,8 +310,10 @@ class PurchaseOrderInh(models.Model):
                 order.write({'state': 'to approve'})
             if order.partner_id not in order.message_partner_ids:
                 order.message_subscribe([order.partner_id.id])
+            order.approved_by_id = order.env.user.id
             # for line in self.order_line:
             #     line.product_id.product_tmpl_id.incoming_quantity = line.product_id.product_tmpl_id.incoming_quantity + line.product_qty
+
         return True
 
     def _approval_allowed(self):

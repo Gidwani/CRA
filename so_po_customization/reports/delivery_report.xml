@@ -34,56 +34,94 @@
                 <!--                <xpath expr="//div[@class='page']" position="replace">-->
                 <t t-if="o.get_delivery() == 1">
                     <t t-if="o.state == 'done'">
-                        <div class="page" style="margin-top:-55px;">
+                        <div class="page">
                             <h2>
-                                <span t-field="o.name"/>
-                            </h2><br/>
-                            <div class="row mt32 mb32" style="background-color:#E0E0E0;">
-                                <div class="col-auto col-3 mw-100 mb-2">
-                                    <strong>Customer Name:</strong>
-                                    <p class="m-0" t-field="o.partner_id.name"/>
+                                <span t-esc="o.name.replace('/', '-')"/>
+                            </h2>
+
+                            <div class="row col-12 p-2">
+                                <div class="col-8">
+                                    <strong>Customer Details:-</strong><br/>
+                                    <!--                                    <div t-field="o.partner_id"-->
+                                    <!--                                         t-options='{"widget": "contact", "fields": ["address", "name", "vat"], "no_marker": True, "phone_icons": False}'/>-->
+                                    <span t-field="o.partner_id"/>
+                                    <br/>
+                                    <t t-if="o.partner_id.street ">
+                                        <span t-if="o.partner_id.street" t-field="o.partner_id.street"/>
+                                        <!--                                <span t-if="doc.partner_id.street2" t-field="doc.partner_id.street2"/>-->
+                                    </t>
+                                    <t t-if="o.partner_id.city">
+                                        <br/>
+                                        <span t-if="o.partner_id.city" t-field="o.partner_id.city"/>
+                                    </t>
+                                    <t t-if="o.partner_id.country_id">
+                                        , <span t-if="o.partner_id.country_id" t-field="o.partner_id.country_id"/>
+                                    </t>
+                                    <t t-if="o.partner_id.vat">
+                                        <br/>
+                                        <span t-if="o.partner_id.vat" t-esc="'TRN: ' + o.partner_id.vat"/>
+                                    </t>
                                 </div>
-                                <div t-if="o.partner_id.street or o.partner_id.city or o.partner_id.country_id.name"  class="col-auto col-3 mw-100 mb-2">
-                                    <strong>Company Address:</strong>
-                                    <p t-if="o.partner_id.street" class="m-0" t-field="o.partner_id.street"/>
-                                    <p t-if="o.partner_id.city" class="m-0" t-field="o.partner_id.city"/>
-                                    <p t-if="o.partner_id.country_id.name" class="m-0" t-field="o.partner_id.country_id.name"/>
-                                </div>
-                                <div t-if="o.partner_id.vat" class="col-auto col-3 mw-100 mb-2">
-                                    <strong> TRN:</strong>
-                                    <p class="m-0" t-field="o.partner_id.vat"/>
+                                <div class="col-4">
+                                    <div>SO #: <span t-esc="o.origin"/></div>
+                                    <div>PO #: <span t-esc="o.sale_id.client_order_ref"/></div>
+                                    <div>DO Date:
+                                        <t t-if="o.state == 'done'">
+                                            <span t-field="o.date_done" t-options='{"widget": "date"}'/>
+                                        </t>
+                                        <t t-if="o.state != 'done'">
+                                            <span t-field="o.scheduled_date" t-options='{"widget": "date"}'/>
+                                        </t>
+                                    </div>
+
                                 </div>
                             </div>
+                            <!--                            <div class="row mt32 mb32" style="background-color:#E0E0E0;">-->
+                            <!--                                <div class="col-auto col-3 mw-100 mb-2">-->
+                            <!--                                    <strong>Customer Name:</strong>-->
+                            <!--                                    <p class="m-0" t-field="o.partner_id.name"/>-->
+                            <!--                                </div>-->
+                            <!--                                <div t-if="o.partner_id.street or o.partner_id.city or o.partner_id.country_id.name"  class="col-auto col-3 mw-100 mb-2">-->
+                            <!--                                    <strong>Company Address:</strong>-->
+                            <!--                                    <p t-if="o.partner_id.street" class="m-0" t-field="o.partner_id.street"/>-->
+                            <!--                                    <p t-if="o.partner_id.city" class="m-0" t-field="o.partner_id.city"/>-->
+                            <!--                                    <p t-if="o.partner_id.country_id.name" class="m-0" t-field="o.partner_id.country_id.name"/>-->
+                            <!--                                </div>-->
+                            <!--                                <div t-if="o.partner_id.vat" class="col-auto col-3 mw-100 mb-2">-->
+                            <!--                                    <strong> TRN:</strong>-->
+                            <!--                                    <p class="m-0" t-field="o.partner_id.vat"/>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
 
 
-                            <div class="row mt32 mb32">
-                                <div t-if="o.origin" class="col-auto" name="div_origin">
-                                    <strong>SO #:</strong>
-                                    <p t-field="o.origin"/>
-                                </div>
-                                <div t-if="o.state" class="col-auto" name="div_sched_date">
-                                    <strong>DO Date:</strong>
-                                    <t t-if="o.state == 'done'">
-                                        <p t-field="o.date_done" t-options='{"widget": "date"}'/>
-                                    </t>
-                                    <t t-if="o.state != 'done'">
-                                        <p t-field="o.scheduled_date" t-options='{"widget": "date"}'/>
-                                    </t>
-                                </div>
-                                <div t-if="o.sale_id.client_order_ref" class="col-auto" name="div_sched_date">
-                                    <strong>PO #:</strong>
-                                    <t t-if="o.state == 'done'">
-                                        <p t-field="o.sale_id.client_order_ref"/>
-                                    </t>
-                                    <t t-if="o.state != 'done'">
-                                        <p t-field="o.sale_id.client_order_ref"/>
-                                    </t>
-                                </div>
-                                <div t-if="o.sale_id.incoterm" class="col-auto">
-                                    <strong>Incoterm:</strong>
-                                    <p class="m-0" t-field="o.sale_id.incoterm"/>
-                                </div>
-                            </div>
+                            <!--                            <div class="row mt32 mb32">-->
+                            <!--                                <div t-if="o.origin" class="col-auto" name="div_origin">-->
+                            <!--                                    <strong>SO #:</strong>-->
+                            <!--                                    <p t-field="o.origin"/>-->
+                            <!--                                </div>-->
+                            <!--                                <div t-if="o.state" class="col-auto" name="div_sched_date">-->
+                            <!--                                    <strong>DO Date:</strong>-->
+                            <!--                                    <t t-if="o.state == 'done'">-->
+                            <!--                                        <p t-field="o.date_done" t-options='{"widget": "date"}'/>-->
+                            <!--                                    </t>-->
+                            <!--                                    <t t-if="o.state != 'done'">-->
+                            <!--                                        <p t-field="o.scheduled_date" t-options='{"widget": "date"}'/>-->
+                            <!--                                    </t>-->
+                            <!--                                </div>-->
+                            <!--                                <div t-if="o.sale_id.client_order_ref" class="col-auto" name="div_sched_date">-->
+                            <!--                                    <strong>PO #:</strong>-->
+                            <!--                                    <t t-if="o.state == 'done'">-->
+                            <!--                                        <p t-field="o.sale_id.client_order_ref"/>-->
+                            <!--                                    </t>-->
+                            <!--                                    <t t-if="o.state != 'done'">-->
+                            <!--                                        <p t-field="o.sale_id.client_order_ref"/>-->
+                            <!--                                    </t>-->
+                            <!--                                </div>-->
+                            <!--                                <div t-if="o.sale_id.incoterm" class="col-auto">-->
+                            <!--                                    <strong>Incoterm:</strong>-->
+                            <!--                                    <p class="m-0" t-field="o.sale_id.incoterm"/>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
                             <table class="table table-sm" t-if="o.state!='done'" name="stock_move_table">
                                 <thead>
                                     <tr>
@@ -96,7 +134,7 @@
                                 </thead>
                                 <tbody>
                                     <t t-set="lines" t-value="o.move_lines.filtered(lambda x: x.product_uom_qty)"/>
-                                    <tr t-foreach="lines" t-as="move" style="border:1px solid black;">
+                                    <tr t-foreach="lines" t-as="move" >
                                         <td class="text-center">
                                             <span t-field="move.number"/>
                                         </td>
@@ -150,7 +188,7 @@
                                             <!-- If printing lots/serial numbers => keep products in original lines -->
                                             <t t-if="has_serial_number">
                                                 <t t-set="i" t-value="0"/>
-                                                <tr t-foreach="package_move_lines" t-as="move_line" style="border:1px solid black;">
+                                                <tr t-foreach="package_move_lines" t-as="move_line" >
                                                     <t t-set="i" t-value="i+1"/>
                                                     <td id="count" class="text-center">
                                                         <span  t-esc="i"/>
@@ -173,7 +211,7 @@
                                             <t t-call="stock.stock_report_delivery_no_package_section_line" name="no_package_section"/>
                                             <t t-if="has_serial_number">
                                                 <t t-set="i" t-value="0"/>
-                                                <tr t-foreach="move_lines" t-as="move_line" style="border:1px solid black;">
+                                                <tr t-foreach="move_lines" t-as="move_line" >
                                                     <t t-set="i" t-value="i+1"/>
                                                     <td id="count" class="text-center">
                                                         <span  t-esc="i"/>
@@ -198,7 +236,7 @@
                                         <t t-set="i" t-value="0"/>
                                         <t t-if="has_serial_number">
 
-                                            <tr t-foreach="o.move_line_ids" t-as="move_line" style="border:1px solid black;">
+                                            <tr t-foreach="o.move_line_ids" t-as="move_line">
                                                 <t t-set="i" t-value="i+1"/>
                                                 <td id="count" class="text-center">
                                                     <span  t-esc="i"/>
@@ -262,10 +300,10 @@
                                 <div id="total" class="row">
                                     <div t-attf-class="#{'col-6' if report_type != 'html' else 'col-sm-7 col-md-6'} ms-auto">
                                         <table class="table table-sm" style="page-break-inside: avoid;">
-<!--                                        <table class="table table-sm">-->
+                                            <!--                                        <table class="table table-sm">-->
                                             <tr class="border-black o_total">
                                                 <td name="td_amount_total_label"><strong>Total Qty</strong></td>
-                                                <td name="td_amount_total" class="text-right">
+                                                <td name="td_amount_total" class="text-center">
                                                     <span t-esc="o.get_total_qty()"/>
                                                 </td>
                                             </tr>
@@ -281,30 +319,11 @@
                             <!--                                <strong>Signature: </strong><span style="color:black;">____________________________</span>-->
                             <!--                            </div>-->
                             <!--                        </div>-->
-                            <div class="container row" style="margin-top:10em;margin-left:1em;float:right; font-size:15px;">
-                                <div class="col-12">
-                                    <strong><span >Received By:</span> </strong>
+                            <div class="row mt-5 justify-content-end" style="font-size:15px; margin-top:10px;">
+                                <div class="col-5 justify-content-end text-nowrap" >
+                                    <strong><span >Received By (Name and Mobile) : _______________________________</span> </strong>
                                     <!--                                <strong><span>Mobile:</span> </strong><span >_________________________  &#160; &#160;</span>-->
                                     <!--                                <strong>Date: </strong><span>____________________________   </span>-->
-                                </div>
-                            </div>
-                            <div class="container row" style="margin-top:1em;margin-left:1em;float:right; font-size:15px;">
-                                <div class="col-12">
-                                    <strong><span >Name:</span> </strong><span>________________________  &#160; &#160;</span>
-                                    <strong><span>Mobile:</span> </strong><span >_________________________  &#160; &#160;</span>
-                                    <strong>Date: </strong><span>____________________________   </span>
-                                </div>
-                            </div>
-
-                            <div t-if="o.signature" class="mt32 ml64 mr4" name="signature">
-                                <div class="offset-8">
-                                    <strong>Signature</strong>
-                                </div>
-                                <div class="offset-8">
-                                    <img t-att-src="image_data_uri(o.signature)" style="max-height: 4cm; max-width: 8cm;"/>
-                                </div>
-                                <div class="offset-8 text-center">
-                                    <p t-field="o.partner_id.name"/>
                                 </div>
                             </div>
 

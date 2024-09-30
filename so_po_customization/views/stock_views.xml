@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+
         <!--        <record id="stock.action_report_delivery" model="ir.actions.report">-->
         <!--            <field name="name">Delivery Slip</field>-->
         <!--            <field name="model">stock.picking</field>-->
@@ -38,7 +39,7 @@
             <field name="inherit_id" ref="stock.vpicktree"/>
             <field name="arch" type="xml">
                 <field name="state" position="after">
-                <field name="delivery_status"  widget="badge"/>
+                    <field name="delivery_status"  widget="badge"/>
                 </field>
             </field>
         </record>
@@ -52,6 +53,7 @@
             <field name="code">if records:
                 action = records.cal_incoming_quantity()</field>
         </record>
+
         <record id="stock_picking_form_view" model="ir.ui.view">
             <field name="name">stock.picking.form.custom</field>
             <field name="model">stock.picking</field>
@@ -59,8 +61,10 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='backorder_id']" position="after">
                     <field invisible="1" name="invoice_link"/>
-                </xpath></field>
+                </xpath>
+            </field>
         </record>
+
         <record id="view_stock_picking_form_inh" model="ir.ui.view">
             <field name="name">stock.picking.form.inh</field>
             <field name="model">stock.picking</field>
@@ -103,6 +107,176 @@
                 <xpath expr="//field[@name='barcode']" position="after">
                     <field name="hs_code"/>
                 </xpath>
+
+            </field>
+        </record>
+
+
+
+        <record id="product_template_form_view_inh" model="ir.ui.view">
+            <field name="name">product.template.form.inh</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+
+
+
+                <xpath expr="//button[@name='open_pricelist_rules']" position="before">
+                    <field name="show_on_hand_qty_status_button" invisible="1"/>
+                    <field name="tracking" invisible="1"/>
+                    <field name="nbr_reordering_rules" invisible="1"/>
+                    <button class="oe_stat_button" name="action_view_sales" type="object" icon="fa-signal" help="Sold in the last 365 days" groups="sales_team.group_sale_salesman" invisible="not sale_ok">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value d-flex gap-1">
+                                <field name="sales_count" widget="statinfo" nolabel="1" class="oe_inline"/>
+                                <field name="uom_name" class="oe_inline"/>
+                            </span>
+                            <span class="o_stat_text">Sold</span>
+                        </div>
+                    </button>
+                    <button class="oe_stat_button" name="action_view_po" groups="purchase.group_purchase_user" type="object" icon="fa-credit-card" invisible="not purchase_ok" help="Purchased in the last 365 days">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value d-flex gap-1">
+                                <field name="purchased_product_qty" widget="statinfo" nolabel="1" class="oe_inline"/>
+                                <field name="uom_name" class="oe_inline"/>
+                            </span>
+                            <span class="o_stat_text">Purchased</span>
+                        </div>
+                    </button>
+                    <button class="oe_stat_button"
+                            name="action_update_quantity_on_hand"
+                            icon="fa-cubes"
+                            type="object"
+                            invisible="not show_on_hand_qty_status_button">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value d-flex gap-1">
+                                <field name="qty_available" nolabel="1" class="oe_inline"/>
+                                <field name="uom_name" class="oe_inline"/>
+                            </span>
+                            <span class="o_stat_text">On Hand</span>
+                        </div>
+                    </button>
+
+                    <button type="object"
+                            name= "action_view_stock_move_lines"
+                            invisible="type not in ['product', 'consu']"
+                            class="oe_stat_button" icon="fa-exchange"
+                            groups="stock.group_stock_user">
+                        <div class="d-flex flex-column">
+                            <div class="o_field_widget o_stat_info align-items-baseline flex-row gap-1 me-1">
+                                <span class="o_stat_text">In:</span>
+                                <span class="o_stat_value"><field name="nbr_moves_in"/></span>
+                            </div>
+                            <div class="o_field_widget o_stat_info align-items-baseline flex-row gap-1 me-1">
+                                <span class="o_stat_text">Out:</span>
+                                <span class="o_stat_value"><field name="nbr_moves_out"/></span>
+                            </div>
+                        </div>
+                    </button>
+                    <button name="action_view_orderpoints" type="object"
+                            invisible="type not in ['product', 'consu'] or nbr_reordering_rules != 1"
+                            class="oe_stat_button" icon="fa-refresh">
+                        <div class="d-flex flex-column">
+                            <div class="o_field_widget o_stat_info align-items-baseline flex-row gap-1 me-1">
+                                <span class="o_stat_text">Min:</span>
+                                <span class="o_stat_value"><field name="reordering_min_qty"/></span>
+                            </div>
+                            <div class="o_field_widget o_stat_info align-items-baseline flex-row gap-1 me-1">
+                                <span class="o_stat_text">Max:</span>
+                                <span class="o_stat_value"><field name="reordering_max_qty"/></span>
+                            </div>
+                        </div>
+                    </button>
+                    <!--                    <button type="object"-->
+                    <!--                            name="action_view_orderpoints"-->
+                    <!--                            invisible="type != 'product' or nbr_reordering_rules == 1"-->
+                    <!--                            class="oe_stat_button" icon="fa-refresh">-->
+                    <!--                    <field name="nbr_reordering_rules" widget="statinfo"/>-->
+                    <!--                    </button>-->
+                    <button type="object"
+                            name="action_open_product_lot"
+                            invisible="tracking == 'none'"
+                            class="oe_stat_button" icon="fa-bars" groups="stock.group_production_lot">
+                        <div class="o_stat_info">
+                            <span class="o_stat_text">Lot/Serial Numbers</span>
+                        </div>
+                    </button>
+                </xpath>
+
+            </field>
+        </record>
+
+          <record id="product_template_form_view_sale_order_button_inh" model="ir.ui.view">
+            <field name="name">product.template.form.inh</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="sale.product_template_form_view_sale_order_button"/>
+            <field name="arch" type="xml">
+                                 <xpath expr="//button[@name='action_view_sales'][2]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_product_template_purchase_buttons_from_inh" model="ir.ui.view">
+            <field name="name">product.template.form.inh</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="purchase.view_product_template_purchase_buttons_from"/>
+            <field name="arch" type="xml">
+                                 <xpath expr="//button[@name='action_view_po'][2]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_template_form_view_bom_button_inh" model="ir.ui.view">
+            <field name="name">product.template.procurement</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="stock.product_template_form_view_procurement_button"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//div[@name='button_box']/t//button[@name='action_update_quantity_on_hand']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//div[@name='button_box']/t//button[@name='action_product_tmpl_forecast_report']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//div[@name='button_box']/t//button[@name='action_view_stock_move_lines']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//div[@name='button_box']/t//button[@name='action_view_orderpoints']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//div[@name='button_box']/t//button[@name='action_view_orderpoints']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//div[@name='button_box']/t//button[@name='action_open_product_lot']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//div[@name='button_box']/t//button[@name='action_view_related_putaway_rules']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//div[@name='button_box']/t//button[@name='action_view_storage_category_capacity']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_products_tree_inh_income" model="ir.ui.view">
+            <field name="name">product.template.tree.inh</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_tree_view"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='incoming_quantity']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+                <xpath expr="//field[@name='default_code']" position="attributes">
+                    <attribute name="column_invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='responsible_id']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+
             </field>
         </record>
 

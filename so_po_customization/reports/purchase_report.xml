@@ -1,38 +1,46 @@
 <odoo>
     <template id="purchase_order_report_inherit" inherit_id="purchase.report_purchaseorder_document">
-        <!--		<xpath expr="//t[@t-set='address']" position="replace">-->
-        <!--			<span>&#160;</span>-->
-        <!--		</xpath>-->
+        <xpath expr="//t[@t-set='address']" position="replace">
+            <span>&#160;</span>
+        </xpath>
 
         <xpath expr="//div[@class='page']" position="replace">
             <div class="page">
                 <div class="oe_structure"/>
+                <div class="mt-4">
+                    <h2 t-if="o.state in ['draft', 'sent', 'to approve']">Request for Quotation #<span t-esc="o.name.replace('/', '-')"/></h2>
+                    <h2 t-if="o.state in ['purchase', 'done']">Purchase Order #<span t-esc="o.name.replace('/', '-')"/></h2>
+                    <h2 t-if="o.state == 'cancel'">Cancelled Purchase Order #<span t-esc="o.name.replace('/', '-')"/></h2>
+                </div>
 
-                <h2 t-if="o.state == 'draft'">Request for Quotation #<span t-field="o.name"/></h2>
-                <h2 t-if="o.state in ['sent', 'to approve']">Purchase Order #<span t-field="o.name"/></h2>
-                <h2 t-if="o.state in ['purchase', 'done']">Purchase Order #<span t-field="o.name"/></h2>
-                <h2 t-if="o.state == 'cancel'">Cancelled Purchase Order #<span t-field="o.name"/></h2>
-
-                <div id="informations" class="row mt32 mb32">
-                    <!--                    <div t-if="o.user_id" class="col-3 bm-2">-->
-                    <!--                        <strong>Purchase Representative:</strong>-->
-                    <!--                        <p t-field="o.user_id" class="m-0"/>-->
-                    <!--                    </div>-->
-                    <div t-if="o.partner_ref" class="col-3 bm-2">
-                        <strong>Your Order Reference:</strong>
-                        <p t-field="o.partner_ref" class="m-0"/>
+                <div class="row col-12 p-2">
+                    <div class="col-8">
+                        <strong>Vendor Details:-</strong><br/>
+                        <span t-field="o.partner_id"/>
+                        <br/>
+                        <t t-if="o.partner_id.street ">
+                            <span t-if="o.partner_id.street" t-field="o.partner_id.street"/>
+                            <!--                                <span t-if="doc.partner_id.street2" t-field="doc.partner_id.street2"/>-->
+                        </t>
+                        <t t-if="o.partner_id.city">
+                            <br/>
+                            <span t-if="o.partner_id.city" t-field="o.partner_id.city"/>
+                        </t>
+                        <t t-if="o.partner_id.country_id">
+                            , <span t-if="o.partner_id.country_id" t-field="o.partner_id.country_id"/>
+                        </t>
+                        <t t-if="o.partner_id.vat">
+                            <br/>
+                            <span t-if="o.partner_id.vat" t-esc="'TRN: ' + o.partner_id.vat"/>
+                        </t>
                     </div>
-                    <div t-if="o.date_order" class="col-3 bm-2">
-                        <strong>PO Date:</strong>
-                        <p t-field="o.date_order" class="m-0" t-options='{"widget": "date"}'/>
-                    </div>
-                    <!--                    <div t-if="o.do_no" class="col-3 bm-2">-->
-                    <!--                        <strong>Supplier DO #:</strong>-->
-                    <!--                        <p t-field="o.do_no" class="m-0"/>-->
-                    <!--                    </div>-->
-                    <div t-if="o.payment_term_id" class="col-3 bm-2">
-                        <strong>Payment Terms:</strong>
-                        <p t-field="o.payment_term_id" class="m-0"/>
+                    <div class="col-4">
+                        <div>PO Date: <span t-esc="o.date_order.date()"/></div>
+                        <div>Expected Date: <span t-esc="o.date_planned.date()"/></div>
+                        <div>Revision: <span t-field="o.revision"/></div>
+                        <div>Payment Terms: <span t-field="o.payment_term_id"/></div>
+                        <div>Prepared By: <span t-field="o.create_uid.name"/></div>
+                        <div>Approved By: <span t-field="o.approved_by_id.name"/></div>
                     </div>
                 </div>
 
@@ -40,14 +48,15 @@
                     <thead>
                         <tr>
                             <th name="th_sr" class="text-center"><span>Sr #</span></th>
-                            <th name="th_sr" class="text-center"><span>Ref #</span></th>
-                            <th name="th_sr" class="text-center"><span>Sale Order</span></th>
+                            <th name="th_sr" class="text-center"><span>Sale Ref #</span></th>
+                            <!--                            <th name="th_sr" class="text-center"><span>Sale Order</span></th>-->
                             <th name="th_description"><strong>Products</strong></th>
-                            <th name="th_taxes" class="text-center"><strong>Taxes</strong></th>
                             <!--                            <th name="th_date_req" class="text-center"><strong>Date Req.</strong></th>-->
                             <th name="th_quantity" class="text-center"><strong>Qty</strong></th>
                             <th name="th_quantity" class="text-center"><strong>UOM</strong></th>
                             <th name="th_price_unit" class="text-center"><strong>Unit Price</strong></th>
+                            <th name="th_taxes" class="text-center"><strong>Tax%</strong></th>
+                            <th name="th_taxes" class="text-center"><strong>Tax Amount</strong></th>
                             <th name="th_amount" class="text-center"><strong>Amount</strong></th>
                         </tr>
                     </thead>
@@ -57,16 +66,14 @@
                             <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
                             <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
 
-                            <tr style="border:1px solid black;" t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
+                            <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
                                 <t t-if="not line.display_type">
                                     <td class="text-center"><span t-field="line.number"/></td>
-                                    <td class="text-center"><t t-if="line.so_ref != 0"> <span t-field="line.so_ref"/></t></td>
-                                    <td class="text-center"><span t-field="line.sale_order"/></td>
+                                    <td class="text-center text-nowrap"><span t-esc="line.get_so_ref()"/></td>
+                                    <!--                                    <td class="text-center"><t t-if="line.so_ref != 0"> <span t-field="line.so_ref"/></t></td>-->
+                                    <!--                                    <td class="text-center"><span t-field="line.sale_order"/></td>-->
                                     <td id="product">
-                                        <span t-field="line.product_id.name"/><br/><span t-field="line.remarks"/>
-                                    </td>
-                                    <td name="td_taxes" class="text-center">
-                                        <span t-esc="', '.join(map(lambda x: x.name, line.taxes_id))"/>
+                                        <span t-field="line.product_id.name"/><br/><u><span t-field="line.remarks"/></u>
                                     </td>
                                     <!--                                    <td class="text-center">-->
                                     <!--                                        <span t-field="line.date_planned"/>-->
@@ -82,9 +89,14 @@
                                     <td class="text-center">
                                         <span t-field="line.price_unit"/>
                                     </td>
+                                    <td name="td_taxes" class="text-center">
+                                        <span t-esc="', '.join(map(lambda x: str(int(x.amount)), line.taxes_id))"/>%
+                                    </td>
                                     <td class="text-center">
-                                        <span t-field="line.price_subtotal"
-                                              t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        <span t-field="line.vat_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="line.subtotal"/>
                                     </td>
                                 </t>
                                 <t t-if="line.display_type == 'line_section'">
@@ -126,15 +138,15 @@
                                 </td>
                             </tr>
                             <t t-if="not o.perc_discount == 0">
-<!--                                <t t-if="o.move_type == 'out_invoice' or o.move_type == 'out_refund'">-->
-                                    <tr style="">
-                                        <!--                                    <td name="td_perc_discount_label"><strong>Discount( <span t-esc="o.perc" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%)</strong></td>-->
-                                        <td name="td_perc_discount" style="text-align:left;"><strong>Discount</strong></td>
-                                        <td name="td_perc_discount" class="text-right" style="text-align:right;">
-                                            <span t-field="o.perc_discount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                                        </td>
-                                    </tr>
-<!--                                </t>-->
+                                <!--                                <t t-if="o.move_type == 'out_invoice' or o.move_type == 'out_refund'">-->
+                                <tr style="">
+                                    <!--                                    <td name="td_perc_discount_label"><strong>Discount( <span t-esc="o.perc" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%)</strong></td>-->
+                                    <td name="td_perc_discount" style="text-align:left;"><strong>Discount</strong></td>
+                                    <td name="td_perc_discount" class="text-right" style="text-align:right;">
+                                        <span t-field="o.perc_discount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                </tr>
+                                <!--                                </t>-->
 
                                 <tr style="">
                                     <td  style="text-align:left;"><strong>Net Total</strong></td>
@@ -160,8 +172,23 @@
                         </table>
                     </div>
                 </div>
+                <p t-field="o.notes" class="mt-2"/>
 
-
+                <div class="row" style="font-size:15px;padding:10px;margin-top:-90px;line-height:20px;">
+                    <strong>Terms and conditions:</strong><br/>
+                    1. Kindly confirm receipt of this Purchase Order as your acceptance.<br/>
+                    2. The Purchase Order number must be referenced on all delivery notes,<br/>
+                       invoices, and related correspondence.<br/>
+                    3. Material test certificates must accompany the material.<br/>
+                    4. All materials must be genuine and of high quality; any items that do not<br/>
+                       meet the specifications will be rejected.<br/>
+                    5. Material test certificates for all products must comply with EN 10204 Type 3.1.<br/>
+                    6. The material must conform to the relevant ASTM/ASME EN1092-1
+                       standards.<br/>
+                    7. Compliance with NACE MR0175 / ISO15156 / NACE MR0103 is
+                       mandatory.<br/>
+                    8. Materials should be free from rust, defects, or any kind of damage.
+                </div>
                 <!--                <p t-field="o.notes"/>-->
                 <!--                <div class="container row" style="margin-top:4em;margin-left:1em;float:right; font-size:15px;">-->
                 <!--                    <div class="col-12">-->
@@ -181,7 +208,7 @@
     <template id="web.external_layout_boxed">
         <t t-name="web.external_layout_boxed">
             <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
-                <div class="o_boxed_header">
+                <div class="o_background_header">
                     <div class="row mb8">
                         <div class="col-6">
                             <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" alt="Logo"/>
@@ -221,6 +248,51 @@
                 </div>
             </div>
         </t>
+    </template>
+
+    <template id="web.external_layout_striped">
+        <div t-attf-class="o_company_#{company.id}_layout header" t-att-style="report_header_style">
+            <div class="o_background_header">
+                <div class="row">
+                    <div class="col-3">
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" class="float-start" alt="Logo"/>
+                    </div>
+                    <div style="text-align:left;" class="col-5 text-left mb4">
+                        <div name="company_address" class="float-right mb4">
+                            <!--                            <span class="company_address" t-field="company.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot; &quot;vat&quot;], &quot;no_marker&quot;: true}"/>-->
+                            <div class="company_address"  t-field="company.partner_id"
+                                 t-options='{"widget": "contact", "fields": ["address", "name", "vat"], "no_marker": True, "phone_icons": False}'/>
+                        </div>
+                    </div>
+                    <div class="col-4 text-end" style="text-align:right;">
+                        <!--                        <img class="text-end" src="/so_po_customization/static/Location.png" alt="Logo" style="max-height:70pt;max-width:90%"/>-->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div t-attf-class="o_company_#{company.id}_layout article o_report_layout_striped {{  'o_report_layout_background' if company.layout_background in ['Geometric', 'Custom']  else  '' }}" t-attf-style="background-image: url({{ 'data:image/png;base64,%s' % company.layout_background_image.decode('utf-8') if company.layout_background_image and company.layout_background == 'Custom' else '/base/static/img/bg_background_template.jpg' if company.layout_background == 'Geometric' else ''}});" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-call="web.address_layout"/>
+            <t t-out="0"/>
+        </div>
+
+        <div t-attf-class="o_company_#{company.id}_layout footer o_background_footer">
+            <div class="text-center">
+                <ul class="list-inline">
+                    <img  src="/so_po_customization/static/Footer.png" alt="Logo" style="max-width:100%"/>
+                </ul>
+                <div t-if="report_type == 'pdf'" class="text-muted">
+                    Page:
+                    <span class="page"/>
+                    of
+                    <span class="topage"/>
+                </div>
+                <div t-if="report_type == 'pdf' " class="text-muted">
+                    <div class="text-center">--This is a system generated document. No Signature required--</div>
+                </div>
+            </div>
+        </div>
     </template>
 
 </odoo>

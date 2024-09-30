@@ -24,7 +24,7 @@ class PurchaseOrderInh(models.Model):
                 subtotal = subtotal + line.subtotal
             rec.subtotal_amount = subtotal
 
-    @api.depends('order_line')
+    @api.depends('order_line', 'order_line.taxes_id', 'discount_type', 'discount_rate', 'perc')
     def compute_taxes(self):
         for order in self:
             # amount_tax = 0.0
@@ -36,10 +36,14 @@ class PurchaseOrderInh(models.Model):
             for rec in order.order_line:
                 if rec.taxes_id:
                     # if rec.taxes_id.filtered(lambda i:i.name != 'Reverse Charge Provision'):
-                    if rec.taxes_id.filtered(lambda i:i.id == 19):
+                    if rec.taxes_id.filtered(lambda i: i.id in [19, 21]):
                         amount += rec.vat_amount
 
-            order.net_tax = amount - ((order.discount_rate / 100) * amount)
+            if order.discount_type == 'percent':
+                amt = amount - ((order.discount_rate / 100) * amount)
+            else:
+                amt = amount - ((order.perc / 100) * amount)
+            order.net_tax = amt
             # flag = False
             # amount = 0
             # for rec in order.order_line:
@@ -59,7 +63,7 @@ class PurchaseOrderInh(models.Model):
             if rec.discount_type == 'percent':
                 disc = rec.discount_rate
             else:
-                disc = (rec.discount_rate / rec.subtotal_amount) * 100
+                disc = (rec.discount_rate / (rec.subtotal_amount if rec.subtotal_amount != 0 else 1)) * 100
             rec.perc = disc
 
     @api.depends('order_line.price_total', 'order_line.subtotal', 'discount_rate', 'discount_type', )
@@ -126,6 +130,12 @@ class PurchaseOrderLineInh(models.Model):
     vat_amount = fields.Float('VAT Amount', compute='_compute_vat_amount')
     subtotal = fields.Float('Subtotal', compute='_compute_subtotal')
 
+    def get_so_ref(self):
+        if self.sale_order and self.so_ref:
+            order = self.sale_order.split('/')[-1]
+            return order + '-' + str(self.so_ref)
+        return ''
+
     @api.depends('price_unit', 'product_qty', 'product_uom')
     def _compute_subtotal(self):
         for rec in self:
@@ -136,7 +146,7 @@ class PurchaseOrderLineInh(models.Model):
         for rec in self:
             amount = 0
             for tax in rec.taxes_id:
-                if tax.id == 19:
+                if tax.id in [19, 21]:
                     amount = amount + tax.amount
             rec.vat_amount = (amount * rec.product_qty / 100) * rec.price_unit
 

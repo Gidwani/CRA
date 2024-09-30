@@ -17,6 +17,7 @@ class AccountMoveInh(models.Model):
     total_amount_due = fields.Float('Amount Due')
 
     do_link = fields.Char(string='DO link')
+    # po_no = fields.Char()
 
     @api.onchange('discount_rate', 'discount_type')
     def _onchange_sale_discount(self):
@@ -105,6 +106,28 @@ class AccountMoveInh(models.Model):
     def get_do_no(self):
         pickings = self.env['stock.picking'].search([('name', '=', self.do_link)])
         return pickings.name
+
+    def get_reversed_invoice(self):
+        if self.reversed_entry_id:
+            name = self.reversed_entry_id.name.replace('/', '-')
+            date = self.reversed_entry_id.invoice_date
+            return {
+                'name': name,
+                'date': date,
+            }
+        else:
+            order = self.env['sale.order'].search([('name', '=', self.invoice_origin)], limit=1)
+            if order and order.invoice_ids and order.invoice_ids.filtered(lambda i:i.move_type == 'out_invoice'):
+                inv = order.invoice_ids.filtered(lambda i:i.move_type == 'out_invoice')
+                if inv:
+                    return {
+                        'name': inv[-1].name,
+                        'date': inv[-1].invoice_date,
+                    }
+            return {
+                    'name': "",
+                    'date': ""
+                }
 
     @api.depends('invoice_line_ids', 'perc_discount', 'invoice_line_ids.tax_ids', 'invoice_line_ids.subtotal')
     def compute_taxes(self):
