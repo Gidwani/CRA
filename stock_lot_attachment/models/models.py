@@ -14,6 +14,10 @@ class StockQuantInh(models.Model):
     _inherit = 'stock.quant'
 
     attachment_ids = fields.Many2many('ir.attachment', string="Add File", related='lot_id.attachment_ids')
+    inventory_quantity_auto_apply = fields.Float('Inventoried Quantity', digits='Product Unit of Measure',
+        compute='_compute_inventory_quantity_auto_apply',
+        inverse='_set_inventory_quantity', groups='stock.group_stock_manager,stock.group_stock_user'
+    )
 
     def action_download(self):
         for r in self:

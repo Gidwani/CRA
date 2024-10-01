@@ -2,6 +2,7 @@
 <odoo>
     <data>
 
+
         <record id="view_production_lot_form_inh" model="ir.ui.view">
             <field name="name">stock.production.lot.inh.form</field>
             <field name="model">stock.lot</field>
@@ -34,6 +35,10 @@
                     <field column_invisible="1" name="attachment_ids" string="Attach a file" widget="many2many_binary"/>
                     <button icon="fa-download" invisible="not attachment_ids" name="action_download" title="g" type="object"/>
                     <field name="yom"/>
+                </xpath>
+                <xpath expr="//tree/field[@name='inventory_quantity_auto_apply']" position="replace">
+                    <field name="inventory_quantity_auto_apply" string="On Hand Quantity" readonly="0" sum="Total On Hand" groups='stock.group_stock_manager,stock.group_stock_user'/>
+
                 </xpath>
             </field>
         </record>
