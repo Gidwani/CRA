@@ -13,7 +13,7 @@
 
             <div class="page" style="margin-top:-50px;">
                 <div class="oe_structure"/>
-                <h2 class="mt16">
+                <strong><h2 class="mt16">
                     <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
                         <span t-if="doc.state not in ['draft','sent']">Order # </span>
                         <span t-if="doc.state in ['draft','sent']">Quotation # </span>
@@ -22,7 +22,7 @@
                         <span>Pro-Forma Invoice # </span>
                     </t>
                     <span t-esc="doc.name.replace('/', '-')"/>
-                </h2><br/>
+                </h2></strong><br/>
                 <div class="row col-12 p-2">
                     <div class="col-7">
                         <strong>Customer Details:-</strong><br/>
@@ -45,10 +45,10 @@
                         </t>
                     </div>
                     <div class="col-5">
-                        <div>Order Date: <span t-esc="doc.date_order.date()"/></div>
-                        <div>PO #: <span t-field="doc.client_order_ref"/></div>
-                        <div>Payment Terms: <span t-field="doc.payment_term_id"/></div>
-                        <div>Salesperson: <span t-field="doc.user_id.name"/></div>
+                        <div><strong>Order Date: </strong><span t-esc="doc.date_order.date().strftime('%d-%m-%Y')"/></div>
+                        <div><strong>PO #: </strong><span t-field="doc.client_order_ref"/></div>
+                        <div><strong>Payment Terms: </strong><span t-field="doc.payment_term_id"/></div>
+                        <div><strong>Salesperson: </strong><span t-field="doc.user_id.name"/></div>
                     </div>
                 </div>
                 <!--                <div class="row mt32 mb32" style="background-color:#E0E0E0;" >-->

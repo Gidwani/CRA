@@ -55,15 +55,15 @@
                             </t>
                     </div>
                     <div class="col-5">
-                        <div>SO #: <span t-esc="o.invoice_origin"/></div>
-                        <div t-if="o.move_type in ['out_invoice', 'in_invoice']">Invoice Date: <span t-esc="o.invoice_date"/></div>
-                        <div t-if="o.move_type in ['out_refund']">Return Date: <span t-esc="o.invoice_date"/></div>
-                        <div>PO #: <span t-field="o.ref"/></div>
-                        <div>Payment Terms:<span t-field="o.invoice_payment_term_id"/></div>
+                        <div><strong>SO #: </strong><span t-esc="o.invoice_origin"/></div>
+                        <div t-if="o.move_type in ['out_invoice', 'in_invoice']"><strong>Invoice Date:</strong> <span t-esc="o.invoice_date.strftime('%d-%m-%Y')"/></div>
+                        <div t-if="o.move_type in ['out_refund']"><strong>Return Date: </strong><span t-esc="o.invoice_date.strftime('%d-%m-%Y')"/></div>
+                        <div><strong>PO #:</strong> <span t-field="o.ref"/></div>
+                        <div><strong>Payment Terms:</strong><span t-field="o.invoice_payment_term_id"/></div>
                         <t t-if="o.move_type in ['out_refund']" t-set="reversed_invoice" t-value="o.get_reversed_invoice()"/>
-                        <div t-if="o.move_type in ['out_refund']">Invoice #:  <span t-esc="reversed_invoice.get('name')"/></div>
-                        <div t-if="o.move_type in ['out_refund']">Invoice Date: <span t-esc="reversed_invoice.get('date')"/></div>
-                        <div t-if="o.move_type in ['out_invoice']">DO #: <span t-esc="o.get_do_no()"/></div>
+                        <div t-if="o.move_type in ['out_refund']"><strong>Invoice #: </strong> <span t-esc="reversed_invoice.get('name')"/></div>
+                        <div t-if="o.move_type in ['out_refund']"><strong>Invoice Date: </strong><span t-esc="reversed_invoice.get('date').strftime('%d-%m-%Y')"/></div>
+                        <div t-if="o.move_type in ['out_invoice']"><strong>DO #: </strong><span t-esc="o.get_do_no()"/></div>
                     </div>
                 </div>
 <!--                <div id="informations" class="row mt-4 mb-4">-->

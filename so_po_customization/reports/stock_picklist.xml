@@ -9,7 +9,7 @@
             <field name="page_width">0</field>
             <field name="orientation">Landscape</field>
             <field name="margin_top">40</field>
-            <field name="margin_bottom">32</field>
+            <field name="margin_bottom">35</field>
             <field name="margin_left">7</field>
             <field name="margin_right">7</field>
             <field name="header_line" eval="False"/>
@@ -69,7 +69,7 @@
             <div t-attf-class="o_company_#{company.id}_layout footer o_background_footer">
                 <div class="text-center">
                     <ul class="list-inline">
-                        <img  src="/so_po_customization/static/Footer.png" alt="Logo" style="max-width:100%"/>
+                        <img  src="/so_po_customization/static/Footer_updated.png" alt="Logo" style="max-width:100%"/>
                     </ul>
                     <div t-if="report_type == 'pdf'" class="text-muted">
                         Page:
@@ -78,7 +78,7 @@
                         <span class="topage"/>
                     </div>
                     <div t-if="report_type == 'pdf' " class="text-muted">
-                        <div class="text-center">--This is a system generated document. No Signature requireddd--</div>
+                        <div class="text-center">--This is a system generated document. No Signature required--</div>
                     </div>
                 </div>
             </div>
