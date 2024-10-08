@@ -63,9 +63,9 @@
                                     </t>
                                 </div>
                                 <div class="col-4">
-                                    <div>SO #: <span t-esc="o.origin"/></div>
-                                    <div>PO #: <span t-esc="o.sale_id.client_order_ref"/></div>
-                                    <div>DO Date:
+                                    <div><strong>SO #: </strong><span t-esc="o.origin"/></div>
+                                    <div><strong>PO #: </strong><span t-esc="o.sale_id.client_order_ref"/></div>
+                                    <div><strong>DO Date:</strong>
                                         <t t-if="o.state == 'done'">
                                             <span t-field="o.date_done" t-options='{"widget": "date"}'/>
                                         </t>

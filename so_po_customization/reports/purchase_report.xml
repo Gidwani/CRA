@@ -7,11 +7,11 @@
         <xpath expr="//div[@class='page']" position="replace">
             <div class="page">
                 <div class="oe_structure"/>
-                <div class="mt-4">
+                <strong><div class="mt-4">
                     <h2 t-if="o.state in ['draft', 'sent', 'to approve']">Request for Quotation #<span t-esc="o.name.replace('/', '-')"/></h2>
                     <h2 t-if="o.state in ['purchase', 'done']">Purchase Order #<span t-esc="o.name.replace('/', '-')"/></h2>
                     <h2 t-if="o.state == 'cancel'">Cancelled Purchase Order #<span t-esc="o.name.replace('/', '-')"/></h2>
-                </div>
+                </div></strong>
 
                 <div class="row col-12 p-2">
                     <div class="col-8">
@@ -35,12 +35,12 @@
                         </t>
                     </div>
                     <div class="col-4">
-                        <div>PO Date: <span t-esc="o.date_order.date()"/></div>
-                        <div>Expected Date: <span t-esc="o.date_planned.date()"/></div>
-                        <div>Revision: <span t-field="o.revision"/></div>
-                        <div>Payment Terms: <span t-field="o.payment_term_id"/></div>
-                        <div>Prepared By: <span t-field="o.create_uid.name"/></div>
-                        <div>Approved By: <span t-field="o.approved_by_id.name"/></div>
+                        <div><strong>PO Date: </strong><span t-esc="o.date_order.date()"/></div>
+                        <div><strong>Expected Date: </strong><span t-esc="o.date_planned.date()"/></div>
+                        <div><strong>Revision: </strong><span t-field="o.revision"/></div>
+                        <div><strong>Payment Terms:</strong> <span t-field="o.payment_term_id"/></div>
+                        <div><strong>Prepared By: </strong><span t-field="o.create_uid.name"/></div>
+                        <div><strong>Approved By:</strong> <span t-field="o.approved_by_id.name"/></div>
                     </div>
                 </div>
 
@@ -280,7 +280,7 @@
         <div t-attf-class="o_company_#{company.id}_layout footer o_background_footer">
             <div class="text-center">
                 <ul class="list-inline">
-                    <img  src="/so_po_customization/static/Footer.png" alt="Logo" style="max-width:100%"/>
+                    <img  src="/so_po_customization/static/Footer_updated.png" alt="Logo" style="max-width:100%"/>
                 </ul>
                 <div t-if="report_type == 'pdf'" class="text-muted">
                     Page:
