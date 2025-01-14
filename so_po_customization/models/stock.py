@@ -189,14 +189,25 @@ class StockPickingInh(models.Model):
 
     def get_seq(self, picking):
         # return 'Picklist/'+picking.name.split('/')[1]+"/"+picking.name.split('/')[2] + "/"+picking.name.split('/')[3]
-        if len(picking.name.split('/')) == 4:
-            return 'Picklist/' + picking.name.split('/')[1] + "/" + picking.name.split('/')[2] + "/" + \
-                picking.name.split('/')[3]
-        elif len(picking.name.split('/')) == 3:
-            return 'Picklist/' + picking.name.split('/')[0] + "/" + picking.name.split('/')[1] + "/" + \
-                picking.name.split('/')[2]
+        if self.env.company.id == 3:
+            if len(picking.name.split('-')) == 4:
+                return 'Picklist/' + picking.name.split('-')[1] + "/" + picking.name.split('-')[2] + "/" + \
+                    picking.name.split('-')[3]
+            elif len(picking.name.split('-')) == 3:
+                return 'Picklist/' + picking.name.split('-')[0] + "/" + picking.name.split('-')[1] + "/" + \
+                    picking.name.split('-')[2]
+            else:
+                return picking.name
         else:
-            return picking.name
+
+            if len(picking.name.split('/')) == 4:
+                return 'Picklist/' + picking.name.split('/')[1] + "/" + picking.name.split('/')[2] + "/" + \
+                    picking.name.split('/')[3]
+            elif len(picking.name.split('/')) == 3:
+                return 'Picklist/' + picking.name.split('/')[0] + "/" + picking.name.split('/')[1] + "/" + \
+                    picking.name.split('/')[2]
+            else:
+                return picking.name
 
     def compute_is_receipt(self):
         for rec in self:
