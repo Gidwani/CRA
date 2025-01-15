@@ -210,10 +210,10 @@ class AccountMoveLineInh(models.Model):
             amount = 0
             for tax in rec.tax_ids:
                 if rec.move_id.move_type == 'out_invoice' or rec.move_id.move_type == 'out_refund':
-                    if tax.id == 1:
+                    if tax.id in [1,48]:
                         amount = amount + tax.amount
                 else:
-                    if tax.id == 19:
+                    if tax.id in [19, 65]:
                         amount = amount + tax.amount
             rec.vat_amount = ((amount/100) * rec.price_unit) * rec.quantity
 

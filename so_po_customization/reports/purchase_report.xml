@@ -283,7 +283,10 @@
 
         <div t-attf-class="o_company_#{company.id}_layout footer o_background_footer">
             <div class="text-center">
-                <ul class="list-inline">
+                <ul class="list-inline" t-if="company.id == 3">
+                    <img  src="/so_po_customization/static/Footer_inox.png" alt="Logo" style="max-width:100%"/>
+                </ul>
+                <ul class="list-inline" t-else="">
                     <img  src="/so_po_customization/static/Footer_updated.png" alt="Logo" style="max-width:100%"/>
                 </ul>
                 <div t-if="report_type == 'pdf'" class="text-muted">
