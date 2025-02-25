@@ -247,14 +247,15 @@ class SaleOrderInh(models.Model):
 
     def action_manager_approve(self):
         record = super(SaleOrderInh, self).action_confirm()
-        for res_line in self.order_line:
-            total = 0
-            quants = self.get_quant_lines()
-            quants = self.env['stock.quant'].browse(quants)
-            for q_line in quants:
-                if q_line.product_tmpl_id.id == res_line.product_id.product_tmpl_id.id:
-                    total = total + q_line.available_quantity
-            res_line.product_id.product_tmpl_id.available_qty = total
+        # for res_line in self.order_line:
+        #     res_line.product_id.product_tmpl_id.cal_incoming_quantity()
+            # total = 0
+            # quants = self.get_quant_lines()
+            # quants = self.env['stock.quant'].browse(quants)
+            # for q_line in quants:
+            #     if q_line.product_tmpl_id.id == res_line.product_id.product_tmpl_id.id:
+            #         total = total + q_line.available_quantity
+            # res_line.product_id.product_tmpl_id.available_qty = total
 
     def _can_be_confirmed(self):
         self.ensure_one()
@@ -826,27 +827,15 @@ class StockPickingInh(models.Model):
                 for res in backorder.move_ids_without_package:
                     res.is_backorder = False
 
-            # if self.picking_type_id.code == 'incoming':
-            #     for rec_line in self.move_ids_without_package:
-            #         rec_line.product_id.product_tmpl_id.incoming_quantity = rec_line.product_id.product_tmpl_id.incoming_quantity - rec_line.product_uom_qty
-            #         total = 0
-            #         quants = self.get_quant_lines()
-            #         quants = self.env['stock.quant'].browse(quants)
-            #         for q_line in quants:
-            #             if q_line.product_tmpl_id.id == rec_line.product_tmpl_id.id:
-            #                 total = total + q_line.available_quantity
-            #         rec_line.product_id.product_tmpl_id.available_qty = rec_line.product_id.product_tmpl_id.available_qty + rec_line.quantity_done
-            # if self.picking_type_id.code == 'outgoing':
-            #     for res_line in self.move_ids_without_package:
-            #         res_line.product_id.product_tmpl_id.available_qty = res_line.product_id.product_tmpl_id.available_qty - res_line.quantity_done
-            for res_line in self.move_ids_without_package:
-                total = 0
-                quants = self.get_quant_lines()
-                quants = self.env['stock.quant'].browse(quants)
-                for q_line in quants:
-                    if q_line.product_tmpl_id.id == res_line.product_id.product_tmpl_id.id:
-                        total = total + q_line.available_quantity
-                res_line.product_id.product_tmpl_id.available_qty = total
+            # for res_line in self.move_ids_without_package:
+            #     res_line.product_id.product_tmpl_id.cal_incoming_quantity()
+                # total = 0
+                # quants = self.get_quant_lines()
+                # quants = self.env['stock.quant'].browse(quants)
+                # for q_line in quants:
+                #     if q_line.product_tmpl_id.id == res_line.product_id.product_tmpl_id.id:
+                #         total = total + q_line.available_quantity
+                # res_line.product_id.product_tmpl_id.available_qty = total
             return record
 
     # def get_quant_lines(self):
@@ -854,39 +843,43 @@ class StockPickingInh(models.Model):
     #     quant_ids = [l['id'] for l in self.env['stock.quant'].search_read(domain_loc, ['id'])]
     #     return quant_ids
 
-    def do_unreserve(self):
-        rec = super(StockPickingInh, self).do_unreserve()
-        for res_line in self.move_ids_without_package:
-            total = 0
-            quants = self.get_quant_lines()
-            quants = self.env['stock.quant'].browse(quants)
-            for q_line in quants:
-                if q_line.product_tmpl_id.id == res_line.product_id.product_tmpl_id.id:
-                    total = total + q_line.available_quantity
-            res_line.product_id.product_tmpl_id.available_qty = total
-        return
+    # def do_unreserve(self):
+    #     rec = super(StockPickingInh, self).do_unreserve()
+    #     for res_line in self.move_ids_without_package:
+    #         res_line.product_id.product_tmpl_id.cal_incoming_quantity()
+            # total = 0
+            # quants = self.get_quant_lines()
+            # quants = self.env['stock.quant'].browse(quants)
+            # for q_line in quants:
+            #     if q_line.product_tmpl_id.id == res_line.product_id.product_tmpl_id.id:
+            #         total = total + q_line.available_quantity
+            # res_line.product_id.product_tmpl_id.available_qty = total
+        # return
 
-    def action_assign(self):
-        record = super(StockPickingInh, self).action_assign()
-        for res_line in self.move_line_ids_without_package:
-            total = 0
-            quants = self.get_quant_lines()
-            quants = self.env['stock.quant'].browse(quants)
-            for q_line in quants:
-                if q_line.product_tmpl_id.id == res_line.product_id.product_tmpl_id.id:
-                    total = total + q_line.available_quantity
-            res_line.product_id.product_tmpl_id.available_qty = total
+    # def action_assign(self):
+    #     record = super(StockPickingInh, self).action_assign()
+    #     for res_line in self.move_line_ids_without_package:
+    #         res_line.product_id.product_tmpl_id.cal_incoming_quantity()
+            # total = 0
+            # quants = self.get_quant_lines()
+            # quants = self.env['stock.quant'].browse(quants)
+            # for q_line in quants:
+            #     if q_line.product_tmpl_id.id == res_line.product_id.product_tmpl_id.id:
+            #         total = total + q_line.available_quantity
+            # res_line.product_id.product_tmpl_id.available_qty = total
 
-    def action_cancel(self):
-        record = super(StockPickingInh, self).action_cancel()
-        for res_line in self.move_ids_without_package:
-            total = 0
-            quants = self.get_quant_lines()
-            quants = self.env['stock.quant'].browse(quants)
-            for q_line in quants:
-                if q_line.product_tmpl_id.id == res_line.product_id.product_tmpl_id.id:
-                    total = total + q_line.available_quantity
-            res_line.product_id.product_tmpl_id.available_qty = total
+    # def action_cancel(self):
+    #     record = super(StockPickingInh, self).action_cancel()
+        # for res_line in self.move_ids_without_package:
+        #     res_line.product_id.product_tmpl_id.cal_incoming_quantity()
+        # for res_line in self.move_ids_without_package:
+        #     total = 0
+        #     quants = self.get_quant_lines()
+        #     quants = self.env['stock.quant'].browse(quants)
+        #     for q_line in quants:
+        #         if q_line.product_tmpl_id.id == res_line.product_id.product_tmpl_id.id:
+        #             total = total + q_line.available_quantity
+        #     res_line.product_id.product_tmpl_id.available_qty = total
 
     def get_quant_lines(self):
         domain_loc = self.env['product.product']._get_domain_locations()[0]
