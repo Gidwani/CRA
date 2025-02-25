@@ -20,7 +20,7 @@ class ProductProductInh(models.Model):
 class ProductTemplateInh(models.Model):
     _inherit = 'product.template'
 
-    available_qty = fields.Float('Available Quantity', copy=False)
+    available_qty = fields.Float('Available Quantity', copy=False, compute="cal_incoming_quantity")
     incoming_quantity = fields.Float('Incoming Quantity', copy=False)
     hs_code = fields.Char('HS CODE')
     weight = fields.Float(
@@ -56,30 +56,21 @@ class ProductTemplateInh(models.Model):
         for template in (self - unique_variants):
             template.weight = 0.0
 
+    # @api.depends('qty_available')
     def cal_incoming_quantity(self):
         for rec in self:
-            # qty = 0
-            # pickings = self.env['stock.move'].search([('product_id.product_tmpl_id', '=', rec.id), ('picking_code', '=', 'incoming'), ('state', 'not in', ['done', 'cancel'])])
-            # for pick in pickings:
-            #     qty = qty + pick.product_uom_qty
-            # rec.incoming_quantity = qty
-        # all = self.env['product.template'].search([])
-        # for rec in all:
-        #     incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
-        #     pickings = self.env['stock.picking'].search([('picking_type_id', '=', incoming.id), ('state', 'not in', ['done', 'cancel'])])
-        #     qty = 0
-        #     for picking in pickings:
-        #         for line in picking.move_ids_without_package:
-        #             if line.product_id.product_tmpl_id.id == rec.id:
-        #                 qty = qty + line.product_uom_qty
-        #     rec.incoming_quantity = qty
-            total = 0
-            quants = self.get_quant_lines()
-            quants = self.env['stock.quant'].browse(quants)
-            for q_line in quants:
-                if q_line.product_tmpl_id.id == rec.id:
-                    total = total + q_line.available_quantity
-            rec.available_qty = total
+            records = self.env['stock.quant'].sudo().search(
+                [('product_tmpl_id', '=', rec.id), ('on_hand', '=', True)])
+            tot = sum(records.filtered(lambda i: i.company_id.id == self.env.company.id).mapped('available_quantity'))
+            rec.available_qty = tot
+
+        #     total = 0
+        #     quants = self.get_quant_lines()
+        #     quants = self.env['stock.quant'].browse(quants)
+        #     for q_line in quants:
+        #         if q_line.product_tmpl_id.id == rec.id:
+        #             total = total + q_line.available_quantity
+        #     rec.available_qty = total
 
     # @api.depends('qty_available')
     # def cal_available_qty(self):
