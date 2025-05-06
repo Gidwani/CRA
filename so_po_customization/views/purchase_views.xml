@@ -26,6 +26,19 @@
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
+
+                <xpath expr="//header" position="attributes">
+                    <attribute name="invisible">context.from_provision_menu == True</attribute>
+                </xpath>
+
+                <xpath expr="//header" position="after">
+                    <header invisible="context.from_provision_menu != True">
+                        <button groups="so_po_customization.group_provision_purchase" name="action_manager_approve" type="object" string="Approve PO" class="oe_highlight" invisible="state != 'manager' or context.from_provision_menu != True"/>
+                        <button groups="so_po_customization.group_provision_purchase" invisible="state != 'manager' or context.from_provision_menu != True" name="action_reject" string="Reject" type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,purchase" readonly="1"/>
+                    </header>
+                </xpath>
+
                 <xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']" position="after">
                     <field name="vat_amount"/>
                     <field name="subtotal"/>

@@ -84,15 +84,20 @@ class AccountMoveInh(models.Model):
     def _assign_the_DO_link(self):
         for r in self:
             if not r.do_link:
+                all_pickings = self.invoice_line_ids.sale_line_ids.move_ids.picking_id.filtered(
+                    lambda p: p.state == 'done').sorted('date_done')
+                saleorder = self.env['sale.order'].search([("name", '=', r.invoice_origin)])
+                already_linked = saleorder.invoice_ids.filtered(lambda i:i.id != self.id).mapped('do_link')
+                new_picking = all_pickings.filtered(lambda i:i.name not in already_linked)
+                r.do_link = ",".join(new_picking.mapped('name'))
                 for k in r.invoice_line_ids:
-                    saleorder = self.env['sale.order'].search([("name", '=', r.invoice_origin)])
                     for l in saleorder.picking_ids:
                         if r.invoice_origin == l.sale_id.name:
                             for j in l.move_line_ids_without_package:
                                 if j.picking_id.invoice_link != True:
                                     if j.product_id == k.product_id:
                                         if j.quantity == k.quantity:
-                                            r.do_link = l.name
+                                            # r.do_link = l.name
                                             j.picking_id.invoice_link = True
 
     def get_payment_term_id(self):

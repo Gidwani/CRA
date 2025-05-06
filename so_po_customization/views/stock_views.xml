@@ -59,6 +59,23 @@
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//header" position="attributes">
+                    <attribute name="invisible">context.from_provision_menu == True</attribute>
+                </xpath>
+
+                <xpath expr="//header" position="after">
+                    <header invisible="context.from_provision_menu != True">
+                        <button groups="so_po_customization.group_provision_grn" name="action_manager_approve" type="object" string="Approve" class="oe_highlight" invisible="picking_type_code == 'incoming' or state != 'manager' or context.from_provision_menu != True"/>
+                        <button groups="so_po_customization.group_provision_grn" invisible="state != 'manager' or context.from_provision_menu != True" name="action_reject" string="Reject" type="object"/>
+
+                        <button groups="so_po_customization.group_provision_delivery" name="action_manager_approve" type="object" string="Approve" class="oe_highlight" invisible="picking_type_code != 'incoming' or state != 'manager' or context.from_provision_menu != True"/>
+                        <button groups="so_po_customization.group_provision_delivery" invisible="picking_type_code != 'incoming' or state != 'manager' or context.from_provision_menu != True" name="action_reject" string="Reject" type="object"/>
+
+                        <field name="state" widget="statusbar" invisible="picking_type_code != 'incoming'" statusbar_visible="draft,assigned,done"/>
+                        <field name="state" widget="statusbar" invisible="picking_type_code == 'incoming'" statusbar_visible="draft,confirmed,assigned,done"/>
+                    </header>
+                </xpath>
+
                 <xpath expr="//field[@name='backorder_id']" position="after">
                     <field invisible="1" name="invoice_link"/>
                 </xpath>
@@ -70,6 +87,8 @@
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
+
+
                 <xpath expr="//field[@name='move_ids_without_package']//tree/field[@name='product_id']" position="before">
                     <field name="number" string="Sr No"/>
                 </xpath>

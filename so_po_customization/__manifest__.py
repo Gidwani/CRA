@@ -23,11 +23,13 @@
 
     # always loaded
     'data': [
+        'security/security.xml',
         'security/ir.model.access.csv',
         'views/sale_views.xml',
         'views/purchase_views.xml',
         'views/account_views.xml',
         'views/stock_views.xml',
+        'views/provision_view.xml',
         'reports/sale_report.xml',
         'reports/purchase_report.xml',
         'reports/account_report.xml',
