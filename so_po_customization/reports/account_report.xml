@@ -256,8 +256,7 @@
 <!--                            </t>-->
 <!--                        </t>-->
 <!--                        <t t-else="">-->
-                            <td style="width:40%;border:1px solid white;">
-
+                            <td style="width:40%;border:1px solid white;background-color:white;">
                             </td>
 <!--                        </t>-->
                         <!--                        <td style="width:25%;border:1px solid white;">-->

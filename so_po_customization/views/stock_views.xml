@@ -65,11 +65,11 @@
 
                 <xpath expr="//header" position="after">
                     <header invisible="context.from_provision_menu != True">
-                        <button groups="so_po_customization.group_provision_grn" name="action_manager_approve" type="object" string="Approve" class="oe_highlight" invisible="picking_type_code == 'incoming' or state != 'manager' or context.from_provision_menu != True"/>
-                        <button groups="so_po_customization.group_provision_grn" invisible="state != 'manager' or context.from_provision_menu != True" name="action_reject" string="Reject" type="object"/>
+                        <button groups="so_po_customization.group_provision_grn" name="action_manager_approve" type="object" string="Approve" class="oe_highlight" invisible="picking_type_code != 'incoming' or state != 'manager' or context.from_provision_menu != True"/>
+                        <button groups="so_po_customization.group_provision_grn" invisible="picking_type_code != 'incoming' or state != 'manager' or context.from_provision_menu != True" name="action_reject" string="Reject" type="object"/>
 
-                        <button groups="so_po_customization.group_provision_delivery" name="action_manager_approve" type="object" string="Approve" class="oe_highlight" invisible="picking_type_code != 'incoming' or state != 'manager' or context.from_provision_menu != True"/>
-                        <button groups="so_po_customization.group_provision_delivery" invisible="picking_type_code != 'incoming' or state != 'manager' or context.from_provision_menu != True" name="action_reject" string="Reject" type="object"/>
+                        <button groups="so_po_customization.group_provision_delivery" name="action_manager_approve" type="object" string="Approve" class="oe_highlight" invisible="picking_type_code == 'incoming' or state != 'manager' or context.from_provision_menu != True"/>
+                        <button groups="so_po_customization.group_provision_delivery" invisible="picking_type_code == 'incoming' or state != 'manager' or context.from_provision_menu != True" name="action_reject" string="Reject" type="object"/>
 
                         <field name="state" widget="statusbar" invisible="picking_type_code != 'incoming'" statusbar_visible="draft,assigned,done"/>
                         <field name="state" widget="statusbar" invisible="picking_type_code == 'incoming'" statusbar_visible="draft,confirmed,assigned,done"/>
