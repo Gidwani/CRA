@@ -56,8 +56,8 @@
                     </div>
                     <div class="col-5">
                         <div><strong>SO #: </strong><span t-esc="o.invoice_origin"/></div>
-                        <div t-if="o.move_type in ['out_invoice', 'in_invoice']"><strong>Invoice Date:</strong> <span t-esc="o.invoice_date.strftime('%d-%m-%Y')"/></div>
-                        <div t-if="o.move_type in ['out_refund']"><strong>Return Date: </strong><span t-esc="o.invoice_date.strftime('%d-%m-%Y')"/></div>
+                        <div t-if="o.move_type in ['out_invoice', 'in_invoice']"><strong>Invoice Date:</strong> <span t-if="o.invoice_date" t-esc="o.invoice_date.strftime('%d-%m-%Y')"/></div>
+                        <div t-if="o.move_type in ['out_refund']"><strong>Return Date: </strong><span t-if="o.invoice_date" t-esc="o.invoice_date.strftime('%d-%m-%Y')"/></div>
                         <div><strong>PO #:</strong> <span t-field="o.ref"/></div>
                         <div><strong>Payment Terms:</strong><span t-field="o.invoice_payment_term_id"/></div>
                         <t t-if="o.move_type in ['out_refund']" t-set="reversed_invoice" t-value="o.get_reversed_invoice()"/>

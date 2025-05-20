@@ -109,8 +109,12 @@ class AccountMoveInh(models.Model):
         return order.client_order_ref
 
     def get_do_no(self):
-        pickings = self.env['stock.picking'].search([('name', '=', self.do_link)])
-        return pickings.name
+        pickings = self.env['stock.picking'].search([('name', '=', self.do_link)], limit=1)
+        if pickings:
+            name = pickings.name
+        else:
+            name = self.do_link
+        return name
 
     def get_reversed_invoice(self):
         if self.reversed_entry_id:
