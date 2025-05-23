@@ -289,46 +289,46 @@
                 <ul class="list-inline" t-else="">
                     <img  src="/so_po_customization/static/Footer_updated.png" alt="Logo" style="max-width:100%"/>
                 </ul>
-                <t t-if="o and o._name == 'account.move'">
-                    <!-- Company 3 (ID=3) bank details -->
-                    <t t-if="company.id == 3">
-                        <div style="text-align: center; font-size: 11px; margin: 5px 0;">
-                            Bank: National Bank of Ras Al-Khaimah PJSC (Rak Bank) - SWIFT: NRAKAEAK
-                        </div>
-                        <div style="text-align: center; font-size: 11px; margin: 5px 0;">
-                            AED – IBAN: AE94 0400 0003 3351 7220 001 |
-                            USD – IBAN: AE67 0400 0003 3351 7220 002
-                            <br/>-- This is a system generated document. No Signature required --
-                            <span t-if="report_type == 'pdf'" style="position: absolute; right: 20px;" class="text-muted">
-                                Page: <span class="page"/> of <span class="topage"/>
-                            </span>
-                        </div>
-                    </t>
+<!--                <t t-if="o and o._name == 'account.move'">-->
+<!--                    &lt;!&ndash; Company 3 (ID=3) bank details &ndash;&gt;-->
+<!--                    <t t-if="company.id == 3">-->
+<!--                        <div style="text-align: center; font-size: 11px; margin: 5px 0;">-->
+<!--                            Bank: National Bank of Ras Al-Khaimah PJSC (Rak Bank) - SWIFT: NRAKAEAK-->
+<!--                        </div>-->
+<!--                        <div style="text-align: center; font-size: 11px; margin: 5px 0;">-->
+<!--                            AED – IBAN: AE94 0400 0003 3351 7220 001 |-->
+<!--                            USD – IBAN: AE67 0400 0003 3351 7220 002-->
+<!--                            <br/>&#45;&#45; This is a system generated document. No Signature required &#45;&#45;-->
+<!--                            <span t-if="report_type == 'pdf'" style="position: absolute; right: 20px;" class="text-muted">-->
+<!--                                Page: <span class="page"/> of <span class="topage"/>-->
+<!--                            </span>-->
+<!--                        </div>-->
+<!--                    </t>-->
 
-                    <!-- Default bank details for other companies -->
-                    <t t-else="">
-                        <div style="text-align: center; font-size: 11px; margin: 5px 0;">
-                            Bank: National Bank of Ras Al-Khaimah PJSC (Rak Bank) - SWIFT: NRAKAEAK
-                        </div>
-                        <div style="text-align: center; font-size: 11px; margin: 5px 0;">
-                            AED – IBAN: AE49 0400 0001 2236 2936 002 |
-                            USD – IBAN: AE22 0400 0001 2236 2936 003 |
-                            EUR – IBAN: AE76 0400 0001 2236 2936 001
-                            <br/>-- This is a system generated document. No Signature required --
-                            <span t-if="report_type == 'pdf'" style="position: absolute; right: 20px;" class="text-muted">
-                                Page: <span class="page"/> of <span class="topage"/>
-                            </span>
-                        </div>
+<!--                    &lt;!&ndash; Default bank details for other companies &ndash;&gt;-->
+<!--                    <t t-else="">-->
+<!--                        <div style="text-align: center; font-size: 11px; margin: 5px 0;">-->
+<!--                            Bank: National Bank of Ras Al-Khaimah PJSC (Rak Bank) - SWIFT: NRAKAEAK-->
+<!--                        </div>-->
+<!--                        <div style="text-align: center; font-size: 11px; margin: 5px 0;">-->
+<!--                            AED – IBAN: AE49 0400 0001 2236 2936 002 |-->
+<!--                            USD – IBAN: AE22 0400 0001 2236 2936 003 |-->
+<!--                            EUR – IBAN: AE76 0400 0001 2236 2936 001-->
+<!--                            <br/>&#45;&#45; This is a system generated document. No Signature required &#45;&#45;-->
+<!--                            <span t-if="report_type == 'pdf'" style="position: absolute; right: 20px;" class="text-muted">-->
+<!--                                Page: <span class="page"/> of <span class="topage"/>-->
+<!--                            </span>-->
+<!--                        </div>-->
 
-                    </t>
-                    <!--                    <div style="text-align: center; font-size: 10px; margin: 0px 0;">-->
-                    <!--                        &#45;&#45; This is a system generated document. No Signature required &#45;&#45;-->
-                    <!--                    </div>-->
-                    <!--                    <div t-if="report_type == 'pdf'" style="position: absolute; right: 20px; bottom: 10px;" class="text-muted">-->
-                    <!--                        Page: <span class="page"/> of <span class="topage"/>-->
-                    <!--                    </div>-->
-                </t>
-                <t t-else="">
+<!--                    </t>-->
+<!--                    &lt;!&ndash;                    <div style="text-align: center; font-size: 10px; margin: 0px 0;">&ndash;&gt;-->
+<!--                    &lt;!&ndash;                        &#45;&#45; This is a system generated document. No Signature required &#45;&#45;&ndash;&gt;-->
+<!--                    &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                    <div t-if="report_type == 'pdf'" style="position: absolute; right: 20px; bottom: 10px;" class="text-muted">&ndash;&gt;-->
+<!--                    &lt;!&ndash;                        Page: <span class="page"/> of <span class="topage"/>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                </t>-->
+<!--                <t t-else="">-->
                     <div t-if="report_type == 'pdf'" class="text-muted">
                         Page:
                         <span class="page"/>
@@ -338,7 +338,7 @@
                     <div t-if="report_type == 'pdf' " class="text-muted">
                         <div class="text-center">--This is a system generated document. No Signature required--</div>
                     </div>
-                </t>
+<!--                </t>-->
             </div>
         </div>
     </template>

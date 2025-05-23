@@ -89,7 +89,7 @@ class AccountMoveInh(models.Model):
                 saleorder = self.env['sale.order'].search([("name", '=', r.invoice_origin)])
                 already_linked = saleorder.invoice_ids.filtered(lambda i:i.id != self.id).mapped('do_link')
                 new_picking = all_pickings.filtered(lambda i:i.name not in already_linked)
-                r.do_link = ",".join(new_picking.mapped('name'))
+                r.do_link = ";".join(new_picking.mapped('name'))
                 for k in r.invoice_line_ids:
                     for l in saleorder.picking_ids:
                         if r.invoice_origin == l.sale_id.name:
