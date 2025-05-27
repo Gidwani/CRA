@@ -246,16 +246,16 @@
                                     <div style="margin-bottom: 0px;">
                                         <strong style="display: inline-block; width: 120px; vertical-align: top;">Account/IBAN#:</strong>
                                         <div style="display: inline-block;">
-                                            <div style="margin-bottom: 0px;">
+                                            <div style="margin-bottom: 0px;" class="text-nowrap">
                                                 <span style="display: inline-block; width: 50px;">(AED)</span>
                                                 <span>0122362936002 / AE49 0400 0001 2236 2936 002</span>
                                             </div>
-                                            <div style="margin-bottom: 0px;">
+                                            <div style="margin-bottom: 0px;" class="text-nowrap">
                                                 <span style="display: inline-block; width: 50px;">(USD)</span>
                                                 <span>0122362936003 / AE22 0400 0001 2236 2936 003</span>
                                             </div>
                                             <div>
-                                                <span style="display: inline-block; width: 50px;">(EUR)</span>
+                                                <span style="display: inline-block; width: 50px;" class="text-nowrap">(EUR)</span>
                                                 <span>0122362936001 / AE76 0400 0001 2236 2936 001</span>
                                             </div>
                                         </div>
@@ -283,11 +283,11 @@
                                     <div style="margin-bottom: 0px;">
                                         <strong style="display: inline-block; width: 120px; vertical-align: top;">Account/IBAN#:</strong>
                                         <div style="display: inline-block;">
-                                            <div style="margin-bottom: 0px;">
+                                            <div style="margin-bottom: 0px;" class="text-nowrap">
                                                 <span style="display: inline-block; width: 50px;">(AED)</span>
                                                 <span>0333517220001 / AE94 0400 0003 3351 7220 001 </span>
                                             </div>
-                                            <div style="margin-bottom: 0px;">
+                                            <div style="margin-bottom: 0px;" class="text-nowrap">
                                                 <span style="display: inline-block; width: 50px;">(USD)</span>
                                                 <span>0333517220002 / AE67 0400 0003 3351 7220 002</span>
                                             </div>
