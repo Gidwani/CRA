@@ -235,33 +235,33 @@
                     <tr style=" border: none !important;">
                         <t t-if="o.move_type == 'out_invoice' or o.move_type == 'out_refund'">
                             <t t-if="o.company_id.id== 1">
-                                <td style="width: 65%; padding: 5px; background-color: white; border: none !important;">
-                                    <h4 style="margin: 0 0 10px 0; font-size: 17px; color: #333; font-weight: bold;">Bank Details - CRA Trading LLC</h4>
+                                <td style="width: 65%; padding: 0px; background-color: white; border: 1px solid white !important;font-size:13px;padding:3px;">
+                                    <strong style="font-size: 14px; color: #333; font-weight: bold;">Bank Details - CRA Trading LLC</strong>
 
-                                    <div style="margin-bottom: 6px;">
+                                    <div style="margin-bottom: 0px;">
                                         <strong style="display: inline-block; width: 120px;">Bank Name:</strong>
                                         National Bank of Ras Al-Khaimah PJSC (RAK Bank)
                                     </div>
 
-                                    <div style="margin-bottom: 6px;">
+                                    <div style="margin-bottom: 0px;">
                                         <strong style="display: inline-block; width: 120px; vertical-align: top;">Account/IBAN#:</strong>
                                         <div style="display: inline-block;">
-                                            <div style="margin-bottom: 2px;">
+                                            <div style="margin-bottom: 0px;">
                                                 <span style="display: inline-block; width: 50px;">(AED)</span>
-                                                <span>AE49 0400 0001 2236 2936 002</span>
+                                                <span>0122362936002 / AE49 0400 0001 2236 2936 002</span>
                                             </div>
-                                            <div style="margin-bottom: 2px;">
+                                            <div style="margin-bottom: 0px;">
                                                 <span style="display: inline-block; width: 50px;">(USD)</span>
-                                                <span>AE22 0400 0001 2236 2936 003</span>
+                                                <span>0122362936003 / AE22 0400 0001 2236 2936 003</span>
                                             </div>
                                             <div>
                                                 <span style="display: inline-block; width: 50px;">(EUR)</span>
-                                                <span>AE76 0400 0001 2236 2936 001</span>
+                                                <span>0122362936001 / AE76 0400 0001 2236 2936 001</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div style="margin-bottom: 6px;">
+                                    <div style="margin-bottom: 0px;">
                                         <span style="display: inline-block; min-width: 220px;">
                                             <strong>Swift Code:</strong> NRAKAEAK
                                         </span>
@@ -272,29 +272,29 @@
                                 </td>
                             </t>
                             <t t-else="">
-                                <td style="width: 65%; padding: 5px; background-color: white; border: none !important;">
-                                    <h4 style="margin: 0 0 10px 0; font-size: 17px; color: #333; font-weight: bold;">Bank Details - CRA INOX PIPES AND FITTINGS LLC SPC</h4>
+                                <td style="width: 65%; padding: 0px; background-color: white; border: 1px solid white !important;font-size:14px;padding:3px;">
+                                    <strong style="font-size: 15px; color: #333; font-weight: bold;">Bank Details - CRA INOX PIPES AND FITTINGS LLC SPC</strong>
 
-                                    <div style="margin-bottom: 6px;">
+                                    <div style="margin-bottom: 0px;">
                                         <strong style="display: inline-block; width: 120px;">Bank Name:</strong>
                                         National Bank of Ras Al-Khaimah PJSC (Rak Bank)
                                     </div>
 
-                                    <div style="margin-bottom: 6px;">
+                                    <div style="margin-bottom: 0px;">
                                         <strong style="display: inline-block; width: 120px; vertical-align: top;">Account/IBAN#:</strong>
                                         <div style="display: inline-block;">
-                                            <div style="margin-bottom: 2px;">
+                                            <div style="margin-bottom: 0px;">
                                                 <span style="display: inline-block; width: 50px;">(AED)</span>
-                                                <span>AE94 0400 0003 3351 7220 001 </span>
+                                                <span>0333517220001 / AE94 0400 0003 3351 7220 001 </span>
                                             </div>
-                                            <div style="margin-bottom: 2px;">
+                                            <div style="margin-bottom: 0px;">
                                                 <span style="display: inline-block; width: 50px;">(USD)</span>
-                                                <span>AE67 0400 0003 3351 7220 002</span>
+                                                <span>0333517220002 / AE67 0400 0003 3351 7220 002</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div style="margin-bottom: 6px;">
+                                    <div style="margin-bottom: 0px;">
                                         <span style="display: inline-block; min-width: 220px;">
                                             <strong>Swift Code:</strong> NRAKAEAK
                                         </span>
