@@ -254,8 +254,8 @@
                                                 <span style="display: inline-block; width: 50px;">(USD)</span>
                                                 <span>0122362936003 / AE22 0400 0001 2236 2936 003</span>
                                             </div>
-                                            <div>
-                                                <span style="display: inline-block; width: 50px;" class="text-nowrap">(EUR)</span>
+                                            <div class="text-nowrap">
+                                                <span style="display: inline-block; width: 50px;">(EUR)</span>
                                                 <span>0122362936001 / AE76 0400 0001 2236 2936 001</span>
                                             </div>
                                         </div>
