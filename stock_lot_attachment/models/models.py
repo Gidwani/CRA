@@ -127,8 +127,8 @@ class StockMoveLineInh(models.Model):
         for rec in self.picking_id.move_line_ids_without_package:
             if rec.attachment_ids:
                 for r in rec.attachment_ids:
-                    r.temp_file_name = str(rec.so_no) + ' - ' + r.name + ' - ' + str(rec.quantity) + ' ' + (
-                        rec.product_uom_id.name)
+                    r.temp_file_name = str(rec.so_no) + ' - ' + str(rec.quantity) + ' ' + (
+                        rec.product_uom_id.name) + ' - ' + r.name
         return {
             'type': 'ir.actions.act_url',
             'url': url,
@@ -144,7 +144,7 @@ class StockPickingInh(models.Model):
         for rec in self.move_line_ids_without_package:
             if rec.attachment_ids:
                 for r in rec.attachment_ids:
-                    r.temp_file_name = str(rec.so_no) + ' - ' + r.name + ' - ' + str(rec.quantity) + ' ' + (rec.product_uom_id.name)
+                    r.temp_file_name = str(rec.so_no) + ' - ' + str(rec.quantity) + ' ' + (rec.product_uom_id.name) + ' - ' + r.name
         return {
             'type': 'ir.actions.act_url',
             'url': url,
