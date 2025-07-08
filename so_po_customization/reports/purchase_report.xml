@@ -182,15 +182,15 @@
                     <strong>Terms and conditions:</strong><br/>
                     1. Kindly confirm receipt of this Purchase Order as your acceptance.<br/>
                     2. The Purchase Order number must be referenced on all delivery notes,<br/>
-                       invoices, and related correspondence.<br/>
+                    invoices, and related correspondence.<br/>
                     3. Material test certificates must accompany the material.<br/>
                     4. All materials must be genuine and of high quality; any items that do not<br/>
-                       meet the specifications will be rejected.<br/>
+                    meet the specifications will be rejected.<br/>
                     5. Material test certificates for all products must comply with EN 10204 Type 3.1.<br/>
                     6. The material must conform to the relevant ASTM/ASME EN1092-1
-                       standards.<br/>
+                    standards.<br/>
                     7. Compliance with NACE MR0175 / ISO15156 / NACE MR0103 is
-                       mandatory.<br/>
+                    mandatory.<br/>
                     8. Materials should be free from rust, defects, or any kind of damage.
                 </div>
                 <!--                <p t-field="o.notes"/>-->
@@ -289,15 +289,56 @@
                 <ul class="list-inline" t-else="">
                     <img  src="/so_po_customization/static/Footer_updated.png" alt="Logo" style="max-width:100%"/>
                 </ul>
-                <div t-if="report_type == 'pdf'" class="text-muted">
-                    Page:
-                    <span class="page"/>
-                    of
-                    <span class="topage"/>
-                </div>
-                <div t-if="report_type == 'pdf' " class="text-muted">
-                    <div class="text-center">--This is a system generated document. No Signature required--</div>
-                </div>
+<!--                <t t-if="o and o._name == 'account.move'">-->
+<!--                    &lt;!&ndash; Company 3 (ID=3) bank details &ndash;&gt;-->
+<!--                    <t t-if="company.id == 3">-->
+<!--                        <div style="text-align: center; font-size: 11px; margin: 5px 0;">-->
+<!--                            Bank: National Bank of Ras Al-Khaimah PJSC (Rak Bank) - SWIFT: NRAKAEAK-->
+<!--                        </div>-->
+<!--                        <div style="text-align: center; font-size: 11px; margin: 5px 0;">-->
+<!--                            AED – IBAN: AE94 0400 0003 3351 7220 001 |-->
+<!--                            USD – IBAN: AE67 0400 0003 3351 7220 002-->
+<!--                            <br/>&#45;&#45; This is a system generated document. No Signature required &#45;&#45;-->
+<!--                            <span t-if="report_type == 'pdf'" style="position: absolute; right: 20px;" class="text-muted">-->
+<!--                                Page: <span class="page"/> of <span class="topage"/>-->
+<!--                            </span>-->
+<!--                        </div>-->
+<!--                    </t>-->
+
+<!--                    &lt;!&ndash; Default bank details for other companies &ndash;&gt;-->
+<!--                    <t t-else="">-->
+<!--                        <div style="text-align: center; font-size: 11px; margin: 5px 0;">-->
+<!--                            Bank: National Bank of Ras Al-Khaimah PJSC (Rak Bank) - SWIFT: NRAKAEAK-->
+<!--                        </div>-->
+<!--                        <div style="text-align: center; font-size: 11px; margin: 5px 0;">-->
+<!--                            AED – IBAN: AE49 0400 0001 2236 2936 002 |-->
+<!--                            USD – IBAN: AE22 0400 0001 2236 2936 003 |-->
+<!--                            EUR – IBAN: AE76 0400 0001 2236 2936 001-->
+<!--                            <br/>&#45;&#45; This is a system generated document. No Signature required &#45;&#45;-->
+<!--                            <span t-if="report_type == 'pdf'" style="position: absolute; right: 20px;" class="text-muted">-->
+<!--                                Page: <span class="page"/> of <span class="topage"/>-->
+<!--                            </span>-->
+<!--                        </div>-->
+
+<!--                    </t>-->
+<!--                    &lt;!&ndash;                    <div style="text-align: center; font-size: 10px; margin: 0px 0;">&ndash;&gt;-->
+<!--                    &lt;!&ndash;                        &#45;&#45; This is a system generated document. No Signature required &#45;&#45;&ndash;&gt;-->
+<!--                    &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                    <div t-if="report_type == 'pdf'" style="position: absolute; right: 20px; bottom: 10px;" class="text-muted">&ndash;&gt;-->
+<!--                    &lt;!&ndash;                        Page: <span class="page"/> of <span class="topage"/>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                </t>-->
+<!--                <t t-else="">-->
+                    <div t-if="report_type == 'pdf'" class="text-muted">
+                        Page:
+                        <span class="page"/>
+                        of
+                        <span class="topage"/>
+                    </div>
+                    <div t-if="report_type == 'pdf' " class="text-muted">
+                        <div class="text-center">--This is a system generated document. No Signature required--</div>
+                    </div>
+<!--                </t>-->
             </div>
         </div>
     </template>

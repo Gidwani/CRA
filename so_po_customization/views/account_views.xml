@@ -6,6 +6,29 @@
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
+
+                <xpath expr="//header" position="attributes">
+                    <attribute name="invisible">context.from_provision_menu == True</attribute>
+                </xpath>
+
+                <xpath expr="//header" position="after">
+                    <header invisible="context.from_provision_menu != True">
+                        <button groups="so_po_customization.group_provision_invoice" name="action_manager_approve" type="object" string="Approve" class="oe_highlight" invisible="move_type == 'out_invoice' or state != 'manager' or context.from_provision_menu != True"/>
+                        <button groups="so_po_customization.group_provision_invoice" invisible="move_type == 'out_invoice' or state != 'manager' or context.from_provision_menu != True" name="action_reject" string="Reject" type="object"/>
+
+                        <button groups="so_po_customization.group_provision_bills" name="action_manager_approve" type="object" string="Approve" class="oe_highlight" invisible="move_type == 'in_invoice' or state != 'manager' or context.from_provision_menu != True"/>
+                        <button groups="so_po_customization.group_provision_bills" invisible="move_type == 'in_invoice' or state != 'manager' or context.from_provision_menu != True" name="action_reject" string="Reject" type="object"/>
+
+                        <button groups="so_po_customization.group_provision_return_invoice" name="action_manager_approve" type="object" string="Approve" class="oe_highlight" invisible="move_type == 'out_refund' or state != 'manager' or context.from_provision_menu != True"/>
+                        <button groups="so_po_customization.group_provision_return_invoice" invisible="move_type == 'out_refund' or state != 'manager' or context.from_provision_menu != True" name="action_reject" string="Reject" type="object"/>
+
+                        <button groups="so_po_customization.group_provision_return_bill" name="action_manager_approve" type="object" string="Approve" class="oe_highlight" invisible="move_type == 'in_refund' or state != 'manager' or context.from_provision_menu != True"/>
+                        <button groups="so_po_customization.group_provision_return_bill" invisible="move_type == 'in_refund' or state != 'manager' or context.from_provision_menu != True" name="action_reject" string="Reject" type="object"/>
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
+                    </header>
+                </xpath>
+
                 <xpath expr="//field[@name='invoice_date']" position="attributes">
                     <attribute name="readonly">state not in 'draft'</attribute>
                 </xpath>
@@ -68,9 +91,9 @@
                 <xpath expr="//field[@name='ref']" position="after">
                     <field name="do_link" readonly="state not in ['draft']"/>
                 </xpath>
-<!--                <xpath expr="//field[@name='invoice_user_id']" position="before">-->
-<!--                    <field name="po_no" string="PO #"/>-->
-<!--                </xpath>-->
+                <!--                <xpath expr="//field[@name='invoice_user_id']" position="before">-->
+                <!--                    <field name="po_no" string="PO #"/>-->
+                <!--                </xpath>-->
                 <xpath expr="//field[@name='tax_totals']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>

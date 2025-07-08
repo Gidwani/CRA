@@ -2,22 +2,22 @@
     <template id="account_move_report_inherit" inherit_id="account.report_invoice_document">
 
         <xpath expr="//div[hasclass('row')]" position="replace">
-             <span>&#160;</span>
+            <span>&#160;</span>
         </xpath>
         <xpath expr="//p[@name='payment_communication']" position="replace">
-             <span>&#160;</span>
+            <span>&#160;</span>
         </xpath>
         <xpath expr="//table[@name='invoice_line_table']" position="replace">
-             <span>&#160;</span>
+            <span>&#160;</span>
         </xpath>
         <xpath expr="//div[@id='total']" position="replace">
-             <span>&#160;</span>
+            <span>&#160;</span>
         </xpath>
         <xpath expr="//div[@id='payment_term']" position="replace">
-             <span>&#160;</span>
+            <span>&#160;</span>
         </xpath>
         <xpath expr="//h2" position="replace">
-             <span>&#160;</span>
+            <span>&#160;</span>
         </xpath>
         <xpath expr="//div[2]" position="replace">
             <div class="page" style="margin-top:-100px;">
@@ -31,33 +31,33 @@
                     <span t-if="o.name != '/'" t-esc="o.name.replace('/', '-')"/>
                 </h2><br/>
 
-                 <div class="row col-12 p-2">
+                <div class="row col-12 p-2">
                     <div class="col-7">
                         <strong>Customer Details:-</strong><br/>
-<!--                        <div t-field="o.partner_id"-->
-<!--                             t-options='{"widget": "contact", "fields": [ "name","street", "vat"], "no_marker": True, "phone_icons": False}'/>-->
-                            <span t-field="o.partner_id"/>
+                        <!--                        <div t-field="o.partner_id"-->
+                        <!--                             t-options='{"widget": "contact", "fields": [ "name","street", "vat"], "no_marker": True, "phone_icons": False}'/>-->
+                        <span t-field="o.partner_id"/>
+                        <br/>
+                        <t t-if="o.partner_id.street ">
+                            <span t-if="o.partner_id.street" t-field="o.partner_id.street"/>
+                            <!--                                <span t-if="doc.partner_id.street2" t-field="doc.partner_id.street2"/>-->
+                        </t>
+                        <t t-if="o.partner_id.city">
                             <br/>
-                            <t t-if="o.partner_id.street ">
-                                <span t-if="o.partner_id.street" t-field="o.partner_id.street"/>
-<!--                                <span t-if="doc.partner_id.street2" t-field="doc.partner_id.street2"/>-->
-                            </t>
-                            <t t-if="o.partner_id.city">
-                                <br/>
-                                <span t-if="o.partner_id.city" t-field="o.partner_id.city"/>
-                            </t>
-                            <t t-if="o.partner_id.country_id">
-                                , <span t-if="o.partner_id.country_id" t-field="o.partner_id.country_id"/>
-                            </t>
-                            <t t-if="o.partner_id.vat">
-                                <br/>
-                                <span t-if="o.partner_id.vat" t-esc="'TRN: ' + o.partner_id.vat"/>
-                            </t>
+                            <span t-if="o.partner_id.city" t-field="o.partner_id.city"/>
+                        </t>
+                        <t t-if="o.partner_id.country_id">
+                            , <span t-if="o.partner_id.country_id" t-field="o.partner_id.country_id"/>
+                        </t>
+                        <t t-if="o.partner_id.vat">
+                            <br/>
+                            <span t-if="o.partner_id.vat" t-esc="'TRN: ' + o.partner_id.vat"/>
+                        </t>
                     </div>
                     <div class="col-5">
                         <div><strong>SO #: </strong><span t-esc="o.invoice_origin"/></div>
-                        <div t-if="o.move_type in ['out_invoice', 'in_invoice']"><strong>Invoice Date:</strong> <span t-esc="o.invoice_date.strftime('%d-%m-%Y')"/></div>
-                        <div t-if="o.move_type in ['out_refund']"><strong>Return Date: </strong><span t-esc="o.invoice_date.strftime('%d-%m-%Y')"/></div>
+                        <div t-if="o.move_type in ['out_invoice', 'in_invoice']"><strong>Invoice Date:</strong> <span t-if="o.invoice_date" t-esc="o.invoice_date.strftime('%d-%m-%Y')"/></div>
+                        <div t-if="o.move_type in ['out_refund']"><strong>Return Date: </strong><span t-if="o.invoice_date" t-esc="o.invoice_date.strftime('%d-%m-%Y')"/></div>
                         <div><strong>PO #:</strong> <span t-field="o.ref"/></div>
                         <div><strong>Payment Terms:</strong><span t-field="o.invoice_payment_term_id"/></div>
                         <t t-if="o.move_type in ['out_refund']" t-set="reversed_invoice" t-value="o.get_reversed_invoice()"/>
@@ -66,79 +66,79 @@
                         <div t-if="o.move_type in ['out_invoice']"><strong>DO #: </strong><span t-esc="o.get_do_no()"/></div>
                     </div>
                 </div>
-<!--                <div id="informations" class="row mt-4 mb-4">-->
-<!--                    <t t-if="o.move_type == 'in_refund'">-->
-<!--                        <div class="col-auto col-3 mw-100 mb-2" name="reference">-->
-<!--                            <strong>Supplier Invoice #:</strong>-->
-<!--                            <p class="m-0" t-field="o.payment_reference"/>-->
-<!--                        </div>-->
-<!--                    </t>-->
-<!--                    <t t-if="o.move_type == 'in_invoice' or o.move_type == 'in_refund'">-->
-<!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_origin" name="origin">-->
-<!--                            <strong>PO #:</strong>-->
-<!--                            <p class="m-0" t-field="o.invoice_origin"/>-->
-<!--                        </div>-->
-<!--                    </t>-->
-<!--                    <t t-if="o.move_type == 'out_invoice' or o.move_type == 'out_refund'">-->
-<!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_origin" name="origin" style="white-space:nowrap;">-->
-<!--                            <strong>SO #:</strong>-->
-<!--                            <p class="m-0" t-field="o.invoice_origin"/>-->
-<!--                        </div>-->
-<!--                    </t>-->
+                <!--                <div id="informations" class="row mt-4 mb-4">-->
+                <!--                    <t t-if="o.move_type == 'in_refund'">-->
+                <!--                        <div class="col-auto col-3 mw-100 mb-2" name="reference">-->
+                <!--                            <strong>Supplier Invoice #:</strong>-->
+                <!--                            <p class="m-0" t-field="o.payment_reference"/>-->
+                <!--                        </div>-->
+                <!--                    </t>-->
+                <!--                    <t t-if="o.move_type == 'in_invoice' or o.move_type == 'in_refund'">-->
+                <!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_origin" name="origin">-->
+                <!--                            <strong>PO #:</strong>-->
+                <!--                            <p class="m-0" t-field="o.invoice_origin"/>-->
+                <!--                        </div>-->
+                <!--                    </t>-->
+                <!--                    <t t-if="o.move_type == 'out_invoice' or o.move_type == 'out_refund'">-->
+                <!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_origin" name="origin" style="white-space:nowrap;">-->
+                <!--                            <strong>SO #:</strong>-->
+                <!--                            <p class="m-0" t-field="o.invoice_origin"/>-->
+                <!--                        </div>-->
+                <!--                    </t>-->
 
-<!--                    <t t-if="o.move_type == 'out_invoice' or o.move_type == 'in_invoice'">-->
-<!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_date" name="invoice_date">-->
-<!--                            <strong>Invoice Date:</strong>-->
-<!--                            <p class="m-0" t-field="o.invoice_date"/>-->
-<!--                        </div>-->
-<!--                    </t>-->
-<!--                    <t t-if="o.move_type == 'out_invoice'  or o.move_type == 'in_invoice'" style="white-space:nowrap;">-->
-<!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.ref" name="reference">-->
-<!--                            <strong>PO #:</strong>-->
-<!--                            <p class="m-0" t-field="o.ref"/>-->
-<!--                        </div>-->
-<!--                    </t>-->
-<!--                    <t t-if="o.move_type == 'out_refund' or o.move_type == 'in_refund'">-->
-<!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_date" name="invoice_date">-->
-<!--                            <strong>Return Date:</strong>-->
-<!--                            <p class="m-0" t-field="o.invoice_date"/>-->
-<!--                        </div>-->
-<!--                    </t>-->
-<!--                    <t t-if="o.move_type == 'out_refund'" style="white-space:nowrap;">-->
-<!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.get_client_order_ref()"  name="reference">-->
-<!--                            <strong>PO #:</strong>-->
-<!--                            <p class="m-0" t-esc="o.get_client_order_ref()"/>-->
-<!--                        </div>-->
-<!--                    </t>-->
-<!--                    <t t-if="o.move_type == 'in_invoice' or o.move_type == 'in_refund'">-->
-<!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.ref" name="reference">-->
-<!--                            <strong>Bill #:</strong>-->
-<!--                            <p class="m-0" t-field="o.ref"/>-->
-<!--                        </div>-->
-<!--                    </t>-->
-<!--                    <div t-if="o.get_payment_term_id()" class="col-auto col-3 mw-100 mb-2">-->
-<!--                        <strong>Payment Terms:</strong>-->
-<!--                        <p class="m-0" t-esc="o.get_payment_term_id()"/>-->
-<!--                    </div>-->
-<!--                    &lt;!&ndash;                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_date_due and o.move_type == 'out_invoice' and o.state == 'posted'" name="due_date">&ndash;&gt;-->
-<!--                    &lt;!&ndash;                            <strong>Due Date:</strong>&ndash;&gt;-->
-<!--                    &lt;!&ndash;                            <p class="m-0" t-field="o.invoice_date_due"/>&ndash;&gt;-->
-<!--                    &lt;!&ndash;                        </div>&ndash;&gt;-->
+                <!--                    <t t-if="o.move_type == 'out_invoice' or o.move_type == 'in_invoice'">-->
+                <!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_date" name="invoice_date">-->
+                <!--                            <strong>Invoice Date:</strong>-->
+                <!--                            <p class="m-0" t-field="o.invoice_date"/>-->
+                <!--                        </div>-->
+                <!--                    </t>-->
+                <!--                    <t t-if="o.move_type == 'out_invoice'  or o.move_type == 'in_invoice'" style="white-space:nowrap;">-->
+                <!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.ref" name="reference">-->
+                <!--                            <strong>PO #:</strong>-->
+                <!--                            <p class="m-0" t-field="o.ref"/>-->
+                <!--                        </div>-->
+                <!--                    </t>-->
+                <!--                    <t t-if="o.move_type == 'out_refund' or o.move_type == 'in_refund'">-->
+                <!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_date" name="invoice_date">-->
+                <!--                            <strong>Return Date:</strong>-->
+                <!--                            <p class="m-0" t-field="o.invoice_date"/>-->
+                <!--                        </div>-->
+                <!--                    </t>-->
+                <!--                    <t t-if="o.move_type == 'out_refund'" style="white-space:nowrap;">-->
+                <!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.get_client_order_ref()"  name="reference">-->
+                <!--                            <strong>PO #:</strong>-->
+                <!--                            <p class="m-0" t-esc="o.get_client_order_ref()"/>-->
+                <!--                        </div>-->
+                <!--                    </t>-->
+                <!--                    <t t-if="o.move_type == 'in_invoice' or o.move_type == 'in_refund'">-->
+                <!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.ref" name="reference">-->
+                <!--                            <strong>Bill #:</strong>-->
+                <!--                            <p class="m-0" t-field="o.ref"/>-->
+                <!--                        </div>-->
+                <!--                    </t>-->
+                <!--                    <div t-if="o.get_payment_term_id()" class="col-auto col-3 mw-100 mb-2">-->
+                <!--                        <strong>Payment Terms:</strong>-->
+                <!--                        <p class="m-0" t-esc="o.get_payment_term_id()"/>-->
+                <!--                    </div>-->
+                <!--                    &lt;!&ndash;                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_date_due and o.move_type == 'out_invoice' and o.state == 'posted'" name="due_date">&ndash;&gt;-->
+                <!--                    &lt;!&ndash;                            <strong>Due Date:</strong>&ndash;&gt;-->
+                <!--                    &lt;!&ndash;                            <p class="m-0" t-field="o.invoice_date_due"/>&ndash;&gt;-->
+                <!--                    &lt;!&ndash;                        </div>&ndash;&gt;-->
 
 
-<!--                    <t t-if="o.move_type == 'out_refund'">-->
-<!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.ref" name="origin">-->
-<!--                            <strong>Invoice #:</strong>-->
-<!--                            <p class="m-0" t-field="o.ref"/>-->
-<!--                        </div>-->
-<!--                    </t>-->
-<!--                    <t t-if="o.move_type == 'out_invoice'">-->
-<!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.get_do_no()" name="customer_code">-->
-<!--                            <strong>DO #:</strong>-->
-<!--                            <p class="m-0" t-esc="o.get_do_no()"/>-->
-<!--                        </div>-->
-<!--                    </t>-->
-<!--                </div>-->
+                <!--                    <t t-if="o.move_type == 'out_refund'">-->
+                <!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.ref" name="origin">-->
+                <!--                            <strong>Invoice #:</strong>-->
+                <!--                            <p class="m-0" t-field="o.ref"/>-->
+                <!--                        </div>-->
+                <!--                    </t>-->
+                <!--                    <t t-if="o.move_type == 'out_invoice'">-->
+                <!--                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.get_do_no()" name="customer_code">-->
+                <!--                            <strong>DO #:</strong>-->
+                <!--                            <p class="m-0" t-esc="o.get_do_no()"/>-->
+                <!--                        </div>-->
+                <!--                    </t>-->
+                <!--                </div>-->
 
                 <t t-set="display_discount" t-value="any(l.discount for l in o.invoice_line_ids)"/>
 
@@ -197,7 +197,7 @@
                                         <span t-esc="', '.join(map(lambda x: str(int(x.amount)), line.tax_ids))" id="line_tax_ids"/>%
                                     </td>
                                     <td class="text-center">
-                                            <span class="text-nowrap"  t-field="line.vat_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <span class="text-nowrap"  t-field="line.vat_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
                                     </td>
                                     <td class="text-center o_price_total">
                                         <span class="text-nowrap" t-esc="line.subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
@@ -232,32 +232,89 @@
                     </tbody>
                 </table>
                 <table class="table table-sm">
-                    <tr >
+                    <tr style=" border: none !important;">
                         <t t-if="o.move_type == 'out_invoice' or o.move_type == 'out_refund'">
                             <t t-if="o.company_id.id== 1">
-                                <td style="width:65%; border:1px solid white;background-color: white;" >
-                                    <strong><h6>Bank Details - CRA Trading LLC</h6></strong>
-                                    <span style="white-space:nowrap;background-color: white;"><strong>Bank Name:</strong>RAK Bank&#160;&#160;</span><br/>
-                                    <span style="white-space:nowrap;"><strong>Account #:</strong>0122 3629 36002&#160;&#160;</span>
-                                    <span style="white-space:nowrap;"><strong>Swift code:</strong>NRAK AEAK&#160;&#160;</span>
-                                    <span style="white-space:nowrap;"><strong>IBAN:</strong>AE 4904 0000 0122 3629 36002&#160;&#160;</span>
-                                    <span style="white-space:nowrap;"><strong>Branch:</strong>Sheikh Zayed Rd Branch</span>
+                                <td style="width: 65%; padding: 0px; background-color: white; border: 1px solid white !important;font-size:13px;padding:3px;">
+                                    <strong style="font-size: 14px; color: #333; font-weight: bold;">Bank Details - CRA Trading LLC</strong>
+
+                                    <div style="margin-bottom: 0px;">
+                                        <strong style="display: inline-block; width: 120px;">Bank Name:</strong>
+                                        National Bank of Ras Al-Khaimah PJSC (RAK Bank)
+                                    </div>
+
+                                    <div style="margin-bottom: 0px;">
+                                        <strong style="display: inline-block; width: 120px; vertical-align: top;">Account/IBAN#:</strong>
+                                        <div style="display: inline-block;">
+                                            <div style="margin-bottom: 0px;" class="text-nowrap">
+                                                <span style="display: inline-block; width: 50px;">(AED)</span>
+                                                <span>0122362936002 / AE49 0400 0001 2236 2936 002</span>
+                                            </div>
+                                            <div style="margin-bottom: 0px;" class="text-nowrap">
+                                                <span style="display: inline-block; width: 50px;">(USD)</span>
+                                                <span>0122362936003 / AE22 0400 0001 2236 2936 003</span>
+                                            </div>
+                                            <div class="text-nowrap">
+                                                <span style="display: inline-block; width: 50px;">(EUR)</span>
+                                                <span>0122362936001 / AE76 0400 0001 2236 2936 001</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-bottom: 0px;">
+                                        <span style="display: inline-block; min-width: 220px;">
+                                            <strong>Swift Code:</strong> NRAKAEAK
+                                        </span>
+                                        <span>
+                                            <strong>Branch:</strong> Sheikh Zayed Rd Branch
+                                        </span>
+                                    </div>
                                 </td>
                             </t>
                             <t t-else="">
-                                <td style="width:65%; border:1px solid white;" >
-                                    <strong><h6>Bank Details - CRA Middle East FZCO</h6></strong>
-                                    <span style="white-space:nowrap;"><strong>Bank Name:</strong>RAK Bank&#160;&#160;</span><br/>
-                                    <span style="white-space:nowrap;"><strong>Account #:</strong>0662 8578 50001&#160;&#160;</span>
-                                    <span style="white-space:nowrap;"><strong>Swift code:</strong>NRAK AEAK&#160;&#160;</span>
-                                    <span style="white-space:nowrap;"><strong>IBAN:</strong>AE25 0400 0006 6285 7850 001&#160;&#160;</span>
-                                    <!--                                        <span style="white-space:nowrap;"><strong>Branch:</strong>Sheikh Zayed Rd Branch</span>-->
+                                <td style="width: 65%; padding: 0px; background-color: white; border: 1px solid white !important;font-size:14px;padding:3px;">
+                                    <strong style="font-size: 15px; color: #333; font-weight: bold;">Bank Details - CRA INOX PIPES AND FITTINGS LLC SPC</strong>
+
+                                    <div style="margin-bottom: 0px;">
+                                        <strong style="display: inline-block; width: 120px;">Bank Name:</strong>
+                                        National Bank of Ras Al-Khaimah PJSC (Rak Bank)
+                                    </div>
+
+                                    <div style="margin-bottom: 0px;">
+                                        <strong style="display: inline-block; width: 120px; vertical-align: top;">Account/IBAN#:</strong>
+                                        <div style="display: inline-block;">
+                                            <div style="margin-bottom: 0px;" class="text-nowrap">
+                                                <span style="display: inline-block; width: 50px;">(AED)</span>
+                                                <span>0333517220001 / AE94 0400 0003 3351 7220 001 </span>
+                                            </div>
+                                            <div style="margin-bottom: 0px;" class="text-nowrap">
+                                                <span style="display: inline-block; width: 50px;">(USD)</span>
+                                                <span>0333517220002 / AE67 0400 0003 3351 7220 002</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-bottom: 0px;">
+                                        <span style="display: inline-block; min-width: 220px;">
+                                            <strong>Swift Code:</strong> NRAKAEAK
+                                        </span>
+                                        <span>
+                                            <strong>Branch:</strong> Umm Hurrair, Dubai, UAE
+                                        </span>
+                                    </div>
                                 </td>
+<!--                                <td style="width:65%; border:1px solid white;" >-->
+<!--                                    <strong><h6>Bank Details - CRA Middle East FZCO</h6></strong>-->
+<!--                                    <span style="white-space:nowrap;"><strong>Bank Name:</strong>RAK Bank&#160;&#160;</span><br/>-->
+<!--                                    <span style="white-space:nowrap;"><strong>Account #:</strong>0662 8578 50001&#160;&#160;</span>-->
+<!--                                    <span style="white-space:nowrap;"><strong>Swift code:</strong>NRAK AEAK&#160;&#160;</span>-->
+<!--                                    <span style="white-space:nowrap;"><strong>IBAN:</strong>AE25 0400 0006 6285 7850 001&#160;&#160;</span>-->
+<!--                                    &lt;!&ndash;                                        <span style="white-space:nowrap;"><strong>Branch:</strong>Sheikh Zayed Rd Branch</span>&ndash;&gt;-->
+<!--                                </td>-->
                             </t>
                         </t>
                         <t t-else="">
-                            <td style="width:40%;border:1px solid white;">
-
+                            <td style="width:40%;border:1px solid white;background-color:white;">
                             </td>
                         </t>
                         <!--                        <td style="width:25%;border:1px solid white;">-->
@@ -274,15 +331,15 @@
                                         </td>
                                     </tr>
                                     <t t-if="not o.perc_discount == 0">
-<!--                                        <t t-if="o.move_type == 'out_invoice' or o.move_type == 'out_refund'">-->
-                                            <tr class="border-black o_subtotal" style="">
-                                                <!--                                    <td name="td_perc_discount_label"><strong>Discount( <span t-esc="o.perc" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%)</strong></td>-->
-                                                <td name="td_perc_discount" style="text-align:left;"><strong>Discount</strong></td>
-                                                <td name="td_perc_discount" class="text-right">
-                                                    <span t-field="o.perc_discount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                                                </td>
-                                            </tr>
-<!--                                        </t>-->
+                                        <!--                                        <t t-if="o.move_type == 'out_invoice' or o.move_type == 'out_refund'">-->
+                                        <tr class="border-black o_subtotal" style="">
+                                            <!--                                    <td name="td_perc_discount_label"><strong>Discount( <span t-esc="o.perc" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%)</strong></td>-->
+                                            <td name="td_perc_discount" style="text-align:left;"><strong>Discount</strong></td>
+                                            <td name="td_perc_discount" class="text-right">
+                                                <span t-field="o.perc_discount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                        <!--                                        </t>-->
 
                                         <tr class="border-black o_subtotal" style="">
                                             <td name="td_net_total_label" style="text-align:left;"><strong>Net Total</strong></td>
@@ -366,13 +423,13 @@
                         <!--                                <strong>Date: </strong><span>____________________________   </span>-->
                     </div>
                 </div>
-<!--                <div class="container row" style="margin-left:1em;float:right; font-size:15px;text-align:center;">-->
-<!--                    <div class="col-12">-->
-<!--                        <strong><span>Name:</span> </strong><span>________________________  &#160; &#160;</span>-->
-<!--                        <strong><span>Mobile:</span> </strong><span >_________________________  &#160; &#160;</span>-->
-<!--                        <strong>Date: </strong><span>____________________________   </span>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="container row" style="margin-left:1em;float:right; font-size:15px;text-align:center;">-->
+                <!--                    <div class="col-12">-->
+                <!--                        <strong><span>Name:</span> </strong><span>________________________  &#160; &#160;</span>-->
+                <!--                        <strong><span>Mobile:</span> </strong><span >_________________________  &#160; &#160;</span>-->
+                <!--                        <strong>Date: </strong><span>____________________________   </span>-->
+                <!--                    </div>-->
+                <!--                </div>-->
             </div>
 
         </xpath>
