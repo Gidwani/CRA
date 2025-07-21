@@ -198,93 +198,108 @@
                     </tbody>
                 </table>
 
-                <!--                <div class="clearfix" name="so_total_summary">-->
-                <!--                    <div id="total" class="row" name="total">-->
-                <!--                        <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">-->
-                <!--                            <table class="table table-sm">-->
-                <!--                                <tr class="border-black o_subtotal" style="">-->
-                <!--                                    <td name="td_amount_untaxed_label"><strong>Subtotal</strong></td>-->
-                <!--                                    <td name="td_amount_untaxed" class="text-right">-->
-                <!--                                        <span t-field="doc.subtotal_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>-->
-                <!--                                    </td>-->
-                <!--                                </tr>-->
-                <!--                                <t t-if="not doc.perc_discount == 0">-->
-                <!--                                    <tr class="border-black o_subtotal" style="">-->
-                <!--                                        &lt;!&ndash;                                    <td name="td_perc_discount_label"><strong>Discount(<span t-field="doc.perc" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%)</strong></td>&ndash;&gt;-->
-                <!--                                        <td name="td_perc_discount"><strong>Discount</strong></td>-->
-                <!--                                        <td name="td_perc_discount" class="text-right">-->
-                <!--                                            <span t-field="doc.perc_discount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>-->
-                <!--                                        </td>-->
-                <!--                                    </tr>-->
-                <!--                                </t>-->
-                <!--                                <tr class="border-black o_subtotal" style="">-->
-                <!--                                    <td name="td_net_total_label"><strong>Net Total</strong></td>-->
-                <!--                                    <td name="td_net_total" class="text-right">-->
-                <!--                                        <span t-field="doc.net_total" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>-->
-                <!--                                    </td>-->
-                <!--                                </tr>-->
-                <!--                                <tr class="border-black o_subtotal" style="">-->
-                <!--                                    <td name="td_net_total_label"><strong>Tax</strong></td>-->
-                <!--                                    <td name="td_net_total" class="text-right">-->
-                <!--                                        <span t-field="doc.net_tax" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>-->
-                <!--                                    </td>-->
-                <!--                                </tr>-->
-                <!--                                &lt;!&ndash;                                <t t-foreach="doc.amount_by_group" t-as="amount_by_group">&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                    <tr style="">&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                        <t t-if="amount_by_group[5] == 1 and doc.amount_untaxed == amount_by_group[2]">&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                            <td name="td_amount_by_group_label_3">&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                                <span t-esc="amount_by_group[0]"/>&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                                <span>&amp;nbsp;<span>on</span>&amp;nbsp;<t t-esc="amount_by_group[2]" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/></span>&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                            </td>&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                            <td name="td_amount_by_group_3" class="text-right o_price_total">&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                                <span t-esc="amount_by_group[1]"&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                                      t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                            </td>&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                        </t>&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                        <t t-else ="">&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                            <td name="td_amount_by_group_label">&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                                <span t-esc="amount_by_group[0]"/>&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                            </td>&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                            <td name="td_amount_by_group" class="text-right o_price_total">&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                                <span t-esc="amount_by_group[1]"&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                                      t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                            </td>&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                        </t>&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                    </tr>&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                </t>&ndash;&gt;-->
-                <!--                                <tr class="border-black o_total">-->
-                <!--                                    <td name="td_amount_total_label"><strong>Total</strong></td>-->
-                <!--                                    <td name="td_amount_total" class="text-right">-->
-                <!--                                        <span t-field="doc.amount_total"/>-->
-                <!--                                    </td>-->
-                <!--                                </tr>-->
-                <!--                            </table>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                </div>-->
                 <table style="width:100%;">
                     <tr style="width:65%; border:1px solid white;background-color:white;">
                         <t t-if="env.context.get('proforma', False) or is_pro_forma">
-                            <t t-if="doc.company_id.id == 1">
-                                <td style="width:65%; border:1px solid white;" >
-                                    <strong><h6>Bank Details - CRA Trading LLC</h6></strong>
-                                    <span style="white-space:nowrap;"><strong>Bank Name:</strong>RAK Bank&#160;&#160;</span><br/>
-                                    <span style="white-space:nowrap;"><strong>Account #:</strong>0122 3629 36002&#160;&#160;</span>
-                                    <span style="white-space:nowrap;"><strong>Swift code:</strong>NRAK AEAK&#160;&#160;</span>
-                                    <span style="white-space:nowrap;"><strong>IBAN:</strong>AE 4904 0000 0122 3629 36002&#160;&#160;</span>
-                                    <span style="white-space:nowrap;"><strong>Branch:</strong>Sheikh Zayed Rd Branch</span>
+<!--                            <t t-if="doc.company_id.id == 1">-->
+<!--                                <td style="width:65%; border:1px solid white;" >-->
+<!--                                    <strong><h6>Bank Details - CRA Trading LLC</h6></strong>-->
+<!--                                    <span style="white-space:nowrap;"><strong>Bank Name:</strong>RAK Bank&#160;&#160;</span><br/>-->
+<!--                                    <span style="white-space:nowrap;"><strong>Account #:</strong>0122 3629 36002&#160;&#160;</span>-->
+<!--                                    <span style="white-space:nowrap;"><strong>Swift code:</strong>NRAK AEAK&#160;&#160;</span>-->
+<!--                                    <span style="white-space:nowrap;"><strong>IBAN:</strong>AE 4904 0000 0122 3629 36002&#160;&#160;</span>-->
+<!--                                    <span style="white-space:nowrap;"><strong>Branch:</strong>Sheikh Zayed Rd Branch</span>-->
+<!--                                </td>-->
+<!--                            </t>-->
+<!--                            <t t-else="">-->
+<!--                                <td style="width:65%; border:1px solid white;" >-->
+<!--                                    <strong><h6>Bank Details - CRA Middle East FZCO</h6></strong>-->
+<!--                                    <span style="white-space:nowrap;"><strong>Bank Name:</strong>RAK Bank&#160;&#160;</span><br/>-->
+<!--                                    <span style="white-space:nowrap;"><strong>Account #:</strong>0662 8578 50001&#160;&#160;</span>-->
+<!--                                    <span style="white-space:nowrap;"><strong>Swift code:</strong>NRAK AEAK&#160;&#160;</span>-->
+<!--                                    <span style="white-space:nowrap;"><strong>IBAN:</strong>AE25 0400 0006 6285 7850 001&#160;&#160;</span>-->
+<!--                                    &lt;!&ndash;                                        <span style="white-space:nowrap;"><strong>Branch:</strong>Sheikh Zayed Rd Branch</span>&ndash;&gt;-->
+<!--                                </td>-->
+<!--                            </t>-->
+                            <t t-if="doc.company_id.id== 1">
+                                <td style="width: 65%; padding: 0px; background-color: white; border: 1px solid white !important;font-size:13px;padding:3px;">
+                                    <strong style="font-size: 14px; color: #333; font-weight: bold;">Bank Details - CRA Trading LLC</strong>
+
+                                    <div style="margin-bottom: 0px;">
+                                        <strong style="display: inline-block; width: 120px;">Bank Name:</strong>
+                                        National Bank of Ras Al-Khaimah PJSC (RAK Bank)
+                                    </div>
+
+                                    <div style="margin-bottom: 0px;">
+                                        <strong style="display: inline-block; width: 120px; vertical-align: top;">Account/IBAN#:</strong>
+                                        <div style="display: inline-block;">
+                                            <div style="margin-bottom: 0px;" class="text-nowrap">
+                                                <span style="display: inline-block; width: 50px;">(AED)</span>
+                                                <span>0122362936002 / AE49 0400 0001 2236 2936 002</span>
+                                            </div>
+                                            <div style="margin-bottom: 0px;" class="text-nowrap">
+                                                <span style="display: inline-block; width: 50px;">(USD)</span>
+                                                <span>0122362936003 / AE22 0400 0001 2236 2936 003</span>
+                                            </div>
+                                            <div class="text-nowrap">
+                                                <span style="display: inline-block; width: 50px;">(EUR)</span>
+                                                <span>0122362936001 / AE76 0400 0001 2236 2936 001</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-bottom: 0px;">
+                                        <span style="display: inline-block; min-width: 220px;">
+                                            <strong>Swift Code:</strong> NRAKAEAK
+                                        </span>
+                                        <span>
+                                            <strong>Branch:</strong> Sheikh Zayed Rd Branch
+                                        </span>
+                                    </div>
                                 </td>
                             </t>
                             <t t-else="">
-                                <td style="width:65%; border:1px solid white;" >
-                                    <strong><h6>Bank Details - CRA Middle East FZCO</h6></strong>
-                                    <span style="white-space:nowrap;"><strong>Bank Name:</strong>RAK Bank&#160;&#160;</span><br/>
-                                    <span style="white-space:nowrap;"><strong>Account #:</strong>0662 8578 50001&#160;&#160;</span>
-                                    <span style="white-space:nowrap;"><strong>Swift code:</strong>NRAK AEAK&#160;&#160;</span>
-                                    <span style="white-space:nowrap;"><strong>IBAN:</strong>AE25 0400 0006 6285 7850 001&#160;&#160;</span>
-                                    <!--                                        <span style="white-space:nowrap;"><strong>Branch:</strong>Sheikh Zayed Rd Branch</span>-->
+                                <td style="width: 65%; padding: 0px; background-color: white; border: 1px solid white !important;font-size:14px;padding:3px;">
+                                    <strong style="font-size: 15px; color: #333; font-weight: bold;">Bank Details - CRA INOX PIPES AND FITTINGS LLC SPC</strong>
+
+                                    <div style="margin-bottom: 0px;">
+                                        <strong style="display: inline-block; width: 120px;">Bank Name:</strong>
+                                        National Bank of Ras Al-Khaimah PJSC (Rak Bank)
+                                    </div>
+
+                                    <div style="margin-bottom: 0px;">
+                                        <strong style="display: inline-block; width: 120px; vertical-align: top;">Account/IBAN#:</strong>
+                                        <div style="display: inline-block;">
+                                            <div style="margin-bottom: 0px;" class="text-nowrap">
+                                                <span style="display: inline-block; width: 50px;">(AED)</span>
+                                                <span>0333517220001 / AE94 0400 0003 3351 7220 001 </span>
+                                            </div>
+                                            <div style="margin-bottom: 0px;" class="text-nowrap">
+                                                <span style="display: inline-block; width: 50px;">(USD)</span>
+                                                <span>0333517220002 / AE67 0400 0003 3351 7220 002</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-bottom: 0px;">
+                                        <span style="display: inline-block; min-width: 220px;">
+                                            <strong>Swift Code:</strong> NRAKAEAK
+                                        </span>
+                                        <span>
+                                            <strong>Branch:</strong> Umm Hurrair, Dubai, UAE
+                                        </span>
+                                    </div>
                                 </td>
+<!--                                <td style="width:65%; border:1px solid white;" >-->
+<!--                                    <strong><h6>Bank Details - CRA Middle East FZCO</h6></strong>-->
+<!--                                    <span style="white-space:nowrap;"><strong>Bank Name:</strong>RAK Bank&#160;&#160;</span><br/>-->
+<!--                                    <span style="white-space:nowrap;"><strong>Account #:</strong>0662 8578 50001&#160;&#160;</span>-->
+<!--                                    <span style="white-space:nowrap;"><strong>Swift code:</strong>NRAK AEAK&#160;&#160;</span>-->
+<!--                                    <span style="white-space:nowrap;"><strong>IBAN:</strong>AE25 0400 0006 6285 7850 001&#160;&#160;</span>-->
+<!--                                    &lt;!&ndash;                                        <span style="white-space:nowrap;"><strong>Branch:</strong>Sheikh Zayed Rd Branch</span>&ndash;&gt;-->
+<!--                                </td>-->
                             </t>
+<!--                        </t>-->
                         </t>
                         <t t-else="">
                             <td style="width:40%;border:1px solid white;">
