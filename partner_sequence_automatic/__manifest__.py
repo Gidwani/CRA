@@ -4,7 +4,7 @@
 
 {
     'name': 'Partner Sequence',
-    'version': '19.0',
+    'version': '19.1',
     'category': 'Base',
     'license': 'AGPL-3',
     'author': "Odoo Tips",
