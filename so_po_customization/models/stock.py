@@ -124,7 +124,7 @@ class StockPickingInh(models.Model):
 
     def get_lines(self):
         pro_list = []
-        for line in self.move_ids_without_package:
+        for line in self.move_ids:
             lot_list = []
             if line.move_line_ids:
                 for rec in line.move_line_ids:
@@ -162,7 +162,7 @@ class StockPickingInh(models.Model):
 
     def get_total_qty(self):
         total = 0
-        for rec in self.move_line_ids_without_package:
+        for rec in self.move_line_ids:
             total = total + rec.quantity
         return round(total, 2)
 
@@ -301,7 +301,7 @@ class StockMoveLineInh(models.Model):
     def _compute_get_number(self):
         for order in self.mapped('picking_id'):
             number = 1
-            for line in order.move_line_ids_without_package:
+            for line in order.move_line_ids:
                 line.number = number
                 number += 1
 
@@ -311,7 +311,7 @@ class StockMoveLineInh(models.Model):
         if ml.picking_id.sale_id:
             for line in ml.picking_id.sale_id.order_line:
                 if line.product_id.id == ml.product_id.id and line.number == ml.so_no:
-                    if line.product_uom.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
+                    if line.product_uom_id.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
                         # uom = int(line.product_uom_qty)
                         uom = " Mtr"
                     else:
@@ -320,7 +320,7 @@ class StockMoveLineInh(models.Model):
         if ml.picking_id.purchase_id:
             for line in ml.picking_id.purchase_id.order_line:
                 if line.product_id.id == ml.product_id.id and line.number == ml.so_no:
-                    if line.product_uom.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
+                    if line.product_uom_id.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
                         # qty = int(line.product_qty)
                         uom =  " Lth"
                     else:
@@ -365,6 +365,7 @@ class StockMoveLineInh(models.Model):
 
     def get_onhand_qty(self, ml):
         product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
+        qty = 0
         for line in ml.picking_id.sale_id.order_line:
             if line.product_uom.name == 'Lth':
                 qty = int(product_qty.qty_available)/6
@@ -376,6 +377,7 @@ class StockMoveLineInh(models.Model):
         return qty
 
     def get_product_uom_id(self, ml, picking):
+        uom = ''
         for line in picking.sale_id.order_line:
             if line.product_id.id == ml.product_id.id:
                 uom = line.product_uom.name
@@ -384,6 +386,7 @@ class StockMoveLineInh(models.Model):
         return uom
 
     def get_sr_no(self, picking, product):
+        sr = ''
         for line in picking.move_ids_without_package:
             if line.product_id.id == product.id:
                 sr = line.number
@@ -455,7 +458,7 @@ class StockMoveInh(models.Model):
         if ml.picking_id.purchase_id:
             for line in ml.picking_id.purchase_id.order_line:
                 if line.product_id.id == ml.product_id.id and line.number == ml.number:
-                    if line.product_uom.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
+                    if line.product_uom_id.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
                         # qty = int(line.product_qty)
                         uom = " Lth"
                     else:
@@ -508,6 +511,6 @@ class StockMoveInh(models.Model):
         # if not self.picking_id.backorder_id:
         for order in self.mapped('picking_id'):
             number = 1
-            for line in order.move_ids_without_package:
+            for line in order.move_ids:
                 line.number = number
                 number += 1

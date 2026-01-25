@@ -68,7 +68,7 @@
             <xpath expr="//field[@name='invoice_user_id']" position="after">
                 <field name="x_css"/>
             </xpath>
-            <xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='product_id']" position="attributes">
+            <xpath expr="//field[@name='invoice_line_ids']//list//field[@name='product_id']" position="attributes">
                 <attribute name="options">
                     {'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
             </xpath>
@@ -96,9 +96,9 @@
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_out_invoice_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//header/button[@name='action_register_payment']" position="attributes">
-                <attribute name="groups">
-                    approval_so_po.group_payment_manager,approval_so_po.group_payment_user</attribute>
-            </xpath></field>
+            <xpath expr="//header/button[@name='action_force_register_payment']" position="attributes">
+                <attribute name="groups"> approval_so_po.group_payment_manager,approval_so_po.group_payment_user</attribute>
+            </xpath>
+        </field>
     </record>
 </odoo>

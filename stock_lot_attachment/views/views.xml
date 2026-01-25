@@ -36,7 +36,7 @@
                     <button icon="fa-download" invisible="not attachment_ids" name="action_download" title="g" type="object"/>
                     <field name="yom"/>
                 </xpath>
-                <xpath expr="//tree/field[@name='inventory_quantity_auto_apply']" position="replace">
+                <xpath expr="//list/field[@name='inventory_quantity_auto_apply']" position="replace">
                     <field name="inventory_quantity_auto_apply" string="On Hand Quantity" readonly="0" sum="Total On Hand" groups='stock.group_stock_manager,stock.group_stock_user'/>
 
                 </xpath>
@@ -65,7 +65,7 @@
                     <field filename="lot_attachment" invisible="1" name="attachment_ids" widget="many2many_binary"/>
                     <button icon="fa-download" invisible="not attachment_ids" name="action_download" title="g" type="object"/>
                 </xpath>
-                <xpath expr="//tree/header" position="inside">
+                <xpath expr="//list/header" position="inside">
                     <button string="Download" name="action_download_tree" title="g" type="object"/>
                 </xpath>
             </field>

@@ -11,13 +11,13 @@ class StockQuantInh(models.Model):
 class StockProductionInh(models.Model):
     _inherit = 'stock.lot'
 
-    yom = fields.Selection(selection=[(f'{i}', i) for i in range(1900, 3000)], string='YOM')
+    yom = fields.Selection(selection=[(f'{i}', str(i)) for i in range(1900, 3000)], string='YOM')
 
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    credit_limit = fields.Integer('Credit Limit', default=0)
+    # custom_credit_limit = fields.Integer('Credit Limit', default=0)
 
 
 class AccountMoveInh(models.Model):
@@ -35,18 +35,18 @@ class AccountMoveInh(models.Model):
         }
 
     def action_manager_approve(self):
-        if 'default_move_type' in self._context and self.move_type == 'out_invoice':
+        if 'default_move_type' in self.env.context and self.move_type == 'out_invoice':
             bal = self.get_balance()
             print(bal)
             if bal <= 0:
                 print('1')
-                if self.total_amount_net <= (self.partner_id.credit_limit + abs(bal)):
+                if self.total_amount_net <= (self.partner_id.custom_credit_limit + abs(bal)):
                     return super(AccountMoveInh, self).action_manager_approve()
                 else:
                     return self.action_open()
             else:
                 print("2")
-                if self.total_amount_net <= (self.partner_id.credit_limit - abs(bal)):
+                if self.total_amount_net <= (self.partner_id.custom_credit_limit - abs(bal)):
 
                     return super(AccountMoveInh, self).action_manager_approve()
                 else:

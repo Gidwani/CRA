@@ -21,6 +21,7 @@
 #############################################################################
 
 from odoo import fields, models
+from odoo.tools import SQL
 
 
 class AccountInvoiceReport(models.Model):
@@ -28,8 +29,11 @@ class AccountInvoiceReport(models.Model):
 
     discount = fields.Float('Discount', readonly=True)
 
-    def _select(self):
-        res = super(AccountInvoiceReport,self)._select()
-        select_str = res + """, line.discount AS discount """
-        return select_str
+    def _select(self) -> SQL:
+        return SQL("%s, line.discount AS discount", super()._select())
+
+    # def _select(self):
+    #     res = super(AccountInvoiceReport,self)._select()
+    #     select_str = res + """, line.discount AS discount """
+    #     return select_str
 

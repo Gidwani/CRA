@@ -1,7 +1,7 @@
 
 
 from odoo import api, fields, models
-import odoo.addons.decimal_precision as dp
+# import odoo.addons.decimal_precision as dp
 
 
 from odoo import api, fields, models, _
@@ -58,7 +58,7 @@ class PurchaseOrder(models.Model):
                                      readonly=True,
                                      states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
                                      default='percent')
-    discount_rate = fields.Float('Discount Rate', digits=dp.get_precision('Account'),
+    discount_rate = fields.Float('Discount Rate',
                                  readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
     amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all',
                                      track_visibility='always')
@@ -67,7 +67,7 @@ class PurchaseOrder(models.Model):
     amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_amount_all',
                                    track_visibility='always')
     amount_discount = fields.Monetary(string='Discount', store=True, readonly=True, compute='_amount_all',
-                                      digits=dp.get_precision('Account'), track_visibility='always')
+                                      track_visibility='always')
 
     @api.onchange('discount_type', 'discount_rate', 'order_line')
     def supply_rate(self):

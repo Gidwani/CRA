@@ -12,11 +12,13 @@ class Users(models.Model):
     # After multiple request from users added clear cache code so no need to restart server
     @api.model
     def create(self, values):
-        self.env['ir.ui.menu'].clear_caches()
+        # self.env['ir.ui.menu'].clear_caches()
+        self.env.registry.clear_all_caches()
         return super(Users, self).create(values)
-
+    #
     def write(self, values):
-        self.env['ir.ui.menu'].clear_caches()
+        # self.env['ir.ui.menu'].clear_caches()
+        self.env.registry.clear_all_caches()
         return super(Users, self).write(values)
 
 
@@ -29,14 +31,14 @@ class ResGroups(models.Model):
 
     # Earlier user needs to restart server to take invisible effect
     # After multiple request from users added clear cache code so no need to restart server
-    @api.model
-    def create(self, values):
-        self.env['ir.ui.menu'].clear_caches()
-        return super(ResGroups, self).create(values)
-
-    def write(self, values):
-        self.env['ir.ui.menu'].clear_caches()
-        return super(ResGroups, self).write(values)
+    # @api.model
+    # def create(self, values):
+    #     self.env['ir.ui.menu'].clear_caches()
+    #     return super(ResGroups, self).create(values)
+    #
+    # def write(self, values):
+    #     self.env['ir.ui.menu'].clear_caches()
+    #     return super(ResGroups, self).write(values)
 
 
 class IrActionsReport(models.Model):
@@ -54,32 +56,32 @@ class IrUiMenu(models.Model):
 
     # Earlier user needs to restart server to take invisible effect
     # After multiple request from users added clear cache code so no need to restart server
-    @api.model
-    def create(self, values):
-        self.env['ir.ui.menu'].clear_caches()
-        return super(IrUiMenu, self).create(values)
+    # @api.model
+    # def create(self, values):
+    #     self.env['ir.ui.menu'].clear_caches()
+    #     return super(IrUiMenu, self).create(values)
+    #
+    # def write(self, values):
+    #     self.env['ir.ui.menu'].clear_caches()
+    #     return super(IrUiMenu, self).write(values)
 
-    def write(self, values):
-        self.env['ir.ui.menu'].clear_caches()
-        return super(IrUiMenu, self).write(values)
-
-    @api.model
-    def search(self, args, offset=0, limit=None, order=None):
-        if self.env.user == self.env.ref('base.user_root'):
-            return super(IrUiMenu, self).search(args, offset=0, limit=None, order=order)
-        else:
-            menus = super(IrUiMenu, self).search(args, offset=0, limit=None, order=order)
-            if menus:
-                menu_ids = [menu for menu in self.env.user.menu_ids]
-                menu_ids2 = [menu for group in self.env.user.groups_id for menu in group.menu_ids]
-                for menu in list(set(menu_ids).union(menu_ids2)):
-                    if menu in menus:
-                        menus -= menu
-                if offset:
-                    menus = menus[offset:]
-                if limit:
-                    menus = menus[:limit]
-            return menus
+    # @api.model
+    # def search(self, args, offset=0, limit=None, order=None):
+    #     if self.env.user == self.env.ref('base.user_root'):
+    #         return super(IrUiMenu, self).search(args, offset=0, limit=None, order=order)
+    #     else:
+    #         menus = super(IrUiMenu, self).search(args, offset=0, limit=None, order=order)
+    #         if menus:
+    #             menu_ids = [menu for menu in self.env.user.menu_ids]
+    #             menu_ids2 = [menu for group in self.env.user.group_ids for menu in group.menu_ids]
+    #             for menu in list(set(menu_ids).union(menu_ids2)):
+    #                 if menu in menus:
+    #                     menus -= menu
+    #             if offset:
+    #                 menus = menus[offset:]
+    #             if limit:
+    #                 menus = menus[:limit]
+    #         return menus
 
 
 class IrModel(models.Model):
