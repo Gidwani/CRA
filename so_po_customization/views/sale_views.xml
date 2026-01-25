@@ -129,8 +129,8 @@
                 <xpath expr="//group[@name='note_group']" position="replace">
                     <group col="6" name="note_group">
                         <group colspan="2" name="discount">
-                            <field groups="product.group_discount_per_so_line" name="discount_type" readonly="state not in 'draft'"/>
-                            <field groups="product.group_discount_per_so_line" name="discount_rate" readonly="state not in 'draft'"/>
+                            <field groups="sale.group_discount_per_so_line" name="discount_type" readonly="state not in 'draft'"/>
+                            <field groups="sale.group_discount_per_so_line" name="discount_rate" readonly="state not in 'draft'"/>
                             <field name="note_picklist" readonly="state not in 'draft'"/>
                         </group>
                         <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">

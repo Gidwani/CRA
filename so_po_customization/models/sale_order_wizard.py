@@ -4,6 +4,7 @@ from odoo import models, fields, api
 
 class SaleOrderWizard(models.TransientModel):
     _name = 'sale.order.wizard'
+    _description = "Sale Order Wizard"
 
     sale_id = fields.Many2many('sale.order')
     product_lines = fields.One2many('sale.order.wizard.line', 'sale_id')
@@ -69,6 +70,7 @@ class SaleOrderWizard(models.TransientModel):
 
 class SaleOrderLineWizard(models.TransientModel):
     _name = 'sale.order.wizard.line'
+    _description = "Sale Order Wizard Line"
 
     sale_id = fields.Many2one('sale.order.wizard')
     is_selected = fields.Boolean()

@@ -18,6 +18,7 @@ from datetime import datetime
 
 class bulk_export(models.TransientModel):
     _name = 'bulk.export'
+    _description = "Bulk Export"
 
     def get_customer_detail(self, partner):
         customer = '\n'
@@ -227,6 +228,7 @@ class bulk_export(models.TransientModel):
 
 class bulk_export_excel(models.TransientModel):
     _name = "bulk.export.excel"
+    _description = "Bulk Export Excel"
 
     excel_file = fields.Binary('Excel File')
     file_name = fields.Char('Excel Name', size=64)

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+
         <record id="view_account_move_form_inh_nn" model="ir.ui.view">
             <field name="name">account.move.form.inh</field>
             <field name="model">account.move</field>
@@ -54,8 +55,7 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//field[@name='invoice_line_ids']//list//field[@name='product_id']" position="attributes">
-                    <attribute name="class">
-                        text-wrap</attribute>
+                    <attribute name="class">text-wrap</attribute>
                 </xpath>
                 <xpath expr="//field[@name='invoice_line_ids']/list//field[@name='sequence']" position="after">
                     <field name="number" string="Sr No"/>
@@ -64,8 +64,7 @@
                     <field name="remarks"/>
                 </xpath>
                 <xpath expr="//field[@name='invoice_line_ids']//list//field[@name='tax_ids']" position="attributes">
-                    <attribute name="string">
-                        VAT(%)</attribute>
+                    <attribute name="string">VAT(%)</attribute>
                 </xpath>
                 <xpath expr="//field[@name='invoice_line_ids']/list//field[@name='tax_ids']" position="after">
                     <field name="vat_amount"/>
@@ -132,7 +131,9 @@
                     </div>
                     <field name="net_total" options="{'currency_field': 'currency_id'}" readonly="1" widget="monetary"/>
                     <field name="net_tax" options="{'currency_field': 'currency_id'}" readonly="1" widget="monetary"/>
-                </xpath></field>
+                </xpath>
+            </field>
         </record>
+
     </data>
 </odoo>

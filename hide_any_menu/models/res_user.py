@@ -101,9 +101,9 @@ class FieldConfiguration(models.Model):
     readonly = fields.Boolean('ReadOnly', default=False)
     invisible = fields.Boolean('Invisible', default=False)
 
-    _sql_constraints = [
-        ('field_model_readonly_unique', 'UNIQUE ( field_id, model_id, readonly)',
-         _('Readonly Attribute Is Already Added To This Field, You Can Add Group To This Field!')),
-        ('model_field_invisible_uniq', 'UNIQUE (model_id, field_id, invisible)',
-         _('Invisible Attribute Is Already Added To This Field, You Can Add Group To This Field'))
-    ]
+    # _sql_constraints = [
+    #     ('field_model_readonly_unique', 'UNIQUE ( field_id, model_id, readonly)',
+    #      _('Readonly Attribute Is Already Added To This Field, You Can Add Group To This Field!')),
+    #     ('model_field_invisible_uniq', 'UNIQUE (model_id, field_id, invisible)',
+    #      _('Invisible Attribute Is Already Added To This Field, You Can Add Group To This Field'))
+    # ]

@@ -97,8 +97,8 @@
                     <!--					<field name="perc_discount" readonly="1"/>-->
                     <group>
                         <group>
-                            <field colspan="2" groups="product.group_discount_per_so_line" name="discount_type" readonly="state not in 'draft'"/>
-                            <field colspan="2" groups="product.group_discount_per_so_line" name="discount_rate" readonly="state not in 'draft'"/>
+                            <field colspan="2" groups="sale.group_discount_per_so_line" name="discount_type" readonly="state not in 'draft'"/>
+                            <field colspan="2" groups="sale.group_discount_per_so_line" name="discount_rate" readonly="state not in 'draft'"/>
                             <field colspan="2" name="note_picklist" nolabel="1" placeholder="Define your terms and conditions ..." readonly="state not in 'draft'"/>
                         </group>
                         <group class="oe_subtotal_footer oe_right">

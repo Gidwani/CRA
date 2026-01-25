@@ -6,7 +6,7 @@ from odoo import models, fields, api, tools, _
 class SaleReportInh(models.Model):
     _inherit = 'sale.report'
 
-    sale_average = fields.Float('Average Sale', readonly=True, group_operator="avg")
+    sale_average = fields.Float('Average Sale', readonly=True)
     #
     # def _query(self, with_clause='', fields={}, groupby='', from_clause=''):
     #     with_ = ("WITH %s" % with_clause) if with_clause else ""

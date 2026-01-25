@@ -3,9 +3,10 @@ import os
 from datetime import datetime
 from pytz import timezone
 from odoo import models, fields, api
-from odoo.http import request
-from odoo.osv import expression
+# from odoo.http import request
+# from odoo.osv import expression
 
+from odoo.fields import Domain
 
 class ProductProductInh(models.Model):
     _inherit = 'product.product'
@@ -101,11 +102,7 @@ class StockPickingInh(models.Model):
     do_no = fields.Char("Supplier Do #")
     is_receipt = fields.Boolean(compute='compute_is_receipt')
     invoice_link = fields.Boolean(string='Invoice link')
-    delivery_status = fields.Selection([
-        ('pending', 'Not Delivered'),
-        ('partial', 'Partially Delivered'),
-        ('full', 'Fully Delivered'),
-    ], string='Delivery Status', related="sale_id.delivery_status")
+    delivery_status = fields.Selection( string='Delivery Status', related="sale_id.delivery_status")
 
     # @api.depends('sale_id')
     # def _compute_invoice_status(self):
@@ -413,22 +410,34 @@ class StockMoveInh(models.Model):
         if not self or self.env['ir.config_parameter'].sudo().get_param('stock.picking_no_auto_reserve'):
             return
 
-        domains = []
-        for move in self:
-            domains.append([('product_id', '=', move.product_id.id), ('location_id', '=', move.location_dest_id.id)])
+        # domains = []
+        # for move in self:
+        #     domains.append([('product_id', '=', move.product_id.id), ('location_id', '=', move.location_dest_id.id)])
+        # static_domain = [('state', 'in', ['confirmed', 'partially_available']),
+        #                  ('procure_method', '=', 'make_to_stock'),
+        #                  '|',
+        #                  ('reservation_date', '<=', fields.Date.today()),
+        #                  ('picking_type_id.reservation_method', '=', 'at_confirm')
+        #                  ]
+        # moves_to_reserve = self.env['stock.move'].search(expression.AND([static_domain, expression.OR(domains)]),
+        #                                                  order='priority desc, date asc, id asc')
+        product_domains = Domain.OR(
+            [('product_id', '=', move.product_id.id), ('location_id', '=', move.location_dest_id.id)]
+            for move in self
+        )
         static_domain = [('state', 'in', ['confirmed', 'partially_available']),
                          ('procure_method', '=', 'make_to_stock'),
                          '|',
                          ('reservation_date', '<=', fields.Date.today()),
                          ('picking_type_id.reservation_method', '=', 'at_confirm')
                          ]
-        moves_to_reserve = self.env['stock.move'].search(expression.AND([static_domain, expression.OR(domains)]),
-                                                         order='priority desc, date asc, id asc')
-
-        if move.purchase_line_id and move.purchase_line_id.sale_order:
+        moves_to_reserve = self.env['stock.move'].search(
+            Domain(static_domain) & product_domains,
+            order='priority desc, date asc, id asc')
+        if self.purchase_line_id and self.purchase_line_id.sale_order:
             new_moves_list = []
             for r in moves_to_reserve:
-                if move.purchase_line_id.sale_order == r.sale_line_id.order_id.name:
+                if self.purchase_line_id.sale_order == r.sale_line_id.order_id.name:
                     new_moves_list.append(r.id)
             if new_moves_list:
                 new_moves_to_reserve = self.env['stock.move'].browse(new_moves_list)
