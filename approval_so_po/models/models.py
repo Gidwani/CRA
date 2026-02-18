@@ -4,7 +4,7 @@ from odoo import models, fields, api, _
 from lxml import etree
 from odoo.tools.float_utils import float_compare
 
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 
 class StockScrapInh(models.Model):
@@ -326,7 +326,7 @@ class PurchaseOrderInh(models.Model):
                     and self.amount_total < self.env.company.currency_id._convert(
                     self.company_id.po_double_validation_amount, self.currency_id, self.company_id,
                     self.date_order or fields.Date.today()))
-                or self.user_has_groups('purchase.group_purchase_manager'))
+                or self.env.user.has_group('purchase.group_purchase_manager'))
 
 
 class AccountPaymentRegisterInh(models.TransientModel):
@@ -340,6 +340,21 @@ class AccountPaymentInh(models.Model):
 
     x_css = fields.Html(string='CSS', sanitize=False, compute='_compute_css', store=False)
     available_partner_bank_ids = fields.Many2many('res.partner.bank')
+    state = fields.Selection(
+        selection=[
+            ('draft', "Draft"),
+            ('manager', 'Approval From Manager'),
+            ('in_process', "In Process"),
+            ('paid', "Paid"),
+            ('canceled', "Canceled"),
+            ('rejected', "Rejected"),
+        ],
+        required=True,
+        default='draft',
+        compute='_compute_state', store=True, readonly=False,
+        tracking=True,
+        copy=False,
+    )
 
     @api.depends('state')
     def _compute_css(self):
@@ -350,6 +365,18 @@ class AccountPaymentInh(models.Model):
                 application.x_css = '<style>.o_form_button_edit {display: none !important;}</style>'
             else:
                 application.x_css = False
+
+    api.constrains('state', 'move_id')
+
+    def _check_move_id(self):
+        for payment in self:
+            if (
+                    payment.state not in ('draft', 'canceled', 'manager')
+                    and not payment.move_id
+                    and payment.outstanding_account_id
+            ):
+                raise ValidationError(
+                    _("A payment with an outstanding account cannot be confirmed without having a journal entry."))
 
     def action_post(self):
         if 'skip_sale_auto_invoice_send' in self.env.context:
