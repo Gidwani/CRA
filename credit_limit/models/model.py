@@ -40,19 +40,20 @@ class AccountMoveInh(models.Model):
             print(bal)
             if bal <= 0:
                 print('1')
-                if self.total_amount_net <= (self.partner_id.custom_credit_limit + abs(bal)):
+                if self.total_amount_net <= (self.partner_id.credit_limit + abs(bal)):
                     return super(AccountMoveInh, self).action_manager_approve()
                 else:
                     return self.action_open()
             else:
                 print("2")
-                if self.total_amount_net <= (self.partner_id.custom_credit_limit - abs(bal)):
+                if self.total_amount_net <= (self.partner_id.credit_limit - abs(bal)):
 
                     return super(AccountMoveInh, self).action_manager_approve()
                 else:
                     return self.action_open()
         else:
             return super(AccountMoveInh, self).action_manager_approve()
+
 
     def get_balance(self):
         partner_ledger = self.env['account.move.line'].search(
@@ -65,4 +66,3 @@ class AccountMoveInh(models.Model):
         for par_rec in partner_ledger:
             bal = bal + (par_rec.debit - par_rec.credit)
         return bal
-
