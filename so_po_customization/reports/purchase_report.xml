@@ -258,21 +258,21 @@
         <div t-attf-class="o_company_#{company.id}_layout header" t-att-style="report_header_style">
             <div class="o_background_header">
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-3">
 <!--                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" class="float-start" alt="Logo"/>-->
                          <img t-if="company.logo" class="o_company_logo_big" t-att-src="image_data_uri(company.logo)" alt="Logo"/>
 
                     </div>
-                    <div class="col-8">
-                        <div name="company_address" >
+                    <div style="text-align:left;" class="col-5 text-left mb4">
+                        <div name="company_address" class="float-right mb4">
                             <!--                            <span class="company_address" t-field="company.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot; &quot;vat&quot;], &quot;no_marker&quot;: true}"/>-->
                             <div class="company_address"  t-field="company.partner_id"
                                  t-options='{"widget": "contact", "fields": ["address", "name", "vat"], "no_marker": True, "phone_icons": False}'/>
                         </div>
                     </div>
-<!--                    <div class="col-4 text-end" style="text-align:right;">-->
+                    <div class="col-4 text-end" style="text-align:right;">
                         <!--                        <img class="text-end" src="/so_po_customization/static/Location.png" alt="Logo" style="max-height:70pt;max-width:90%"/>-->
-<!--                    </div>-->
+                    </div>
                 </div>
 
             </div>
