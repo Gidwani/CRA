@@ -259,9 +259,7 @@
             <div class="o_background_header">
                 <div class="row">
                     <div class="col-3">
-<!--                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" class="float-start" alt="Logo"/>-->
-                         <img t-if="company.logo" class="o_company_logo_big" t-att-src="image_data_uri(company.logo)" alt="Logo"/>
-
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" class="float-start" alt="Logo"/>
                     </div>
                     <div style="text-align:left;" class="col-5 text-left mb4">
                         <div name="company_address" class="float-right mb4">

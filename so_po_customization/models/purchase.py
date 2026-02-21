@@ -163,7 +163,7 @@ class PurchaseOrderLineInh(models.Model):
         tax = self.env['account.tax'].search(
             [('type_tax_use', '=', 'purchase'), ('amount', '=', 5), ('name', '=', 'VAT 5%')])
         for rec in self:
-            rec.tax_ids = tax
+            rec.taxes_id = tax
 
     # def _compute_tax_id(self):
     #     for line in self:
