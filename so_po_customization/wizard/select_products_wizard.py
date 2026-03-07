@@ -17,7 +17,7 @@ class SelectProducts(models.TransientModel):
             for product in self.product_ids:
                 self.env['sale.order.line'].create({
                     'product_id': product.id,
-                    'product_uom': product.uom_id.id,
+                    'product_uom_id': product.uom_id.id,
                     'price_unit': product.lst_price,
                     'order_id': order_id.id
                 })

@@ -531,34 +531,34 @@
                     <div class="row col-12 p-2">
                         <div class="col-7">
                             <strong>Customer Details:-</strong><br/>
-                            <!--                        <div t-field="o.partner_id"-->
-                            <!--                             t-options='{"widget": "contact", "fields": [ "name","street", "vat"], "no_marker": True, "phone_icons": False}'/>-->
-<!--                            <span t-field="o.partner_id"/>-->
-<!--                            <br/>-->
-<!--                            <t t-if="o.partner_id.street ">-->
-<!--                                <span t-if="o.partner_id.street" t-field="o.partner_id.street"/>-->
-<!--                                &lt;!&ndash;                                <span t-if="doc.partner_id.street2" t-field="doc.partner_id.street2"/>&ndash;&gt;-->
-<!--                            </t>-->
-<!--                            <t t-if="o.partner_id.city">-->
-<!--                                <br/>-->
-<!--                                <span t-if="o.partner_id.city" t-field="o.partner_id.city"/>-->
-<!--                            </t>-->
-<!--                            <t t-if="o.partner_id.country_id">-->
-<!--                                , <span t-if="o.partner_id.country_id" t-field="o.partner_id.country_id"/>-->
-<!--                            </t>-->
-<!--                            <t t-if="o.partner_id.vat">-->
-<!--                                <br/>-->
-<!--                                <span t-if="o.partner_id.vat" t-esc="'TRN: ' + o.partner_id.vat"/>-->
-<!--                            </t>-->
+<!--                                                    <div t-field="o.partner_id"-->
+<!--                                                         t-options='{"widget": "contact", "fields": [ "name","street", "vat"], "no_marker": True, "phone_icons": False}'/>-->
+                            <span t-field="o.partner_id"/>
+                            <br/>
+                            <t t-if="o.partner_id.street ">
+                                <span t-if="o.partner_id.street" t-field="o.partner_id.street"/>
+                                <!--                                <span t-if="doc.partner_id.street2" t-field="doc.partner_id.street2"/>-->
+                            </t>
+                            <t t-if="o.partner_id.city">
+                                <br/>
+                                <span t-if="o.partner_id.city" t-field="o.partner_id.city"/>
+                            </t>
+                            <t t-if="o.partner_id.country_id">
+                                , <span t-if="o.partner_id.country_id" t-field="o.partner_id.country_id"/>
+                            </t>
+                            <t t-if="o.partner_id.vat">
+                                <br/>
+                                <span t-if="o.partner_id.vat" t-esc="'TRN: ' + o.partner_id.vat"/>
+                            </t>
 <!--                             <t t-set="address">-->
-                                <address class="mb-0" t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
-                                <div t-if="o.partner_id.vat" id="partner_vat_address_not_same_as_shipping">
-                                    <t t-if="o.company_id.account_fiscal_country_id.vat_label" t-out="o.company_id.account_fiscal_country_id.vat_label" id="inv_tax_id_label"/>
-                                    <t t-else="">Tax ID</t>: <span t-field="o.partner_id.vat"/>
-                                </div>
-                                <div t-if="o.partner_id.country_code == 'MA' and o.partner_id.company_registry">
-                                    ICE: <a t-field="o.partner_id.company_registry"/>
-                                </div>
+<!--                                <address class="mb-0" t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>-->
+<!--                                <div t-if="o.partner_id.vat" id="partner_vat_address_not_same_as_shipping">-->
+<!--                                    <t t-if="o.company_id.account_fiscal_country_id.vat_label" t-out="o.company_id.account_fiscal_country_id.vat_label" id="inv_tax_id_label"/>-->
+<!--                                    <t t-else="">Tax ID</t>: <span t-field="o.partner_id.vat"/>-->
+<!--                                </div>-->
+<!--                                <div t-if="o.partner_id.country_code == 'MA' and o.partner_id.company_registry">-->
+<!--                                    ICE: <a t-field="o.partner_id.company_registry"/>-->
+<!--                                </div>-->
 <!--                            </t>-->
                         </div>
                         <div class="col-5">
@@ -937,12 +937,12 @@
                             <!--                                <strong>Date: </strong><span>____________________________   </span>-->
                         </div>
                     </div>
-                    <!--                        <div class="mb-2" style="display:none;">-->
-                    <!--                                    <p class="text-end lh-sm" t-if="o.company_id.display_invoice_amount_total_words">-->
-                    <!--                                        Total amount in words: <br/>-->
-                    <!--                                        <small class="text-muted lh-sm"><span t-field="o.amount_total_words">Thirty one dollar and Five cents</span></small>-->
-                    <!--                                    </p>-->
-                    <!--                                </div>-->
+                                            <div class="mb-2" >
+                                                        <p class="text-end lh-sm" t-if="o.company_id.display_invoice_amount_total_words">
+                                                            Total amount in words: <br/>
+                                                            <small class="text-muted lh-sm"><span t-field="o.amount_total_words">Thirty one dollar and Five cents</span></small>
+                                                        </p>
+                                                    </div>
                     <!--                         <t t-if="o.tax_totals and o.tax_totals.get('display_in_company_currency')" style="display:none;">-->
                     <!--                                    <t t-set="tax_totals" t-value="o.tax_totals"/>-->
                     <!--                                    <t t-call="account.document_tax_totals_company_currency_template"/>-->

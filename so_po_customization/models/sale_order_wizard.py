@@ -62,7 +62,7 @@ class SaleOrderWizard(models.TransientModel):
                     'price_unit': line.product_id.list_price,
                     'so_ref': line.sr_no,
                     'sale_order': line.sale_order,
-                    'tax_ids': [19],
+                    'tax_ids': [19] if self.env.company.id == 1 else [65],
                 }
                 val_list.append(val)
         products = self.env['purchase.order.line'].create(val_list)

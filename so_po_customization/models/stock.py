@@ -434,16 +434,28 @@ class StockMoveInh(models.Model):
         moves_to_reserve = self.env['stock.move'].search(
             Domain(static_domain) & product_domains,
             order='priority desc, date asc, id asc')
-        if self.purchase_line_id and self.purchase_line_id.sale_order:
-            new_moves_list = []
-            for r in moves_to_reserve:
-                if self.purchase_line_id.sale_order == r.sale_line_id.order_id.name:
-                    new_moves_list.append(r.id)
-            if new_moves_list:
-                new_moves_to_reserve = self.env['stock.move'].browse(new_moves_list)
-                new_moves_to_reserve._action_assign()
-        else:
-            moves_to_reserve._action_assign()
+        for move in self:
+            if move.purchase_line_id and move.purchase_line_id.sale_order:
+                new_moves_list = []
+                for r in moves_to_reserve:
+                    if move.purchase_line_id.sale_order == r.sale_line_id.order_id.name:
+                        new_moves_list.append(r.id)
+
+                if new_moves_list:
+                    new_moves_to_reserve = self.env['stock.move'].browse(new_moves_list)
+                    new_moves_to_reserve._action_assign()
+            else:
+                moves_to_reserve._action_assign()
+        # if self.purchase_line_id and self.purchase_line_id.sale_order:
+        #     new_moves_list = []
+        #     for r in moves_to_reserve:
+        #         if self.purchase_line_id.sale_order == r.sale_line_id.order_id.name:
+        #             new_moves_list.append(r.id)
+        #     if new_moves_list:
+        #         new_moves_to_reserve = self.env['stock.move'].browse(new_moves_list)
+        #         new_moves_to_reserve._action_assign()
+        # else:
+        #     moves_to_reserve._action_assign()
 
     def get_lot(self):
         lot_list = []

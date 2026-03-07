@@ -51,7 +51,7 @@
         <!--                </xpath>-->
         <!--</field>-->
         <!--        </record>-->
-        <record id="view_sale_order_form_inhh" model="ir.ui.view">
+        <record id="view_sale_order_form_inh" model="ir.ui.view">
             <field name="name">sale.order.form.inh</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>

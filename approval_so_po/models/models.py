@@ -379,8 +379,8 @@ class AccountPaymentInh(models.Model):
                     _("A payment with an outstanding account cannot be confirmed without having a journal entry."))
 
     def action_post(self):
-        if 'skip_sale_auto_invoice_send' in self.env.context:
-            return super(AccountPaymentInh, self).action_post()
+        # if 'skip_sale_auto_invoice_send' in self.env.context:
+        #     return super(AccountPaymentInh, self).action_post()
         self.state = 'manager'
 
     def action_reject(self):
