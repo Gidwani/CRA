@@ -352,7 +352,7 @@ class StockMoveLineInh(models.Model):
         product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
         qty = 0
         for line in ml.picking_id.sale_id.order_line:
-            if line.product_uom.name == 'Lth':
+            if line.product_uom_id.name == 'Lth':
                 qty = int(product_qty.available_qty)/6
                 qty = str(round(qty, 2)) + " Lth"
             else:
@@ -364,7 +364,7 @@ class StockMoveLineInh(models.Model):
         product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
         qty = 0
         for line in ml.picking_id.sale_id.order_line:
-            if line.product_uom.name == 'Lth':
+            if line.product_uom_id.name == 'Lth':
                 qty = int(product_qty.qty_available)/6
                 qty = str(round(qty, 2)) + " Lth"
 
@@ -377,9 +377,9 @@ class StockMoveLineInh(models.Model):
         uom = ''
         for line in picking.sale_id.order_line:
             if line.product_id.id == ml.product_id.id:
-                uom = line.product_uom.name
+                uom = line.product_uom_id.name
             else:
-                uom = line.product_uom.name
+                uom = line.product_uom_id.name
         return uom
 
     def get_sr_no(self, picking, product):
