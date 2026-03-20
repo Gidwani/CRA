@@ -5,7 +5,7 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_tree_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//tree/field[@name='virtual_available']" position="after">
+            <xpath expr="//list/field[@name='virtual_available']" position="after">
                 <field invisible="1" name="x_css" optional="hide"/>
             </xpath>
         </field>
@@ -19,9 +19,10 @@
             <xpath expr="//field[@name='default_code']" position="after">
                 <field name="x_css"/>
             </xpath>
-            <xpath expr="//button[@name='%(stock.action_product_replenish)d']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath></field>
+<!--            <xpath expr="//button[@name='%(stock.action_product_replenish)d']" position="attributes">-->
+<!--                <attribute name="invisible">1</attribute>-->
+<!--            </xpath>-->
+        </field>
     </record>
     <record id="view_product_tree_edit_inh" model="ir.ui.view">
         <field name="name">product.template.inh</field>
@@ -32,7 +33,7 @@
             <!--            <xpath expr="//tree" position="attributes">-->
             <!--                <attribute name="multi_edit">0</attribute>-->
             <!--            </xpath>-->
-            <xpath expr="//tree/field[@name='virtual_available']" position="after">
+            <xpath expr="//list/field[@name='virtual_available']" position="after">
                 <field invisible="0" name="x_css" optional="hide"/>
             </xpath>
         </field>
@@ -42,16 +43,15 @@
         <field name="model">stock.quant</field>
         <field name="inherit_id" ref="stock.view_stock_quant_tree_editable"/>
         <field name="arch" type="xml">
-            <xpath expr="//tree" position="attributes">
-                <attribute name="multi_edit">
-                    0</attribute>
+            <xpath expr="//list" position="attributes">
+                <attribute name="multi_edit">0</attribute>
             </xpath>
-            <xpath expr="//tree/field[@name='inventory_quantity_auto_apply']" position="attributes">
+            <xpath expr="//list/field[@name='inventory_quantity_auto_apply']" position="attributes">
                 <attribute name="readonly">1</attribute>
             </xpath>
         </field>
     </record>
-    <record id="view_stock_picking_form_inherit" model="ir.ui.view">
+    <record id="view_stock_picking_form_inheri" model="ir.ui.view">
         <field name="name">stock.picking.form.inh</field>
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="stock.view_picking_form"/>
@@ -80,15 +80,15 @@
             <!--            <xpath expr="//notebook/page/field[@name='move_ids_without_package']" position="inside">-->
             <!--                <field name="x_css" />-->
             <!--            </xpath>-->
-            <xpath expr="//field[@name='move_ids_without_package']//tree//field[@name='product_id']" position="attributes">
-                <attribute name="options">
-                    {'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
+            <xpath expr="//field[@name='move_ids']//list//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
             </xpath>
             <xpath expr="//field[@name='partner_id']" position="attributes">
-                <attribute name="options">
-                    {'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
-            </xpath></field>
+                <attribute name="options"> {'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
+            </xpath>
+        </field>
     </record>
+
     <record id="view_stock_scrap_form_inh" model="ir.ui.view">
         <field name="name">stock.scrap.form.inh</field>
         <field name="model">stock.scrap</field>
@@ -100,7 +100,9 @@
             </xpath>
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="x_css"/>
-            </xpath></field>
+            </xpath>
+        </field>
     </record>
+
     <menuitem groups="stock.group_stock_manager,stock.group_stock_user" id="stock.menu_warehouse_report" name="Reporting" parent="stock.menu_stock_root" sequence="99"/>
 </odoo>

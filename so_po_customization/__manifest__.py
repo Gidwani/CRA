@@ -16,7 +16,7 @@
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Uncategorized',
-    'version': '0.1',
+    'version': '0.3',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'account', 'sale', 'purchase', 'stock', 'sale_margin',  'sale_stock', 'approval_so_po', 'product', 'web', 'sale_discount_total', 'l10n_ae'],

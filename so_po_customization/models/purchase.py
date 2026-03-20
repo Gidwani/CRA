@@ -24,7 +24,7 @@ class PurchaseOrderInh(models.Model):
                 subtotal = subtotal + line.subtotal
             rec.subtotal_amount = subtotal
 
-    @api.depends('order_line', 'order_line.taxes_id', 'discount_type', 'discount_rate', 'perc')
+    @api.depends('order_line', 'order_line.tax_ids', 'discount_type', 'discount_rate', 'perc')
     def compute_taxes(self):
         for order in self:
             # amount_tax = 0.0
@@ -34,9 +34,9 @@ class PurchaseOrderInh(models.Model):
             # order.net_tax = amount_tax
             amount = 0
             for rec in order.order_line:
-                if rec.taxes_id:
+                if rec.tax_ids:
                     # if rec.taxes_id.filtered(lambda i:i.name != 'Reverse Charge Provision'):
-                    if rec.taxes_id.filtered(lambda i: i.id in [19, 21,65]):
+                    if rec.tax_ids.filtered(lambda i: i.id in [19, 21,65]):
                         amount += rec.vat_amount
 
             if order.discount_type == 'percent':
@@ -136,16 +136,16 @@ class PurchaseOrderLineInh(models.Model):
             return order + '-' + str(self.so_ref)
         return ''
 
-    @api.depends('price_unit', 'product_qty', 'product_uom')
+    @api.depends('price_unit', 'product_qty', 'product_uom_id')
     def _compute_subtotal(self):
         for rec in self:
             rec.subtotal = rec.product_qty * rec.price_unit
 
-    @api.depends('taxes_id', 'price_unit', 'product_qty')
+    @api.depends('tax_ids', 'price_unit', 'product_qty')
     def _compute_vat_amount(self):
         for rec in self:
             amount = 0
-            for tax in rec.taxes_id:
+            for tax in rec.tax_ids:
                 if tax.id in [19, 21, 65]:
                     amount = amount + tax.amount
             rec.vat_amount = (amount * rec.product_qty / 100) * rec.price_unit
@@ -163,7 +163,7 @@ class PurchaseOrderLineInh(models.Model):
         tax = self.env['account.tax'].search(
             [('type_tax_use', '=', 'purchase'), ('amount', '=', 5), ('name', '=', 'VAT 5%')])
         for rec in self:
-            rec.taxes_id = tax
+            rec.tax_ids = tax
 
     # def _compute_tax_id(self):
     #     for line in self:

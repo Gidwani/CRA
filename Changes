@@ -1,8 +1,5 @@
-python3 ./odoo-bin scaffold testing /home/atif/odoo-14.0/custom_addons
 
-
-
-Need to check discount
-Need to check sale order line
-
+Need to check discount in reports sale_discount_total for both sale and account
+Neet to check sale.report
+credit_limit field in res.partner should be update in custom_credit_limit field
 

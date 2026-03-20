@@ -7,7 +7,7 @@
             <field name="model">sale.report</field>
             <field name="inherit_id" ref="sale.view_order_product_pivot"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='price_subtotal']" position="before">
+                <xpath expr="//field[@name='product_uom_qty']" position="before">
                     <field name="sale_average" type="measure"/>
                 </xpath>
             </field>
@@ -51,7 +51,7 @@
         <!--                </xpath>-->
         <!--</field>-->
         <!--        </record>-->
-        <record id="view_sale_order_form_inhh" model="ir.ui.view">
+        <record id="view_sale_order_form_inh" model="ir.ui.view">
             <field name="name">sale.order.form.inh</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
@@ -73,32 +73,32 @@
                 <!--                    <attribute name="invisible">state == 'draft' or invoice_count >= 1 or context.from_provision_menu == True</attribute>-->
                 <!--                </xpath>-->
 
-                <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="before">
+                <xpath expr="//field[@name='order_line']/list/field[@name='product_id']" position="before">
                     <field name="number" string="Sr No" width="5%"/>
                 </xpath>
-                <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="after">
+                <xpath expr="//field[@name='order_line']/list/field[@name='product_uom_qty']" position="before">
                     <field name="remarks" width="10%"/>
                 </xpath>
-                <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="attributes">
+                <xpath expr="//field[@name='order_line']/list/field[@name='name']" position="attributes">
                     <attribute name="column_invisible">1</attribute>
                 </xpath>
-                <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="attributes">
+                <xpath expr="//field[@name='order_line']/list/field[@name='discount']" position="attributes">
                     <attribute name="column_invisible">1</attribute>
                 </xpath>
-                <xpath expr="//field[@name='order_line']/tree/field[@name='price_total']" position="after">
+                <xpath expr="//field[@name='order_line']/list/field[@name='price_total']" position="after">
                     <field name="subtotal" widget="monetary"/>
                 </xpath>
-                <xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position="attributes">
+                <xpath expr="//field[@name='order_line']/list/field[@name='price_subtotal']" position="attributes">
                     <attribute name="column_invisible">1</attribute>
                 </xpath>
-                <!--                <xpath expr="//field[@name='order_line']/tree/field[@name='price_total']" position="attributes">-->
+                <!--                <xpath expr="//field[@name='order_line']/list/field[@name='price_total']" position="attributes">-->
                 <!--                    <attribute name="invisible">1</attribute>-->
                 <!--                </xpath>-->
-                <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="replace">
-                    <!--                    <field class="text-wrap" context="{ 'partner_id': parent.partner_id,'quantity': product_uom_qty, 'pricelist': parent.pricelist_id,'uom':product_uom,'company_id': parent.company_id,'default_lst_price': price_unit,'default_description_sale': name}" domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]" force_save="1" name="product_id"  readonly="not product_updatable" required="not display_type"/>-->
-                    <field class="text-wrap" name="product_id" readonly="not product_updatable" required="not display_type" force_save="1" context="{'partner_id': parent.partner_id, 'quantity': product_uom_qty, 'pricelist': parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id, 'default_lst_price': price_unit, 'default_description_sale': name}" options="{'no_open': True, }" domain="[('sale_ok', '=', True)]" widget="sol_product_many2one"/>
-                </xpath>
-                <xpath expr="//field[@name='order_line']/tree/field[@name='tax_id']" position="after">
+<!--                <xpath expr="//field[@name='order_line']/list/field[@name='product_id']" position="replace">-->
+<!--                    &lt;!&ndash; <field class="text-wrap" context="{ 'partner_id': parent.partner_id,'quantity': product_uom_qty, 'pricelist': parent.pricelist_id,'uom':product_uom,'company_id': parent.company_id,'default_lst_price': price_unit,'default_description_sale': name}" domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]" force_save="1" name="product_id"  readonly="not product_updatable" required="not display_type"/>&ndash;&gt;-->
+<!--                    <field class="text-wrap" name="product_id" readonly="not product_updatable" required="not display_type" force_save="1" context="{'partner_id': parent.partner_id, 'quantity': product_uom_qty, 'pricelist': parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id, 'default_lst_price': price_unit, 'default_description_sale': name}" options="{'no_open': True, }" domain="[('sale_ok', '=', True)]" widget="sol_product_many2one"/>-->
+<!--                </xpath>-->
+                <xpath expr="//field[@name='order_line']/list/field[@name='tax_ids']" position="after">
                     <field name="vat_amount" widget="monetary" width="5%"/>
                 </xpath>
                 <xpath expr="//field[@name='payment_term_id']" position="attributes">
@@ -129,8 +129,8 @@
                 <xpath expr="//group[@name='note_group']" position="replace">
                     <group col="6" name="note_group">
                         <group colspan="2" name="discount">
-                            <field groups="product.group_discount_per_so_line" name="discount_type" readonly="state not in 'draft'"/>
-                            <field groups="product.group_discount_per_so_line" name="discount_rate" readonly="state not in 'draft'"/>
+                            <field groups="sale.group_discount_per_so_line" name="discount_type" readonly="state not in 'draft'"/>
+                            <field groups="sale.group_discount_per_so_line" name="discount_rate" readonly="state not in 'draft'"/>
                             <field name="note_picklist" readonly="state not in 'draft'"/>
                         </group>
                         <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
@@ -172,7 +172,7 @@
             <field name="name">Products</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">product.template</field>
-            <field name="view_mode">tree,kanban,form,activity</field>
+            <field name="view_mode">list,kanban,form,activity</field>
             <field name="view_id" ref="product.product_template_tree_view"/>
             <field name="search_view_id" ref="product.product_template_search_view"/>
             <field name="context">{"search_default_filter_to_sell":1, "sale_multi_pricelist_product_template": 1}</field>
