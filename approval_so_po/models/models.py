@@ -4,7 +4,7 @@ from odoo import models, fields, api, _
 from lxml import etree
 from odoo.tools.float_utils import float_compare
 
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError
 
 
 class StockScrapInh(models.Model):
@@ -183,7 +183,7 @@ class ResPartnerInh(models.Model):
                 application.x_css_set = '<style>.o_cp_action_menus {display: none !important;}</style>'
 
     def write(self, vals):
-        pre_name = self.mapped('name')
+        pre_name = self.name
         res = super().write(vals)
         if 'fromso' not in self._context and 'Iscreated' not in self._context and self.env.user.has_group('approval_so_po.group_contact_user') and 'copy' not in pre_name:
             raise UserError('You cannot edit this form.')
@@ -326,7 +326,7 @@ class PurchaseOrderInh(models.Model):
                     and self.amount_total < self.env.company.currency_id._convert(
                     self.company_id.po_double_validation_amount, self.currency_id, self.company_id,
                     self.date_order or fields.Date.today()))
-                or self.env.user.has_group('purchase.group_purchase_manager'))
+                or self.user_has_groups('purchase.group_purchase_manager'))
 
 
 class AccountPaymentRegisterInh(models.TransientModel):
@@ -340,21 +340,6 @@ class AccountPaymentInh(models.Model):
 
     x_css = fields.Html(string='CSS', sanitize=False, compute='_compute_css', store=False)
     available_partner_bank_ids = fields.Many2many('res.partner.bank')
-    state = fields.Selection(
-        selection=[
-            ('draft', "Draft"),
-            ('manager', 'Approval From Manager'),
-            ('in_process', "In Process"),
-            ('paid', "Paid"),
-            ('canceled', "Canceled"),
-            ('rejected', "Rejected"),
-        ],
-        required=True,
-        default='draft',
-        compute='_compute_state', store=True, readonly=False,
-        tracking=True,
-        copy=False,
-    )
 
     @api.depends('state')
     def _compute_css(self):
@@ -366,21 +351,7 @@ class AccountPaymentInh(models.Model):
             else:
                 application.x_css = False
 
-    api.constrains('state', 'move_id')
-
-    def _check_move_id(self):
-        for payment in self:
-            if (
-                    payment.state not in ('draft', 'canceled', 'manager')
-                    and not payment.move_id
-                    and payment.outstanding_account_id
-            ):
-                raise ValidationError(
-                    _("A payment with an outstanding account cannot be confirmed without having a journal entry."))
-
     def action_post(self):
-        # if 'skip_sale_auto_invoice_send' in self.env.context:
-        #     return super(AccountPaymentInh, self).action_post()
         self.state = 'manager'
 
     def action_reject(self):
@@ -807,7 +778,7 @@ class StockPickingInh(models.Model):
 
     def button_validate(self):
         flag = False
-        for line in self.move_ids:
+        for line in self.move_ids_without_package:
             if round(line.quantity, 2) <= round(line.product_uom_qty, 2):
                 flag = True
             else:
@@ -816,7 +787,7 @@ class StockPickingInh(models.Model):
             if self.state == 'assigned':
                 if self.picking_type_id.code == 'outgoing':
                     check = False
-                    for rec in self.move_line_ids:
+                    for rec in self.move_line_ids_without_package:
                         if rec.quantity == 0 and not rec.is_backorder:
                             check = True
                     if check:
@@ -829,7 +800,7 @@ class StockPickingInh(models.Model):
                         self.state = 'manager'
                 else:
                     check = False
-                    for rec in self.move_ids:
+                    for rec in self.move_ids_without_package:
                         if rec.quantity == 0 and not rec.is_backorder:
                             check = True
                     if check:
@@ -839,7 +810,7 @@ class StockPickingInh(models.Model):
 
     def action_manager_approve(self):
         flag = False
-        for line in self.move_ids:
+        for line in self.move_ids_without_package:
             if round(line.quantity, 2) <= round(line.product_uom_qty, 2):
                 flag = True
             else:
@@ -851,9 +822,9 @@ class StockPickingInh(models.Model):
                 backorder.update({
                     'is_done_added': False,
                 })
-                for res in backorder.move_line_ids:
+                for res in backorder.move_line_ids_without_package:
                     res.is_backorder = False
-                for res in backorder.move_ids:
+                for res in backorder.move_ids_without_package:
                     res.is_backorder = False
 
             # for res_line in self.move_ids_without_package:

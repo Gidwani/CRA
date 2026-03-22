@@ -121,20 +121,20 @@
                             <h2>
                                 <span t-esc="o.get_seq(o)"/>
                             </h2>
-                            <div class="row mb-4" id="informations">
-                                <div t-if="o.sale_id.name" class="col" name="div_origin">
+                            <div class="row mt32 mb32">
+                                <div t-if="o.sale_id.name" class="col-auto" name="div_origin">
                                     <strong>SO #:</strong>
                                     <span t-field="o.sale_id.name"/>
                                 </div>
-                                <div t-if="o.sale_id.partner_id" class="col" name="div_origin">
+                                <div t-if="o.sale_id.partner_id" class="col-auto" name="div_origin">
                                     <strong>Customer Name:</strong>
                                     <span t-field="o.sale_id.partner_id.name"/>
                                 </div>
-                                <div t-if="o.sale_id.date_order" class="col" name="div_origin">
+                                <div t-if="o.sale_id.date_order" class="col-auto" name="div_origin">
                                     <strong>Order Date:</strong>
                                     <span t-field="o.sale_id.date_order" t-options='{"widget": "date"}'/>
                                 </div>
-                                <div t-if="o.sale_id.client_order_ref" class="col" name="div_origin">
+                                <div t-if="o.sale_id.client_order_ref" class="col-auto" name="div_origin">
                                     <strong>PO #:</strong>
                                     <span t-field="o.sale_id.client_order_ref"/>
                                 </div>

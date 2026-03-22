@@ -11,13 +11,13 @@ class StockQuantInh(models.Model):
 class StockProductionInh(models.Model):
     _inherit = 'stock.lot'
 
-    yom = fields.Selection(selection=[(f'{i}', str(i)) for i in range(1900, 3000)], string='YOM')
+    yom = fields.Selection(selection=[(f'{i}', i) for i in range(1900, 3000)], string='YOM')
 
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    # custom_credit_limit = fields.Integer('Credit Limit', default=0)
+    credit_limit = fields.Integer('Credit Limit', default=0)
 
 
 class AccountMoveInh(models.Model):
@@ -35,7 +35,7 @@ class AccountMoveInh(models.Model):
         }
 
     def action_manager_approve(self):
-        if 'default_move_type' in self.env.context and self.move_type == 'out_invoice':
+        if 'default_move_type' in self._context and self.move_type == 'out_invoice':
             bal = self.get_balance()
             print(bal)
             if bal <= 0:
@@ -54,7 +54,6 @@ class AccountMoveInh(models.Model):
         else:
             return super(AccountMoveInh, self).action_manager_approve()
 
-
     def get_balance(self):
         partner_ledger = self.env['account.move.line'].search(
             [('partner_id', '=', self.partner_id.id),
@@ -66,3 +65,4 @@ class AccountMoveInh(models.Model):
         for par_rec in partner_ledger:
             bal = bal + (par_rec.debit - par_rec.credit)
         return bal
+

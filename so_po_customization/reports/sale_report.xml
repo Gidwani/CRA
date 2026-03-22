@@ -5,19 +5,13 @@
         </xpath>
         <xpath expr="//div[@class='page']" position="replace">
 
-<!--            <div class="watermark" >-->
-<!--                &lt;!&ndash; Watermark &ndash;&gt;-->
-<!--                <img src="so_po_customization/static/Watermark.png" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; opacity: 0.2;"/>-->
-<!--            </div>-->
+            <div class="watermark" >
+                <!-- Watermark -->
+                <img src="so_po_customization/static/Watermark.png" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; opacity: 0.2;"/>
+            </div>
 
 
-            <div class="page" style="
-        margin-top:-40px;
-        background-image: url('/so_po_customization/static/Watermark.png');
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: 70%;
-        ">
+            <div class="page" style="margin-top:-50px;">
                 <div class="oe_structure"/>
                 <strong><h2 class="mt16">
                     <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
@@ -150,13 +144,13 @@
                                         <span t-field="line.product_uom_qty"/>
                                     </td>
                                     <td name="td_priceunit" class="text-center">
-                                        <span t-field="line.product_uom_id"/>
+                                        <span t-field="line.product_uom"/>
                                     </td>
                                     <td name="td_priceunit" style="white-space:nowrap;" class="text-center">
                                         <span t-field="line.price_unit"/>
                                     </td>
                                     <td name="td_taxes" class="text-center" style="white-space:nowrap;">
-                                        <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_ids))" />
+                                        <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_id))" />
                                     </td>
                                     <td name="td_vat" class="text-center" style="white-space:nowrap;">
                                         <span t-field="line.vat_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
@@ -204,7 +198,7 @@
                     </tbody>
                 </table>
 
-                <table style="width:100%;border:1px solid white;">
+                <table style="width:100%;">
                     <tr style="width:65%; border:1px solid white;background-color:white;">
                         <t t-if="env.context.get('proforma', False) or is_pro_forma">
 <!--                            <t t-if="doc.company_id.id == 1">-->
@@ -315,13 +309,13 @@
                         <!--<td style="width:25%;border:1px solid white;">-->
 
                         <!--</td>-->
-                        <td style="width:35%;background-color:white;">
-                            <div class="clearfix" name="so_total_summary" style="border:1px solid black;border-bottom:none;">
+                        <td style="width:35%;background-color:white;border:1px solid white;;">
+                            <div class="clearfix" name="so_total_summary">
                                 <!--                                    <div id="total" class="row" name="total">-->
-                                <table class="table table-sm" >
-                                    <tr class="o_subtotal" style="border:1px solid black;">
-                                        <td style="border:1px solid black;" name="td_amount_untaxed_label"><strong>Subtotal</strong></td>
-                                        <td  name="td_amount_untaxed" style="text-align:right;border:1px solid black;" class="text-right">
+                                <table class="table table-sm">
+                                    <tr class="o_subtotal" style="">
+                                        <td name="td_amount_untaxed_label"><strong>Subtotal</strong></td>
+                                        <td name="td_amount_untaxed" style="text-align:right;" class="text-right">
                                             <span t-field="doc.subtotal_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
                                         </td>
                                     </tr>

@@ -208,7 +208,7 @@ class StockMoveLineInh(models.Model):
     def _compute_get_number(self):
         for order in self.mapped('picking_id'):
             number = 1
-            for line in order.move_line_ids:
+            for line in order.move_line_ids_without_package:
                 line.number = number
                 number += 1
 

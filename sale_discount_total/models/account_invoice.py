@@ -9,11 +9,12 @@ class AccountInvoice(models.Model):
 
     discount_type = fields.Selection([('percent', 'Percentage'), ('amount', 'Amount')], string='Discount type',
                                      readonly=True,
+                                     states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
                                      default='percent')
     discount_rate = fields.Float('Discount Rate', digits=(16, 2),
-                                 readonly=True)
+                                 readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
     amount_discount = fields.Monetary(string='Discount', store=True, readonly=True, compute='_compute_amount',
-                                      tracking=1)
+                                      track_visibility='always')
 
     # @api.depends(
     #     'line_ids.matched_debit_ids.debit_move_id.move_id.payment_id.is_matched',

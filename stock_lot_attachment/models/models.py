@@ -62,7 +62,7 @@ class StockQuantInh(models.Model):
             action['id'] = target_action.id
 
         form_view = self.env.ref('stock.view_stock_quant_form_editable').id
-        if self.env.context.get('inventory_mode') and self.env.user.has_group('stock.group_stock_manager'):
+        if self.env.context.get('inventory_mode') and self.user_has_groups('stock.group_stock_manager'):
             action['view_id'] = self.env.ref('stock.view_stock_quant_tree_editable').id
         else:
             action['view_id'] = self.env.ref('stock.view_stock_quant_tree_editable').id

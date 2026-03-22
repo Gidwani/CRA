@@ -3,10 +3,9 @@ import os
 from datetime import datetime
 from pytz import timezone
 from odoo import models, fields, api
-# from odoo.http import request
-# from odoo.osv import expression
+from odoo.http import request
+from odoo.osv import expression
 
-from odoo.fields import Domain
 
 class ProductProductInh(models.Model):
     _inherit = 'product.product'
@@ -102,7 +101,11 @@ class StockPickingInh(models.Model):
     do_no = fields.Char("Supplier Do #")
     is_receipt = fields.Boolean(compute='compute_is_receipt')
     invoice_link = fields.Boolean(string='Invoice link')
-    delivery_status = fields.Selection( string='Delivery Status', related="sale_id.delivery_status")
+    delivery_status = fields.Selection([
+        ('pending', 'Not Delivered'),
+        ('partial', 'Partially Delivered'),
+        ('full', 'Fully Delivered'),
+    ], string='Delivery Status', related="sale_id.delivery_status")
 
     # @api.depends('sale_id')
     # def _compute_invoice_status(self):
@@ -121,7 +124,7 @@ class StockPickingInh(models.Model):
 
     def get_lines(self):
         pro_list = []
-        for line in self.move_ids:
+        for line in self.move_ids_without_package:
             lot_list = []
             if line.move_line_ids:
                 for rec in line.move_line_ids:
@@ -159,7 +162,7 @@ class StockPickingInh(models.Model):
 
     def get_total_qty(self):
         total = 0
-        for rec in self.move_line_ids:
+        for rec in self.move_line_ids_without_package:
             total = total + rec.quantity
         return round(total, 2)
 
@@ -298,7 +301,7 @@ class StockMoveLineInh(models.Model):
     def _compute_get_number(self):
         for order in self.mapped('picking_id'):
             number = 1
-            for line in order.move_line_ids:
+            for line in order.move_line_ids_without_package:
                 line.number = number
                 number += 1
 
@@ -308,7 +311,7 @@ class StockMoveLineInh(models.Model):
         if ml.picking_id.sale_id:
             for line in ml.picking_id.sale_id.order_line:
                 if line.product_id.id == ml.product_id.id and line.number == ml.so_no:
-                    if line.product_uom_id.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
+                    if line.product_uom.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
                         # uom = int(line.product_uom_qty)
                         uom = " Mtr"
                     else:
@@ -317,7 +320,7 @@ class StockMoveLineInh(models.Model):
         if ml.picking_id.purchase_id:
             for line in ml.picking_id.purchase_id.order_line:
                 if line.product_id.id == ml.product_id.id and line.number == ml.so_no:
-                    if line.product_uom_id.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
+                    if line.product_uom.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
                         # qty = int(line.product_qty)
                         uom =  " Lth"
                     else:
@@ -352,7 +355,7 @@ class StockMoveLineInh(models.Model):
         product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
         qty = 0
         for line in ml.picking_id.sale_id.order_line:
-            if line.product_uom_id.name == 'Lth':
+            if line.product_uom.name == 'Lth':
                 qty = int(product_qty.available_qty)/6
                 qty = str(round(qty, 2)) + " Lth"
             else:
@@ -362,9 +365,8 @@ class StockMoveLineInh(models.Model):
 
     def get_onhand_qty(self, ml):
         product_qty = self.env['product.template'].search([('name', '=', ml.product_id.name)])
-        qty = 0
         for line in ml.picking_id.sale_id.order_line:
-            if line.product_uom_id.name == 'Lth':
+            if line.product_uom.name == 'Lth':
                 qty = int(product_qty.qty_available)/6
                 qty = str(round(qty, 2)) + " Lth"
 
@@ -374,16 +376,14 @@ class StockMoveLineInh(models.Model):
         return qty
 
     def get_product_uom_id(self, ml, picking):
-        uom = ''
         for line in picking.sale_id.order_line:
             if line.product_id.id == ml.product_id.id:
-                uom = line.product_uom_id.name
+                uom = line.product_uom.name
             else:
-                uom = line.product_uom_id.name
+                uom = line.product_uom.name
         return uom
 
     def get_sr_no(self, picking, product):
-        sr = ''
         for line in picking.move_ids_without_package:
             if line.product_id.id == product.id:
                 sr = line.number
@@ -410,52 +410,28 @@ class StockMoveInh(models.Model):
         if not self or self.env['ir.config_parameter'].sudo().get_param('stock.picking_no_auto_reserve'):
             return
 
-        # domains = []
-        # for move in self:
-        #     domains.append([('product_id', '=', move.product_id.id), ('location_id', '=', move.location_dest_id.id)])
-        # static_domain = [('state', 'in', ['confirmed', 'partially_available']),
-        #                  ('procure_method', '=', 'make_to_stock'),
-        #                  '|',
-        #                  ('reservation_date', '<=', fields.Date.today()),
-        #                  ('picking_type_id.reservation_method', '=', 'at_confirm')
-        #                  ]
-        # moves_to_reserve = self.env['stock.move'].search(expression.AND([static_domain, expression.OR(domains)]),
-        #                                                  order='priority desc, date asc, id asc')
-        product_domains = Domain.OR(
-            [('product_id', '=', move.product_id.id), ('location_id', '=', move.location_dest_id.id)]
-            for move in self
-        )
+        domains = []
+        for move in self:
+            domains.append([('product_id', '=', move.product_id.id), ('location_id', '=', move.location_dest_id.id)])
         static_domain = [('state', 'in', ['confirmed', 'partially_available']),
                          ('procure_method', '=', 'make_to_stock'),
                          '|',
                          ('reservation_date', '<=', fields.Date.today()),
                          ('picking_type_id.reservation_method', '=', 'at_confirm')
                          ]
-        moves_to_reserve = self.env['stock.move'].search(
-            Domain(static_domain) & product_domains,
-            order='priority desc, date asc, id asc')
-        for move in self:
-            if move.purchase_line_id and move.purchase_line_id.sale_order:
-                new_moves_list = []
-                for r in moves_to_reserve:
-                    if move.purchase_line_id.sale_order == r.sale_line_id.order_id.name:
-                        new_moves_list.append(r.id)
+        moves_to_reserve = self.env['stock.move'].search(expression.AND([static_domain, expression.OR(domains)]),
+                                                         order='priority desc, date asc, id asc')
 
-                if new_moves_list:
-                    new_moves_to_reserve = self.env['stock.move'].browse(new_moves_list)
-                    new_moves_to_reserve._action_assign()
-            else:
-                moves_to_reserve._action_assign()
-        # if self.purchase_line_id and self.purchase_line_id.sale_order:
-        #     new_moves_list = []
-        #     for r in moves_to_reserve:
-        #         if self.purchase_line_id.sale_order == r.sale_line_id.order_id.name:
-        #             new_moves_list.append(r.id)
-        #     if new_moves_list:
-        #         new_moves_to_reserve = self.env['stock.move'].browse(new_moves_list)
-        #         new_moves_to_reserve._action_assign()
-        # else:
-        #     moves_to_reserve._action_assign()
+        if move.purchase_line_id and move.purchase_line_id.sale_order:
+            new_moves_list = []
+            for r in moves_to_reserve:
+                if move.purchase_line_id.sale_order == r.sale_line_id.order_id.name:
+                    new_moves_list.append(r.id)
+            if new_moves_list:
+                new_moves_to_reserve = self.env['stock.move'].browse(new_moves_list)
+                new_moves_to_reserve._action_assign()
+        else:
+            moves_to_reserve._action_assign()
 
     def get_lot(self):
         lot_list = []
@@ -479,7 +455,7 @@ class StockMoveInh(models.Model):
         if ml.picking_id.purchase_id:
             for line in ml.picking_id.purchase_id.order_line:
                 if line.product_id.id == ml.product_id.id and line.number == ml.number:
-                    if line.product_uom_id.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
+                    if line.product_uom.name == 'Lth' and ml.product_uom_id.name == 'Mtr':
                         # qty = int(line.product_qty)
                         uom = " Lth"
                     else:
@@ -532,6 +508,6 @@ class StockMoveInh(models.Model):
         # if not self.picking_id.backorder_id:
         for order in self.mapped('picking_id'):
             number = 1
-            for line in order.move_ids:
+            for line in order.move_ids_without_package:
                 line.number = number
                 number += 1
