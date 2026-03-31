@@ -401,6 +401,29 @@ class AccountMoveLineInh(models.Model):
             raise UserError('You cannot change Discount')
 
 
+class AccountReconcileWizardInh(models.TransientModel):
+    _inherit = 'account.reconcile.wizard'
+
+    # force_partials = fields.Boolean(string="Allow partials", default=False)
+
+    def create_write_off(self):
+        """ Create write-off move lines with the data provided in the wizard. """
+        self.ensure_one()
+        partners = self.move_line_ids.partner_id
+        partner = partners if len(partners) == 1 else None
+        write_off_vals = {
+            'journal_id': self.journal_id.id,
+            'company_id': self.company_id.id,
+            'date': self._get_date_after_lock_date() or self.date,
+            'to_check': self.to_check,
+            'line_ids': self._create_write_off_lines(partner=partner)
+        }
+        write_off_move = self.env['account.move'].create(write_off_vals)
+        write_off_move.with_context(
+            from_reconcile_wizard=True
+        ).action_post()
+        return write_off_move
+
 class AccountMoveInh(models.Model):
     _inherit = 'account.move'
 
@@ -440,6 +463,8 @@ class AccountMoveInh(models.Model):
         self.state = 'draft'
 
     def action_post(self):
+        if 'from_reconcile_wizard' in self.env.context:
+            return super(AccountMoveInh, self).action_post()
         if self.invoice_origin:
             sale_order = self.env['sale.order'].search([('name', '=', self.invoice_origin)])
             purchase_order = self.env['purchase.order'].search([('name', '=', self.invoice_origin)])
@@ -457,7 +482,7 @@ class AccountMoveInh(models.Model):
                         total_qty = total_qty + line.product_uom_qty
                     for invoice_line in self.invoice_line_ids:
                         total_invoice_qty = total_invoice_qty + invoice_line.quantity
-                    if total_invoice_qty <= total_qty:
+                    if round(total_invoice_qty, 2) <= round(total_qty, 2):
                         self.state = 'manager'
                     else:
                         raise UserError('Quantity Should be less or equal to Sale Order Quantity')
@@ -538,7 +563,7 @@ class AccountMoveInh(models.Model):
                         total_qty = total_qty + line.product_uom_qty
                     for invoice_line in self.invoice_line_ids:
                         total_invoice_qty = total_invoice_qty + invoice_line.quantity
-                    if total_invoice_qty <= total_qty:
+                    if round(total_invoice_qty, 2) <= round(total_qty, 2):
                         record = super(AccountMoveInh, self).action_post()
                     else:
                         raise UserError('Quantity Should be less or equal to Sale Order Quantity')
