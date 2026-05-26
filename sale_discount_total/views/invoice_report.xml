@@ -2,19 +2,19 @@
 <odoo>
     <data>
 
-        <template id="report_invoice_customized" inherit_id="account.report_invoice_document">
-<!--            <xpath expr="//span[@t-field='line.discount']" position="replace">-->
-<!--                 <span t-esc="'%.2f'%(line.discount)"/>-->
+<!--        <template id="report_invoice_customized" inherit_id="account.report_invoice_document">-->
+<!--&lt;!&ndash;            <xpath expr="//span[@t-field='line.discount']" position="replace">&ndash;&gt;-->
+<!--&lt;!&ndash;                 <span t-esc="'%.2f'%(line.discount)"/>&ndash;&gt;-->
+<!--&lt;!&ndash;            </xpath>&ndash;&gt;-->
+<!--            <xpath expr="//tr[hasclass('is-subtotal')]" position="after">-->
+<!--                <tr>-->
+<!--                    <td>Discount</td>-->
+<!--                    <td class="text-right">-->
+<!--                        <span t-field="o.amount_discount"/>-->
+<!--                    </td>-->
+<!--                </tr>-->
 <!--            </xpath>-->
-            <xpath expr="//tr[hasclass('is-subtotal')]" position="after">
-                <tr>
-                    <td>Discount</td>
-                    <td class="text-right">
-                        <span t-field="o.amount_discount"/>
-                    </td>
-                </tr>
-            </xpath>
-        </template>
+<!--        </template>-->
 
     </data>
 </odoo>

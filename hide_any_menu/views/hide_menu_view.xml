@@ -9,16 +9,16 @@
 	    <field name="arch" type="xml">
 	        <notebook position="inside">
 	            <page string="Hide Specific Menu">
-	                    <field name="menu_ids" nolabel="1"/>
+	                    <field name="menu_ids" nolabel="1" force_save="1"/>
 	            </page>
 	            <page string="Hide Specific Report">
 	                    <field name="report_ids" nolabel="1">
-	                        <tree>
+	                        <list>
 	                            <field name="name"/>
 	                            <field name="model"/>
 	                            <field name="report_name"/>
 	                            <field name="report_type"/>
-	                        </tree>
+	                        </list>
 	                    </field>
 	            </page>
 	        </notebook>
@@ -36,12 +36,12 @@
 	            </page>
 	            <page string="Report To Hide">
 	                <field name="report_ids" nolabel="1">
-	                    <tree>
+	                    <list>
 	                        <field name="name"/>
 	                        <field name="model"/>
 	                        <field name="report_name"/>
 	                        <field name="report_type"/>
-	                    </tree>
+	                    </list>
 	                </field>
 	            </page>
 	        </xpath>
@@ -59,9 +59,9 @@
 	            </page>
 	            <page string="Hide From Users">
 	                <field name="hide_user_ids">
-	                    <tree>
+	                    <list>
 	                        <field name="name"/>
-	                    </tree>
+	                    </list>
 	                </field>
 	            </page>
 	        </xpath>
@@ -82,7 +82,8 @@
 	                        </strong>
 	                    </span>
 	                </div>
-	                <field name="field_configuration_ids" context="{'default_model_id': active_id}" nolabel="1">
+<!--	                <field name="field_configuration_ids" context="{'default_model_id': active_id}" nolabel="1">-->
+	                <field name="field_configuration_ids" nolabel="1" >
 	                    <form>
 	                        <div class="oe_button_box" name="button_box">
 	                        </div>
@@ -99,14 +100,14 @@
 	                            </group>
 	                        </group>
 	                    </form>
-	                    <tree>
+	                    <list>
 	                        <field name="model_id" invisible="1"/>
 	                        <field name="field_id" domain="[('model_id', '=', model_id)]"/>
 	                        <field name="field_name"/>
 	                        <field name="group_ids" widget="many2many_tags"/>
 	                        <field name="readonly"/>
 	                        <field name="invisible"/>
-	                    </tree>
+	                    </list>
 	                </field>
 	            </page>
 	        </xpath>
@@ -124,9 +125,9 @@
 	            </page>
 	            <page string="Hide From Users">
 	                <field name="hide_user_ids">
-	                    <tree>
+	                    <list>
 	                        <field name="name"/>
-	                    </tree>
+	                    </list>
 	                </field>
 	            </page>
 	        </xpath>
