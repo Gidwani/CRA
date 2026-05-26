@@ -1,53 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <record id="view_account_payment_group_form_inh" model="ir.ui.view">
         <field name="name">account.payment.form.inh</field>
         <field name="model">account.payment</field>
         <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <!--        <field name="groups_id" eval="[(4, ref('approval_so_po.group_remove_customer_create_user'))]"/>-->
         <field name="arch" type="xml">
             <xpath expr="//field[@name='partner_id']" position="attributes">
-                <attribute name="options"> {'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
-            </xpath>
+                <attribute name="options">
+                    {'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
+            </xpath></field>
+    </record>
+    <record id="view_account_payment_form_inh" model="ir.ui.view">
+        <field name="name">account.payment.form.inh</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
             <xpath expr="//header/button[@name='action_post']" position="after">
                 <button class="oe_highlight" groups="approval_so_po.group_payment_manager" invisible="state != 'manager'" name="action_manager_approve" string="Approve Payment" type="object"/>
                 <button groups="approval_so_po.group_payment_manager" invisible="state != 'manager'" name="action_reject" string="Reject" type="object"/>
             </xpath>
             <xpath expr="//header/button[@name='mark_as_sent']" position="attributes">
-                <attribute name="groups">approval_so_po.group_payment_manager</attribute>
+                <attribute name="groups">
+                    approval_so_po.group_payment_manager</attribute>
             </xpath>
             <xpath expr="//header/button[@name='action_draft']" position="attributes">
-                <attribute name="groups">approval_so_po.group_payment_manager</attribute>
+                <attribute name="groups">
+                    approval_so_po.group_payment_manager</attribute>
             </xpath>
             <xpath expr="//field[@name='date']" position="after">
                 <field name="x_css"/>
                 <!--                <field name="available_partner_bank_ids" invisible="1"/>-->
-            </xpath>
-        </field>
+            </xpath></field>
     </record>
-
-<!--    <record id="view_account_payment_form_inh" model="ir.ui.view">-->
-<!--        <field name="name">account.payment.form.inh</field>-->
-<!--        <field name="model">account.payment</field>-->
-<!--        <field name="inherit_id" ref="account.view_account_payment_form"/>-->
-<!--        <field name="arch" type="xml">-->
-<!--            <xpath expr="//header/button[@name='action_post']" position="after">-->
-<!--                <button class="oe_highlight" groups="approval_so_po.group_payment_manager" invisible="state != 'manager'" name="action_manager_approve" string="Approve Payment" type="object"/>-->
-<!--                <button groups="approval_so_po.group_payment_manager" invisible="state != 'manager'" name="action_reject" string="Reject" type="object"/>-->
-<!--            </xpath>-->
-<!--            <xpath expr="//header/button[@name='mark_as_sent']" position="attributes">-->
-<!--                <attribute name="groups">approval_so_po.group_payment_manager</attribute>-->
-<!--            </xpath>-->
-<!--            <xpath expr="//header/button[@name='action_draft']" position="attributes">-->
-<!--                <attribute name="groups">approval_so_po.group_payment_manager</attribute>-->
-<!--            </xpath>-->
-<!--            <xpath expr="//field[@name='date']" position="after">-->
-<!--                <field name="x_css"/>-->
-<!--                &lt;!&ndash;                <field name="available_partner_bank_ids" invisible="1"/>&ndash;&gt;-->
-<!--            </xpath>-->
-<!--        </field>-->
-<!--    </record>-->
-
     <record id="view_account_move_form_inhh" model="ir.ui.view">
         <field name="name">account.move.form.inh</field>
         <field name="model">account.move</field>
@@ -61,35 +46,40 @@
             <!--                <attribute name="groups">account.group_account_manager,account.group_account_invoice</attribute>-->
             <!--            </xpath>-->
             <xpath expr="//header/button[@name='button_cancel']" position="attributes">
-                <attribute name="groups">account.group_account_manager</attribute>
+                <attribute name="groups">
+                    account.group_account_manager</attribute>
             </xpath>
             <xpath expr="//header/button[@name='button_draft']" position="attributes">
-                <attribute name="groups">account.group_account_manager</attribute>
+                <attribute name="groups">
+                    account.group_account_manager</attribute>
             </xpath>
             <xpath expr="//header/button[@name='action_invoice_sent']" position="attributes">
-                <attribute name="groups">account.group_account_manager</attribute>
+                <attribute name="groups">
+                    account.group_account_manager</attribute>
             </xpath>
             <xpath expr="//header/button[@name='action_register_payment']" position="attributes">
-                <attribute name="groups">approval_so_po.group_payment_manager,approval_so_po.group_payment_user</attribute>
+                <attribute name="groups">
+                    approval_so_po.group_payment_manager,approval_so_po.group_payment_user</attribute>
             </xpath>
             <xpath expr="//header/button[@name='action_reverse']" position="attributes">
-                <attribute name="groups">account.group_account_manager,account.group_account_invoice</attribute>
+                <attribute name="groups">
+                    account.group_account_manager,account.group_account_invoice</attribute>
             </xpath>
             <xpath expr="//field[@name='invoice_user_id']" position="after">
                 <field name="x_css"/>
             </xpath>
-            <xpath expr="//field[@name='invoice_line_ids']//list//field[@name='product_id']" position="attributes">
-                <attribute name="options">{'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
+            <xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='product_id']" position="attributes">
+                <attribute name="options">
+                    {'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
             </xpath>
             <xpath expr="//field[@name='partner_id']" position="attributes">
-                <attribute name="options">{'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
+                <attribute name="options">
+                    {'no_create_edit': True, 'no_open': True, 'no_create':True}</attribute>
             </xpath>
             <xpath expr="//notebook/page/field[@name='invoice_line_ids']" position="attributes">
                 <attribute name="readonly">state not in ['draft', 'manager']</attribute>
-            </xpath>
-        </field>
+            </xpath></field>
     </record>
-
     <!--    <record id="view_account_move_group_form_inh" model="ir.ui.view">-->
     <!--        <field name="name">account.move.form.inh</field>-->
     <!--        <field name="model">account.move</field>-->
@@ -101,16 +91,14 @@
     <!--            </xpath>-->
     <!--</field>-->
     <!--    </record>-->
-
     <record id="view_account_move_group_tree_inh" model="ir.ui.view">
         <field name="name">account.move.tree.inh</field>
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_out_invoice_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//header/button[@name='action_force_register_payment']" position="attributes">
-                <attribute name="groups">approval_so_po.group_payment_manager,approval_so_po.group_payment_user</attribute>
-            </xpath>
-        </field>
+            <xpath expr="//header/button[@name='action_register_payment']" position="attributes">
+                <attribute name="groups">
+                    approval_so_po.group_payment_manager,approval_so_po.group_payment_user</attribute>
+            </xpath></field>
     </record>
-
 </odoo>

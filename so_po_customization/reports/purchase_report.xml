@@ -1,5 +1,4 @@
 <odoo>
-
     <template id="purchase_order_report_inherit" inherit_id="purchase.report_purchaseorder_document">
         <xpath expr="//t[@t-set='address']" position="replace">
             <span>&#160;</span>
@@ -89,13 +88,13 @@
                                     </td>
                                     <td class="text-center">
                                         <!--                                        <span t-field="line.product_qty"/>-->
-                                        <span t-field="line.product_uom_id.name"/>
+                                        <span t-field="line.product_uom.name"/>
                                     </td>
                                     <td class="text-center">
                                         <span t-field="line.price_unit"/>
                                     </td>
                                     <td name="td_taxes" class="text-center">
-                                        <span t-esc="', '.join(map(lambda x: str(int(x.amount)), line.tax_ids))"/>%
+                                        <span t-esc="', '.join(map(lambda x: str(int(x.amount)), line.taxes_id))"/>%
                                     </td>
                                     <td class="text-center">
                                         <span t-field="line.vat_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
@@ -177,7 +176,7 @@
                         </table>
                     </div>
                 </div>
-                <p t-field="o.note" class="mt-2"/>
+                <p t-field="o.notes" class="mt-2"/>
 
                 <div class="row" style="font-size:15px;padding:10px;margin-top:-90px;line-height:20px;">
                     <strong>Terms and conditions:</strong><br/>
@@ -259,21 +258,19 @@
         <div t-attf-class="o_company_#{company.id}_layout header" t-att-style="report_header_style">
             <div class="o_background_header">
                 <div class="row">
-                    <div class="col-4">
-<!--                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" class="float-start" alt="Logo"/>-->
-                         <img t-if="company.logo" class="o_company_logo_big" t-att-src="image_data_uri(company.logo)" alt="Logo"/>
-
+                    <div class="col-3">
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" class="float-start" alt="Logo"/>
                     </div>
-                    <div class="col-8">
-                        <div name="company_address" >
+                    <div style="text-align:left;" class="col-5 text-left mb4">
+                        <div name="company_address" class="float-right mb4">
                             <!--                            <span class="company_address" t-field="company.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot; &quot;vat&quot;], &quot;no_marker&quot;: true}"/>-->
                             <div class="company_address"  t-field="company.partner_id"
                                  t-options='{"widget": "contact", "fields": ["address", "name", "vat"], "no_marker": True, "phone_icons": False}'/>
                         </div>
                     </div>
-<!--                    <div class="col-4 text-end" style="text-align:right;">-->
+                    <div class="col-4 text-end" style="text-align:right;">
                         <!--                        <img class="text-end" src="/so_po_customization/static/Location.png" alt="Logo" style="max-height:70pt;max-width:90%"/>-->
-<!--                    </div>-->
+                    </div>
                 </div>
 
             </div>

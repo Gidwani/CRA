@@ -14,9 +14,9 @@ class IrUiView(models.Model):
             model_rec = self.env['ir.model'].sudo().browse(self._cr.fetchone()[0])
             for config_rec in model_rec.field_configuration_ids:
                 if (node.tag == 'field' and node.get('name') == config_rec.field_id.name):
-                    print("self.env.user.group_ids : ", self.env.user.group_ids)
+                    print("self.env.user.groups_id : ", self.env.user.groups_id)
                     print("config_rec.group_ids : ", config_rec.group_ids)
-                    if self.env.user.group_ids & config_rec.group_ids:
+                    if self.env.user.groups_id & config_rec.group_ids:
                         if config_rec.invisible:
                             modifiers['invisible'] = config_rec.invisible
                             node.set('invisible', '1')

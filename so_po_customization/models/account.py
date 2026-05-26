@@ -18,10 +18,7 @@ class AccountMoveInh(models.Model):
 
     do_link = fields.Char(string='DO link')
     # po_no = fields.Char()
-    status_in_payment = fields.Selection(
-        selection_add=[("manager", "manager")],
-        ondelete={"manager": "cascade"},
-    )
+
     @api.onchange('discount_rate', 'discount_type')
     def _onchange_sale_discount(self):
         for move in self:
@@ -46,8 +43,7 @@ class AccountMoveInh(models.Model):
         for res in self:
             amount_tax = 0.0
             for rec in res.invoice_line_ids:
-                # amount_tax += rec.l10n_ae_vat_amount
-                amount_tax += rec.vat_amount
+                amount_tax += rec.l10n_ae_vat_amount
             return amount_tax
         # flag = False
         # total = 0
@@ -97,7 +93,7 @@ class AccountMoveInh(models.Model):
                 for k in r.invoice_line_ids:
                     for l in saleorder.picking_ids:
                         if r.invoice_origin == l.sale_id.name:
-                            for j in l.move_line_ids:
+                            for j in l.move_line_ids_without_package:
                                 if j.picking_id.invoice_link != True:
                                     if j.product_id == k.product_id:
                                         if j.quantity == k.quantity:
@@ -147,8 +143,7 @@ class AccountMoveInh(models.Model):
         for res in self:
             amount_tax = 0.0
             for rec in res.invoice_line_ids:
-                # amount_tax += rec.l10n_ae_vat_amount
-                amount_tax += rec.vat_amount
+                amount_tax += rec.l10n_ae_vat_amount
             res.net_tax = amount_tax
         # flag = False
         # total = 0

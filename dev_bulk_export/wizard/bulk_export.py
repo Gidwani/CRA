@@ -18,7 +18,6 @@ from datetime import datetime
 
 class bulk_export(models.TransientModel):
     _name = 'bulk.export'
-    _description = "Bulk Export"
 
     def get_customer_detail(self, partner):
         customer = '\n'
@@ -173,7 +172,7 @@ class bulk_export(models.TransientModel):
                 worksheet[work].write(r, 1, line.product_id.name, text_left)
                 # worksheet[work].write_merge(r, r, 2, 3, line.product_id.name, text_left)
                 if model == 'sale.order':
-                    worksheet[work].write(r, 2, line.product_uom_id.name, text_center)
+                    worksheet[work].write(r, 2, line.product_uom.name, text_center)
                     worksheet[work].write(r, 3, line.product_uom_qty, text_right)
                 elif model == 'purchase.order':
                     worksheet[work].write(r, 3, line.product_qty, text_right)
@@ -228,7 +227,6 @@ class bulk_export(models.TransientModel):
 
 class bulk_export_excel(models.TransientModel):
     _name = "bulk.export.excel"
-    _description = "Bulk Export Excel"
 
     excel_file = fields.Binary('Excel File')
     file_name = fields.Char('Excel Name', size=64)
