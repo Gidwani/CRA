@@ -4,6 +4,7 @@ from odoo import models, fields, api
 
 class SaleOrderWizard(models.TransientModel):
     _name = 'sale.order.wizard'
+    _description = "Sale Order Wizard"
 
     sale_id = fields.Many2many('sale.order')
     product_lines = fields.One2many('sale.order.wizard.line', 'sale_id')
@@ -36,7 +37,7 @@ class SaleOrderWizard(models.TransientModel):
                                              'sr_no': line.number,
                                              'qty': line.product_uom_qty,
                                              'product_id': line.product_id.id,
-                                             'uom_id': line.product_uom.id,
+                                             'uom_id': line.product_uom_id.id,
                                              'price': line.price_unit,
                                              # 'so_ref': line.so_no,
                                              }))
@@ -54,14 +55,14 @@ class SaleOrderWizard(models.TransientModel):
                 val = {
                     'order_id': rec.id,
                     'product_id': line.product_id.id,
-                    'product_uom': line.uom_id.id,
+                    'product_uom_id': line.uom_id.id,
                     'name': line.product_id.name,
                     'date_planned': rec.date_order,
                     'product_qty': line.qty,
                     'price_unit': line.product_id.list_price,
                     'so_ref': line.sr_no,
                     'sale_order': line.sale_order,
-                    'taxes_id': [19],
+                    'tax_ids': [19] if self.env.company.id == 1 else [65],
                 }
                 val_list.append(val)
         products = self.env['purchase.order.line'].create(val_list)
@@ -69,6 +70,7 @@ class SaleOrderWizard(models.TransientModel):
 
 class SaleOrderLineWizard(models.TransientModel):
     _name = 'sale.order.wizard.line'
+    _description = "Sale Order Wizard Line"
 
     sale_id = fields.Many2one('sale.order.wizard')
     is_selected = fields.Boolean()
@@ -88,7 +90,7 @@ class SaleOrderLineWizard(models.TransientModel):
             sale_id = self.env['sale.order'].search([('name', '=', rec.sale_order)])
             for line in sale_id.order_line:
                 if line.product_id.id == rec.product_id.id:
-                    if line.product_uom.name == 'Lth':
+                    if line.product_uom_id.name == 'Lth':
                         qty = int(product_qty.available_qty)/6
                         # qty = str(round(qty, 2)) + " Lth"
                     else:
@@ -103,7 +105,7 @@ class SaleOrderLineWizard(models.TransientModel):
             sale_id = self.env['sale.order'].search([('name', '=', rec.sale_order)])
             for line in sale_id.order_line:
                 if line.product_id.id == rec.product_id.id:
-                    if line.product_uom.name == 'Lth':
+                    if line.product_uom_id.name == 'Lth':
                         qty = int(product_qty.qty_available)/6
                         # qty = str(round(qty, 2)) + " Lth"
 
