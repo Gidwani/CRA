@@ -122,9 +122,9 @@ class StockMoveLineInh(models.Model):
             }
 
     def action_download_tree(self):
-        url = '/web/binary/download_document?tab_id=%s' % self.picking_id.move_line_ids_without_package.mapped(
+        url = '/web/binary/download_document?tab_id=%s' % self.picking_id.move_line_ids.mapped(
             'attachment_ids').ids
-        for rec in self.picking_id.move_line_ids_without_package:
+        for rec in self.picking_id.move_line_ids:
             if rec.attachment_ids:
                 for r in rec.attachment_ids:
                     r.temp_file_name = str(rec.so_no) + ' - ' + str(rec.quantity) + ' ' + (
@@ -135,13 +135,23 @@ class StockMoveLineInh(models.Model):
             'target': 'new',
         }
 
+class StockReturnPicking(models.TransientModel):
+    _inherit = 'stock.return.picking'
+
+    @api.model
+    def _prepare_stock_return_picking_line_vals_from_move(self, stock_move):
+        vals = super()._prepare_stock_return_picking_line_vals_from_move(stock_move)
+        vals.update({
+            'quantity': stock_move.quantity or stock_move.product_uom_qty,
+        })
+        return vals
 
 class StockPickingInh(models.Model):
     _inherit = 'stock.picking'
 
     def action_download_attachment(self):
-        url = '/web/binary/download_document?tab_id=%s' % self.move_line_ids_without_package.mapped('attachment_ids').ids
-        for rec in self.move_line_ids_without_package:
+        url = '/web/binary/download_document?tab_id=%s' % self.move_line_ids_without_pamove_line_idsckage.mapped('attachment_ids').ids
+        for rec in self.move_line_ids:
             if rec.attachment_ids:
                 for r in rec.attachment_ids:
                     r.temp_file_name = str(rec.so_no) + ' - ' + str(rec.quantity) + ' ' + (rec.product_uom_id.name) + ' - ' + r.name
