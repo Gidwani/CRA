@@ -514,7 +514,7 @@
                         </div>
                     </div>
                 </div>
-
+                <t t-if="o.state == 'posted'">
                 <div class="clearfix invoice_main1" style="margin-top:0px;">
                 <div class="page mb-4">
                     <!--            <div class="page" style="margin-top:-100px;">-->
@@ -1009,6 +1009,10 @@
                     <!--                </div>-->
                 </div>
             </div>
+                </t>
+                <t t-else="">
+                    <div class="text-center"> <h2>Waiting for Approval</h2></div>
+                </t>
             </t>
         </template>
 

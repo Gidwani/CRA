@@ -700,13 +700,23 @@ class AccountMoveReversalInh(models.TransientModel):
         moves_to_redirect = self.env['account.move']
         for moves, default_values_list, is_cancel_needed in batches:
             new_moves = moves._reverse_moves(default_values_list, cancel=is_cancel_needed)
+            new_moves._compute_partner_bank_id()
+            moves._message_log_batch(
+                bodies={move.id: move.env._('This entry has been %s',
+                                            reverse._get_html_link(title=move.env._("reversed"))) for move, reverse
+                        in zip(moves, new_moves)}
+            )
 
             if is_modify:
                 moves_vals_list = []
                 for move in moves.with_context(include_business_fields=True):
-                    moves_vals_list.append(
-                        move.copy_data({'date': self.date if self.date_mode == 'custom' else move.date})[0])
+                    data = move.copy_data(self._modify_default_reverse_values(move))[0]
+                    data['line_ids'] = [line for line in data['line_ids'] if
+                                        line[2]['display_type'] in ('product', 'line_section', 'line_subsection',
+                                                                    'line_note')]
+                    moves_vals_list.append(data)
                 new_moves = self.env['account.move'].create(moves_vals_list)
+                new_moves._compute_partner_bank_id()
 
             moves_to_redirect |= new_moves
 
@@ -722,12 +732,15 @@ class AccountMoveReversalInh(models.TransientModel):
             action.update({
                 'view_mode': 'form',
                 'res_id': moves_to_redirect.id,
+                'context': {'default_move_type': moves_to_redirect.move_type},
             })
         else:
             action.update({
-                'view_mode': 'tree,form',
+                'view_mode': 'list,form',
                 'domain': [('id', 'in', moves_to_redirect.ids)],
             })
+            if len(set(moves_to_redirect.mapped('move_type'))) == 1:
+                action['context'] = {'default_move_type': moves_to_redirect.mapped('move_type').pop()}
         return action
 
 
