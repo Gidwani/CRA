@@ -150,7 +150,7 @@ class StockPickingInh(models.Model):
     _inherit = 'stock.picking'
 
     def action_download_attachment(self):
-        url = '/web/binary/download_document?tab_id=%s' % self.move_line_ids_without_pamove_line_idsckage.mapped('attachment_ids').ids
+        url = '/web/binary/download_document?tab_id=%s' % self.move_line_ids.mapped('attachment_ids').ids
         for rec in self.move_line_ids:
             if rec.attachment_ids:
                 for r in rec.attachment_ids:
