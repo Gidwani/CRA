@@ -122,13 +122,10 @@ class StockMoveLineInh(models.Model):
             }
 
     def action_download_tree(self):
-        url = '/web/binary/download_document?tab_id=%s' % self.picking_id.move_line_ids.mapped(
-            'attachment_ids').ids
-        for rec in self.picking_id.move_line_ids:
-            if rec.attachment_ids:
-                for r in rec.attachment_ids:
-                    r.temp_file_name = str(rec.so_no) + ' - ' + str(rec.quantity) + ' ' + (
-                        rec.product_uom_id.name) + ' - ' + r.name
+        url = '/web/binary/download_document?move_line_ids=%s' % (
+            self.picking_id.move_line_ids.ids
+        )
+
         return {
             'type': 'ir.actions.act_url',
             'url': url,
