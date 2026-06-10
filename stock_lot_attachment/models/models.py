@@ -85,6 +85,15 @@ class StockQuantInh(models.Model):
             })
         return action
 
+    def action_apply_inventory(self, date=None):
+        if not self.env.user.has_group('stock.group_stock_manager'):
+            raise UserError('Only Stock Manager can apply inventory.')
+        return super().action_apply_inventory(date)
+
+    def action_apply_all(self):
+        if not self.env.user.has_group('stock.group_stock_manager'):
+            raise UserError('Only Stock Manager can apply inventory.')
+        return super().action_apply_all()
 
 class StockLotInh(models.Model):
     _inherit = 'stock.lot'

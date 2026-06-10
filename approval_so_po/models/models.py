@@ -387,7 +387,9 @@ class AccountPaymentInh(models.Model):
         self.state = 'draft'
 
     def action_manager_approve(self):
-        record = super(AccountPaymentInh, self).action_post()
+        record = super(AccountPaymentInh,self.with_context(manager_approval_from_payment=True)).action_post()
+
+        return record
 
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
@@ -469,6 +471,8 @@ class AccountMoveInh(models.Model):
         self.state = 'draft'
 
     def action_post(self):
+        if 'manager_approval_from_payment' in self.env.context:
+            return super().action_post()
         if self.invoice_origin:
             sale_order = self.env['sale.order'].search([('name', '=', self.invoice_origin)])
             purchase_order = self.env['purchase.order'].search([('name', '=', self.invoice_origin)])
