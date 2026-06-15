@@ -185,7 +185,7 @@ class ResPartnerInh(models.Model):
     def write(self, vals):
         pre_name = self.mapped('name')
         res = super().write(vals)
-        if 'fromso' not in self._context and 'Iscreated' not in self._context and self.env.user.has_group('approval_so_po.group_contact_user') and 'copy' not in pre_name:
+        if 'fromso' not in self._context and 'Iscreated' not in self._context and self.env.user.has_group('approval_so_po.group_contact_user') and 'copy' not in pre_name and self.active:
             raise UserError('You cannot edit this form.')
         return res
 
