@@ -7,6 +7,17 @@ class SaleReportInh(models.Model):
     _inherit = 'sale.report'
 
     sale_average = fields.Float('Average Sale', readonly=True)
+
+    def _select_sale(self):
+        res = super()._select_sale()
+        res += """
+               , AVG(l.price_unit) AS sale_average
+           """
+        return res
+
+    def _group_by_sale(self):
+        res = super()._group_by_sale()
+        return res
     #
     # def _query(self, with_clause='', fields={}, groupby='', from_clause=''):
     #     with_ = ("WITH %s" % with_clause) if with_clause else ""

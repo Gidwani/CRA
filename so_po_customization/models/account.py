@@ -147,8 +147,8 @@ class AccountMoveInh(models.Model):
         for res in self:
             amount_tax = 0.0
             for rec in res.invoice_line_ids:
-                # amount_tax += rec.l10n_ae_vat_amount
-                amount_tax += rec.vat_amount
+                amount_tax += rec.l10n_gcc_invoice_tax_amount
+                # amount_tax += rec.vat_amount
             res.net_tax = amount_tax
         # flag = False
         # total = 0
