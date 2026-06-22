@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <record id="view_account_move_form_inh_nn" model="ir.ui.view">
+        <record id="view_account_move_form_inher" model="ir.ui.view">
             <field name="name">account.move.form.inh</field>
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_move_form"/>
@@ -66,9 +66,9 @@
                 <xpath expr="//field[@name='invoice_line_ids']//list//field[@name='tax_ids']" position="attributes">
                     <attribute name="string">VAT(%)</attribute>
                 </xpath>
-                <xpath expr="//field[@name='invoice_line_ids']/list//field[@name='tax_ids']" position="after">
-                    <field name="vat_amount"/>
-                </xpath>
+<!--                <xpath expr="//field[@name='invoice_line_ids']/list//field[@name='tax_ids']" position="after">-->
+<!--                    <field name="vat_amount"/>-->
+<!--                </xpath>-->
 <!--                <xpath expr="//field[@name='invoice_line_ids']/list//field[@name='l10n_ae_vat_amount']" position="attributes">-->
 <!--                    <attribute name="invisible">1</attribute>-->
 <!--                </xpath>-->
