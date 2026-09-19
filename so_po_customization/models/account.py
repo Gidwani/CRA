@@ -1,8 +1,9 @@
-
+from collections import defaultdict
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 from odoo.tools import float_is_zero
+from odoo.tools.float_utils import float_compare
 
 
 class AccountMoveInh(models.Model):
@@ -22,6 +23,125 @@ class AccountMoveInh(models.Model):
         selection_add=[("manager", "manager")],
         ondelete={"manager": "cascade"},
     )
+
+    def _check_vendor_refund_return_quantities(self):
+        """Limit vendor refunds to quantities physically returned to the vendor."""
+        for move in self.filtered(lambda record: record.move_type == 'in_refund'):
+            refund_lines = move.invoice_line_ids.filtered(
+                lambda line: (
+                    line.display_type == 'product'
+                    and line.product_id.type != 'service'
+                    and line.purchase_line_id
+                    and line.quantity > 0
+                )
+            )
+            if not refund_lines:
+                continue
+
+            purchase_lines = refund_lines.purchase_line_id
+            requested_by_purchase_line = defaultdict(float)
+            returned_by_purchase_line = defaultdict(float)
+            already_refunded_by_purchase_line = defaultdict(float)
+            source_billed_by_purchase_line = defaultdict(float)
+            source_refunded_by_purchase_line = defaultdict(float)
+
+            for line in refund_lines:
+                purchase_line = line.purchase_line_id
+                purchase_uom = purchase_line.product_uom_id or line.product_id.uom_id
+                invoice_uom = line.product_uom_id or line.product_id.uom_id
+                requested_by_purchase_line[purchase_line.id] += invoice_uom._compute_quantity(
+                    line.quantity,
+                    purchase_uom,
+                )
+
+            source_bill = move.reversed_entry_id.filtered(lambda source: source.move_type == 'in_invoice')
+            for line in source_bill.invoice_line_ids.filtered(
+                lambda source_line: source_line.display_type == 'product' and source_line.purchase_line_id
+            ):
+                purchase_line = line.purchase_line_id
+                purchase_uom = purchase_line.product_uom_id or line.product_id.uom_id
+                invoice_uom = line.product_uom_id or line.product_id.uom_id
+                source_billed_by_purchase_line[purchase_line.id] += invoice_uom._compute_quantity(
+                    line.quantity,
+                    purchase_uom,
+                )
+
+            returned_moves = purchase_lines.move_ids.filtered(
+                lambda stock_move: (
+                    stock_move.state == 'done'
+                    and stock_move.location_dest_id.usage == 'supplier'
+                    and stock_move.purchase_line_id
+                )
+            )
+            for stock_move in returned_moves:
+                purchase_line = stock_move.purchase_line_id
+                purchase_uom = purchase_line.product_uom_id or stock_move.product_id.uom_id
+                returned_by_purchase_line[purchase_line.id] += stock_move.product_uom._compute_quantity(
+                    stock_move.quantity,
+                    purchase_uom,
+                )
+
+            other_refund_domain = [
+                ('move_id.move_type', '=', 'in_refund'),
+                ('move_id.state', 'in', ('manager', 'posted')),
+                ('purchase_line_id', 'in', purchase_lines.ids),
+                ('display_type', '=', 'product'),
+            ]
+            current_move_id = move._origin.id
+            if current_move_id:
+                other_refund_domain.append(('move_id', '!=', current_move_id))
+            other_refund_lines = self.env['account.move.line'].search(other_refund_domain)
+            for line in other_refund_lines:
+                purchase_line = line.purchase_line_id
+                purchase_uom = purchase_line.product_uom_id or line.product_id.uom_id
+                invoice_uom = line.product_uom_id or line.product_id.uom_id
+                already_refunded_by_purchase_line[purchase_line.id] += invoice_uom._compute_quantity(
+                    line.quantity,
+                    purchase_uom,
+                )
+                if source_bill and line.move_id.reversed_entry_id == source_bill:
+                    source_refunded_by_purchase_line[purchase_line.id] += invoice_uom._compute_quantity(
+                        line.quantity,
+                        purchase_uom,
+                    )
+
+            for purchase_line in purchase_lines:
+                rounding = purchase_line.product_uom_id.rounding or purchase_line.product_id.uom_id.rounding
+                returned_quantity = returned_by_purchase_line[purchase_line.id]
+                already_refunded_quantity = already_refunded_by_purchase_line[purchase_line.id]
+                requested_quantity = requested_by_purchase_line[purchase_line.id]
+                remaining_quantity = max(returned_quantity - already_refunded_quantity, 0.0)
+                if source_bill:
+                    source_remaining_quantity = max(
+                        source_billed_by_purchase_line[purchase_line.id]
+                        - source_refunded_by_purchase_line[purchase_line.id],
+                        0.0,
+                    )
+                    remaining_quantity = min(remaining_quantity, source_remaining_quantity)
+                if float_compare(requested_quantity, remaining_quantity, precision_rounding=rounding) > 0:
+                    raise UserError(_(
+                        "The RBill quantity for %(product)s cannot exceed the quantity physically "
+                        "returned to the vendor.\n\n"
+                        "Returned quantity: %(returned)s %(uom)s\n"
+                        "Already used on other RBills: %(refunded)s %(uom)s\n"
+                        "Remaining quantity available: %(remaining)s %(uom)s\n"
+                        "Requested RBill quantity: %(requested)s %(uom)s",
+                        product=purchase_line.product_id.display_name,
+                        returned=returned_quantity,
+                        refunded=already_refunded_quantity,
+                        remaining=remaining_quantity,
+                        requested=requested_quantity,
+                        uom=purchase_line.product_uom_id.name or purchase_line.product_id.uom_id.name,
+                    ))
+
+    def action_post(self):
+        self._check_vendor_refund_return_quantities()
+        return super().action_post()
+
+    def action_manager_approve(self):
+        self._check_vendor_refund_return_quantities()
+        return super().action_manager_approve()
+
     @api.onchange('discount_rate', 'discount_type')
     def _onchange_sale_discount(self):
         for move in self:
@@ -207,10 +327,20 @@ class AccountMoveLineInh(models.Model):
     vat_amount = fields.Float('VAT Amount', compute='_compute_vat_amount_custom')
     subtotal = fields.Float('Subtotal', compute='_compute_subtotal')
 
-    @api.onchange('tax_ids', 'price', 'quantity')
+    @api.onchange('tax_ids', 'price_unit')
     def _onchange_sale_taxes(self):
         for line in self:
             if line.sale_line_ids or line.purchase_order_id:
+                raise UserError('You cannot change invoice/bill values.')
+
+    @api.onchange('quantity')
+    def _onchange_quantity(self):
+        for line in self:
+            if not (line.sale_line_ids or line.purchase_order_id):
+                continue
+            if line.move_id.move_type == 'in_refund':
+                line.move_id._check_vendor_refund_return_quantities()
+            else:
                 raise UserError('You cannot change invoice/bill values.')
 
     @api.depends('price_unit', 'quantity')
