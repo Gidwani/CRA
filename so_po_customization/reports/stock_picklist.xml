@@ -145,10 +145,11 @@
                                         <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="4%"><strong>SR#</strong></th>
                                         <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="7%"><strong>QTY Onhand</strong></th>
                                         <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="7%"><strong>Available Qty</strong></th>
-                                        <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="40%"><strong>Products</strong></th>
+                                        <th name="th_sm_product" style="white-space:nowrap;" class="text-center" width="33%"><strong>Products</strong></th>
                                         <th name="th_sm_quantity" style="white-space:nowrap;" class="text-center" width="7%"><strong>Qty to Pick</strong></th>
                                         <th name="th_sm_serial" style="white-space:nowrap;" class="text-center" width="15%"><strong>Serial #</strong></th>
-                                        <th name="th_sm_note" style="white-space:nowrap;" class="text-center" width="15%"><strong>Note</strong></th>
+                                        <th name="th_sm_location" style="white-space:nowrap;" class="text-center" width="10%"><strong>Location</strong></th>
+                                        <th name="th_sm_note" style="white-space:nowrap;" class="text-center" width="12%"><strong>Note</strong></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -212,6 +213,17 @@
                                                 <span t-esc="line['lot']"/>
                                             </t>
 
+                                        </td>
+                                        <td class="text-left h6">
+                                            <t t-if="line['lot'] != ''">
+                                                <table style="border:none;background:none;font-size:12px;">
+                                                    <tr t-foreach="line['lot']" t-as="lot">
+                                                        <td style="border:none;background:none;" class="text-nowrap">
+                                                            <span t-esc="lot['location_name']"/>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </t>
                                         </td>
                                         <td>
                                             <span>&#160;</span>
