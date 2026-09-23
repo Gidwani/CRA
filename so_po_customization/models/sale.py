@@ -176,42 +176,34 @@ class SaleOrderInh(models.Model):
 
         return False
 
-    @api.depends('order_line', 'discount_rate')
+    @api.depends('amount_tax')
     def compute_taxes(self):
-        flag = False
-        for rec in self.order_line:
-            if rec.tax_ids and rec.tax_ids.amount != 0:
-                flag = True
-        if flag:
-            self.net_tax = (5 / 100) * self.net_total
-        else:
-            self.net_tax = 0
+        for rec in self:
+            rec.net_tax = rec.amount_tax
 
-    @api.depends('discount_rate')
+    @api.depends('perc_discount', 'subtotal_amount')
     def compute_percentage(self):
         for rec in self:
-            if rec.discount_type == 'percent':
-                rec.perc = rec.discount_rate
-            else:
-                rec.perc = (rec.discount_rate / rec.subtotal_amount) * 100
+            rec.perc = (
+                (rec.perc_discount / rec.subtotal_amount) * 100
+                if rec.subtotal_amount
+                else 0.0
+            )
 
-    @api.depends('discount_rate')
+    @api.depends('order_line.subtotal', 'order_line.price_subtotal')
     def _compute_discount(self):
         for rec in self:
-            if rec.discount_type == 'percent':
-                rec.perc_discount = (rec.discount_rate / 100) * rec.subtotal_amount
-            else:
-                rec.perc_discount = rec.discount_rate
+            product_lines = rec.order_line.filtered(lambda line: not line.display_type)
+            gross_untaxed = sum(product_lines.mapped('subtotal'))
+            net_untaxed = sum(product_lines.mapped('price_subtotal'))
+            rec.perc_discount = max(gross_untaxed - net_untaxed, 0.0)
 
-    @api.depends('order_line', 'order_line.subtotal', 'discount_rate', 'discount_type')
+    @api.depends('order_line.subtotal', 'amount_untaxed')
     def _compute_net_total(self):
         for rec in self:
-            subtotal = 0
-            for line in rec.order_line:
-                subtotal = subtotal + line.subtotal
-            rec.subtotal_amount = subtotal
-            rec.net_total = rec.subtotal_amount - rec.perc_discount
-            rec.amount_total = rec.net_total + rec.amount_tax
+            product_lines = rec.order_line.filtered(lambda line: not line.display_type)
+            rec.subtotal_amount = sum(product_lines.mapped('subtotal'))
+            rec.net_total = rec.amount_untaxed
 
     def get_lot_no(self, line):
         picking = self.env['stock.picking'].search([('sale_id', '=', line.order_id.id)])
@@ -290,12 +282,10 @@ class SaleOrderLineInh(models.Model):
         for rec in self:
             rec.subtotal = rec.product_uom_qty * rec.price_unit
 
+    @api.depends('price_tax')
     def _compute_vat_amount(self):
         for rec in self:
-            amount = 0
-            for tax in rec.tax_ids:
-                amount = amount + tax.amount
-            rec.vat_amount = ((amount/100) * rec.price_unit) * rec.product_uom_qty
+            rec.vat_amount = rec.price_tax
 
     @api.depends('sequence', 'order_id')
     def _compute_get_number(self):

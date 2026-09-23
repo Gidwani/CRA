@@ -24,26 +24,10 @@ class PurchaseOrderInh(models.Model):
                 subtotal = subtotal + line.subtotal
             rec.subtotal_amount = subtotal
 
-    @api.depends('order_line', 'order_line.tax_ids', 'discount_type', 'discount_rate', 'perc')
+    @api.depends('amount_tax')
     def compute_taxes(self):
         for order in self:
-            # amount_tax = 0.0
-            # for line in order.order_line:
-            #     print(line.price_tax)
-            #     amount_tax += line.price_tax
-            # order.net_tax = amount_tax
-            amount = 0
-            for rec in order.order_line:
-                if rec.tax_ids:
-                    # if rec.taxes_id.filtered(lambda i:i.name != 'Reverse Charge Provision'):
-                    if rec.tax_ids.filtered(lambda i: i.id in [19, 21,65]):
-                        amount += rec.vat_amount
-
-            if order.discount_type == 'percent':
-                amt = amount - ((order.discount_rate / 100) * amount)
-            else:
-                amt = amount - ((order.perc / 100) * amount)
-            order.net_tax = amt
+            order.net_tax = order.amount_tax
             # flag = False
             # amount = 0
             # for rec in order.order_line:
@@ -56,58 +40,34 @@ class PurchaseOrderInh(models.Model):
             # else:
             #     order.net_tax = 0
 
-    @api.depends('discount_rate', 'discount_type', 'subtotal_amount')
+    @api.depends('perc_discount', 'subtotal_amount')
     def compute_percentage(self):
         for rec in self:
-            disc = 0
-            if rec.discount_type == 'percent':
-                disc = rec.discount_rate
-            else:
-                disc = (rec.discount_rate / (rec.subtotal_amount if rec.subtotal_amount != 0 else 1)) * 100
-            rec.perc = disc
+            rec.perc = (
+                (rec.perc_discount / rec.subtotal_amount) * 100
+                if rec.subtotal_amount
+                else 0.0
+            )
 
     @api.depends('order_line.price_total', 'order_line.subtotal', 'discount_rate', 'discount_type', )
     def _amount_all(self):
-        """
-        Compute the total amounts of the SO.
-        """
+        """Compute standard totals first, then the custom gross/discount values."""
+        super()._amount_all()
         for order in self:
-            amount_untaxed = amount_tax = amount_discount = subtotal = 0.0
-            for line in order.order_line:
-                # amount_untaxed += line.price_subtotal
-                # amount_tax += line.price_tax
-                # amount_discount += (line.product_qty * line.price_unit * line.discount) / 100
-                # amount_discount += (line.product_qty * line.price_unit) / 100
-                subtotal = subtotal + line.subtotal
+            product_lines = order.order_line.filtered(lambda line: not line.display_type)
+            gross_untaxed = sum(product_lines.mapped('subtotal'))
+            order.subtotal_amount = gross_untaxed
+            order.amount_discount = max(gross_untaxed - order.amount_untaxed, 0.0)
 
-            order.update({
-                'amount_untaxed': amount_untaxed,
-                'amount_tax': amount_tax,
-                'amount_discount': amount_discount,
-                'amount_total': amount_untaxed + amount_tax,
-                'subtotal_amount': subtotal,
-                # 'net_total': subtotal - disc
-            })
-
-    @api.depends('order_line', 'discount_rate', 'discount_type', 'order_line.subtotal')
+    @api.depends('amount_untaxed')
     def _compute_net_total(self):
         for rec in self:
-            # subtotal = 0
-            # for line in rec.order_line:
-            #     subtotal = subtotal + line.subtotal
-            # rec.subtotal_amount = subtotal
-            rec.net_total = rec.subtotal_amount - rec.perc_discount
-            rec.amount_tax = rec.net_tax
-            rec.amount_total = rec.net_total + rec.amount_tax
-            # rec.total_amount_due = rec.amount_total
+            rec.net_total = rec.amount_untaxed
 
-    @api.depends('discount_rate', 'discount_type')
+    @api.depends('amount_discount')
     def _compute_discount(self):
         for rec in self:
-            if rec.discount_type == 'percent':
-                rec.perc_discount = (rec.discount_rate / 100) * rec.subtotal_amount
-            else:
-                rec.perc_discount = rec.discount_rate
+            rec.perc_discount = rec.amount_discount
 
     def action_show_sale_products(self):
         return {
@@ -141,14 +101,10 @@ class PurchaseOrderLineInh(models.Model):
         for rec in self:
             rec.subtotal = rec.product_qty * rec.price_unit
 
-    @api.depends('tax_ids', 'price_unit', 'product_qty')
+    @api.depends('price_tax')
     def _compute_vat_amount(self):
         for rec in self:
-            amount = 0
-            for tax in rec.tax_ids:
-                if tax.id in [19, 21, 65]:
-                    amount = amount + tax.amount
-            rec.vat_amount = (amount * rec.product_qty / 100) * rec.price_unit
+            rec.vat_amount = rec.price_tax
 
     @api.depends('sequence', 'order_id')
     def _compute_get_number(self):
