@@ -142,6 +142,44 @@ class AccountMoveInh(models.Model):
         self._check_vendor_refund_return_quantities()
         return super().action_manager_approve()
 
+    def _add_purchase_order_lines(self, purchase_order_lines):
+        """Keep the custom discount header in sync for Bill Matching bills.
+
+        Odoo's Bill Matching flow creates an empty bill and adds the selected
+        purchase lines afterwards. It therefore bypasses the purchase order's
+        ``_prepare_invoice`` method, which is where ``discount_type`` and
+        ``discount_rate`` are normally copied by ``sale_discount_total``.
+        """
+        result = super()._add_purchase_order_lines(purchase_order_lines)
+        purchase_orders = purchase_order_lines.order_id
+
+        for move in self:
+            product_lines = move.invoice_line_ids.filtered(
+                lambda line: line.display_type == 'product'
+            )
+            gross_untaxed = sum(
+                line.quantity * line.price_unit
+                for line in product_lines
+            )
+            discount_amount = sum(
+                line.quantity * line.price_unit * line.discount / 100
+                for line in product_lines
+            )
+
+            if len(purchase_orders) == 1:
+                move.discount_type = purchase_orders.discount_type or 'percent'
+
+            if move.discount_type == 'amount':
+                move.discount_rate = discount_amount
+            else:
+                move.discount_rate = (
+                    discount_amount / gross_untaxed * 100
+                    if gross_untaxed
+                    else 0.0
+                )
+
+        return result
+
     @api.onchange('discount_rate', 'discount_type')
     def _onchange_sale_discount(self):
         for move in self:

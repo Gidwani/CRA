@@ -135,5 +135,17 @@
             </field>
         </record>
 
+        <record id="view_account_move_discount_rate_inher" model="ir.ui.view">
+            <field name="name">account.move.discount.rate.inh</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="sale_discount_total.discount_account_invoice_view_form_inh"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='discount_rate']" position="replace">
+                    <field name="perc" string="Discount Rate" class="oe_inline" readonly="1" invisible="discount_type != 'percent'"/>
+                    <field name="perc_discount" string="Discount Amount" class="oe_inline" readonly="1" widget="monetary" options="{'currency_field': 'currency_id'}" invisible="discount_type != 'amount'"/>
+                </xpath>
+            </field>
+        </record>
+
     </data>
 </odoo>
