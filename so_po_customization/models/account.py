@@ -142,6 +142,44 @@ class AccountMoveInh(models.Model):
         self._check_vendor_refund_return_quantities()
         return super().action_manager_approve()
 
+    def _add_purchase_order_lines(self, purchase_order_lines):
+        """Keep the custom discount header in sync for Bill Matching bills.
+
+        Odoo's Bill Matching flow creates an empty bill and adds the selected
+        purchase lines afterwards. It therefore bypasses the purchase order's
+        ``_prepare_invoice`` method, which is where ``discount_type`` and
+        ``discount_rate`` are normally copied by ``sale_discount_total``.
+        """
+        result = super()._add_purchase_order_lines(purchase_order_lines)
+        purchase_orders = purchase_order_lines.order_id
+
+        for move in self:
+            product_lines = move.invoice_line_ids.filtered(
+                lambda line: line.display_type == 'product'
+            )
+            gross_untaxed = sum(
+                line.quantity * line.price_unit
+                for line in product_lines
+            )
+            discount_amount = sum(
+                line.quantity * line.price_unit * line.discount / 100
+                for line in product_lines
+            )
+
+            if len(purchase_orders) == 1:
+                move.discount_type = purchase_orders.discount_type or 'percent'
+
+            if move.discount_type == 'amount':
+                move.discount_rate = discount_amount
+            else:
+                move.discount_rate = (
+                    discount_amount / gross_untaxed * 100
+                    if gross_untaxed
+                    else 0.0
+                )
+
+        return result
+
     @api.onchange('discount_rate', 'discount_type')
     def _onchange_sale_discount(self):
         for move in self:
@@ -150,25 +188,12 @@ class AccountMoveInh(models.Model):
                     raise UserError('You cannot change invoice values.')
 
     def get_total(self):
-        subtotal = 0
-        for line in self.invoice_line_ids:
-            subtotal = subtotal + line.subtotal
-        subtotal_amount = subtotal
-
-        if self.discount_type == 'percent':
-            discount = (self.discount_rate / 100) * subtotal_amount
-        else:
-            discount = self.discount_rate
-        net_total = subtotal_amount
-        return net_total - discount
+        self.ensure_one()
+        return self.amount_untaxed
 
     def get_tax(self):
-        for res in self:
-            amount_tax = 0.0
-            for rec in res.invoice_line_ids:
-                # amount_tax += rec.l10n_ae_vat_amount
-                amount_tax += rec.vat_amount
-            return amount_tax
+        self.ensure_one()
+        return self.amount_tax
         # flag = False
         # total = 0
         # for res in self:
@@ -262,14 +287,13 @@ class AccountMoveInh(models.Model):
                     'date': ""
                 }
 
-    @api.depends('invoice_line_ids', 'perc_discount', 'invoice_line_ids.tax_ids', 'invoice_line_ids.subtotal')
+    @api.depends('amount_tax')
     def compute_taxes(self):
         for res in self:
-            amount_tax = 0.0
-            for rec in res.invoice_line_ids:
-                amount_tax += rec.l10n_gcc_invoice_tax_amount
-                # amount_tax += rec.vat_amount
-            res.net_tax = amount_tax
+            # Use the tax amount computed by Odoo's tax engine.  The invoice
+            # lines already contain the custom discount, so this is the tax on
+            # the discounted (net) base and matches the posted journal entry.
+            res.net_tax = res.amount_tax
         # flag = False
         # total = 0
         # for res in self:
@@ -290,31 +314,39 @@ class AccountMoveInh(models.Model):
         #     else:
         #         res.net_tax = 0
 
-    @api.depends('discount_rate', 'discount_type')
+    @api.depends('perc_discount', 'subtotal_amount')
     def compute_percentage(self):
         for rec in self:
-            if rec.discount_type == 'percent':
-                rec.perc = rec.discount_rate
-            else:
-                rec.perc = (rec.discount_rate / rec.subtotal_amount) * 100
+            rec.perc = (
+                (rec.perc_discount / rec.subtotal_amount) * 100
+                if rec.subtotal_amount
+                else 0.0
+            )
 
-    @api.depends('discount_rate', 'discount_type')
+    @api.depends('invoice_line_ids.subtotal', 'invoice_line_ids.price_subtotal')
     def _compute_discount(self):
         for rec in self:
-            if rec.discount_type == 'percent':
-                rec.perc_discount = (rec.discount_rate / 100) * rec.subtotal_amount
-            else:
-                rec.perc_discount = rec.discount_rate
+            product_lines = rec.invoice_line_ids.filtered(
+                lambda line: line.display_type == 'product'
+            )
+            gross_untaxed = sum(product_lines.mapped('subtotal'))
+            net_untaxed = sum(product_lines.mapped('price_subtotal'))
+            rec.perc_discount = max(gross_untaxed - net_untaxed, 0.0)
 
-    @api.depends('invoice_line_ids.subtotal')
+    @api.depends(
+        'invoice_line_ids.subtotal',
+        'amount_untaxed',
+        'amount_total',
+        'amount_residual',
+        'perc_discount',
+    )
     def _compute_net_total(self):
         for rec in self:
-            subtotal = 0
-            for line in rec.invoice_line_ids:
-                subtotal = subtotal + line.subtotal
-            rec.subtotal_amount = subtotal
-            rec.net_total = rec.subtotal_amount - rec.perc_discount
-            # rec.total_amount_net = rec.net_total + rec.net_tax
+            product_lines = rec.invoice_line_ids.filtered(
+                lambda line: line.display_type == 'product'
+            )
+            rec.subtotal_amount = sum(product_lines.mapped('subtotal'))
+            rec.net_total = rec.amount_untaxed
             rec.total_amount_net = rec.amount_total
             rec.total_amount_due = rec.amount_residual
 
@@ -348,18 +380,12 @@ class AccountMoveLineInh(models.Model):
         for rec in self:
             rec.subtotal = rec.quantity * rec.price_unit
 
-    @api.depends('tax_ids', 'price_unit', 'quantity')
+    @api.depends('price_subtotal', 'price_total')
     def _compute_vat_amount_custom(self):
         for rec in self:
-            amount = 0
-            for tax in rec.tax_ids:
-                if rec.move_id.move_type == 'out_invoice' or rec.move_id.move_type == 'out_refund':
-                    if tax.id in [1,48]:
-                        amount = amount + tax.amount
-                else:
-                    if tax.id in [19, 65]:
-                        amount = amount + tax.amount
-            rec.vat_amount = ((amount/100) * rec.price_unit) * rec.quantity
+            # Standard line totals include discounts, fiscal positions,
+            # price-included taxes and the company's rounding configuration.
+            rec.vat_amount = rec.price_total - rec.price_subtotal
 
     @api.depends('sequence', 'move_id')
     def _compute_get_number(self):

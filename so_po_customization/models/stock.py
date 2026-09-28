@@ -129,6 +129,9 @@ class StockPickingInh(models.Model):
                         lot_list.append({
                             'lot_name': rec.lot_id.name,
                             'lot_qty': rec.quantity/6 if rec.product_uom_id.name == 'Mtr' else rec.quantity,
+                            # quant_id is a non-stored UI helper. Selecting "Pick From"
+                            # copies the quant's persistent source location onto the move line.
+                            'location_name': rec.location_id.display_name or '',
                         })
                 lot_str = ''
                 if lot_list:
